@@ -12,5 +12,32 @@
   "confirm": "Confirmer",
   "edit": "Modifier",
   "delete": "Supprimer",
-  "ok": "OK"
+  "ok": "OK",
+  "category_name": "Nom de la catégorie",
+  "category_icon": "Icône",
+  "category_color": "Couleur",
+  "save": "Enregistrer",
+  "name_required": "Le nom de la catégorie est requis",
+  "icon_required": "La sélection d'icône est requise",
+  "color_required": "La sélection de couleur est requise",
+  "category_created": "Catégorie créée avec succès",
+  "category_updated": "Catégorie mise à jour avec succès",
+  "category_deleted": "Catégorie supprimée avec succès",
+  "error_creating": "Erreur lors de la création de la catégorie",
+  "error_updating": "Erreur lors de la mise à jour de la catégorie",
+  "error_deleting": "Erreur lors de la suppression de la catégorie",
+  "loading": "Chargement...",
+  "no_categories": "Aucune catégorie trouvée",
+  "add_first_category": "Ajoutez votre première catégorie",
+  "default_category": "Par défaut",
+  "default": {
+    "rent": "Loyer",
+    "bills": "Factures",
+    "education": "Éducation",
+    "food": "Nourriture",
+    "transport": "Transport",
+    "health": "Santé",
+    "entertainment": "Divertissement",
+    "other": "Autre"
+  }
 }

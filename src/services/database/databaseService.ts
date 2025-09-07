@@ -81,6 +81,35 @@ class DatabaseService {
   isInitialized(): boolean {
     return this.db !== null;
   }
+
+  // Tablo var mı kontrol et
+  async tableExists(tableName: string): Promise<boolean> {
+    if (!this.db) throw new Error('Database not initialized');
+    
+    try {
+      const result = await this.db.getFirstAsync<{ count: number }>(
+        "SELECT COUNT(*) as count FROM sqlite_master WHERE type='table' AND name=?",
+        [tableName]
+      );
+      return (result?.count || 0) > 0;
+    } catch (error) {
+      console.error('❌ Check table exists failed:', error);
+      return false;
+    }
+  }
+
+  // Tabloyu sil
+  async dropTable(tableName: string): Promise<void> {
+    if (!this.db) throw new Error('Database not initialized');
+    
+    try {
+      await this.db.execAsync(`DROP TABLE IF EXISTS ${tableName}`);
+      console.log(`✅ Table ${tableName} dropped successfully`);
+    } catch (error) {
+      console.error(`❌ Drop table ${tableName} failed:`, error);
+      throw error;
+    }
+  }
 }
 
 // Singleton instance

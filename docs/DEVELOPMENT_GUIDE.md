@@ -23,6 +23,8 @@ FinBuddy/
 │   │   │   ├── Button.tsx      # Tema destekli buton bileşeni
 │   │   │   ├── Dropdown.tsx    # Açılır menü bileşeni
 │   │   │   ├── RadioButton.tsx # Radyo buton bileşeni
+│   │   │   ├── PageHeader.tsx  # Sayfa başlığı bileşeni
+│   │   │   ├── Layout.tsx      # Ana layout bileşeni
 │   │   │   └── BottomTabBar.tsx # Alt navigasyon bileşeni
 │   │   ├── navigation/     # Navigasyon bileşenleri
 │   │   └── AppNavigator.tsx # Ana navigasyon bileşeni
@@ -325,7 +327,115 @@ const MyComponent = () => {
 };
 ```
 
-### 7. Base Components Kullanımı
+### 7. Layout Yapısı
+
+#### Layout Component Kullanımı
+Projede tüm sayfalarda tutarlı yapı için Layout component'i kullanılmaktadır. Bu component header, body ve footer alanlarını organize eder.
+
+#### Layout Yapısı
+```
+┌─────────────────────────────────┐
+│           HEADER                │ ← PageHeader veya özel component
+├─────────────────────────────────┤
+│                                 │
+│           BODY                  │ ← Ana içerik (flex: 1)
+│        (Content Area)           │
+│                                 │
+├─────────────────────────────────┤
+│           FOOTER                │ ← BottomTabBar veya özel component
+└─────────────────────────────────┘
+```
+
+#### Layout Props
+```typescript
+interface LayoutProps {
+  children: React.ReactNode;           // Ana içerik
+  showHeader?: boolean;                // Header göster/gizle (default: true)
+  showFooter?: boolean;                // Footer göster/gizle (default: true)
+  headerComponent?: React.ReactNode;   // Özel header component
+  footerComponent?: React.ReactNode;   // Özel footer component
+  style?: any;                        // Layout stili
+  contentStyle?: any;                 // Content stili
+}
+```
+
+#### Layout Kullanım Örnekleri
+```typescript
+// Basit layout
+<Layout>
+  <Text>Ana içerik</Text>
+</Layout>
+
+// Header ile layout
+<Layout
+  headerComponent={
+    <PageHeader
+      title="Sayfa Başlığı"
+      showBackButton={true}
+      onBackPress={goBack}
+    />
+  }
+>
+  <ScrollView>
+    <Text>Ana içerik</Text>
+  </ScrollView>
+</Layout>
+
+// Özel footer ile layout
+<Layout
+  headerComponent={<PageHeader title="Ayarlar" />}
+  footerComponent={<CustomFooter />}
+>
+  <Text>Ayarlar içeriği</Text>
+</Layout>
+
+// Header ve footer olmadan layout
+<Layout showHeader={false} showFooter={false}>
+  <Text>Sadece içerik</Text>
+</Layout>
+```
+
+#### PageHeader Component
+Sayfa başlıkları için tutarlı tasarım sağlar.
+
+```typescript
+interface PageHeaderProps {
+  title: string;                      // Sayfa başlığı (zorunlu)
+  showBackButton?: boolean;           // Geri butonu göster/gizle
+  onBackPress?: () => void;          // Geri butonu tıklama fonksiyonu
+  rightElement?: React.ReactNode;     // Sağ tarafta gösterilecek element
+  style?: any;                       // Özel stil
+}
+```
+
+#### PageHeader Kullanım Örnekleri
+```typescript
+// Basit başlık
+<PageHeader title="Ana Sayfa" />
+
+// Geri butonu ile
+<PageHeader 
+  title="Kategoriler" 
+  showBackButton={true} 
+  onBackPress={goBack} 
+/>
+
+// Sağ element ile
+<PageHeader 
+  title="Ana Sayfa" 
+  rightElement={<Text>Alt başlık</Text>} 
+/>
+```
+
+#### Layout Avantajları
+- ✅ **Tutarlılık** - Tüm sayfalarda aynı yapı
+- ✅ **Bakım Kolaylığı** - Tek yerden değişiklik
+- ✅ **Kod Temizliği** - Tekrar eden kod yok
+- ✅ **Esneklik** - İsteğe bağlı header/footer
+- ✅ **Tema Uyumu** - Otomatik tema renkleri
+- ✅ **Responsive** - Tüm ekran boyutlarında uyumlu
+
+### 8. Base Components Kullanımı
 
 #### ⚠️ ÖNEMLİ KURAL: React Native Component'leri Kullanma
 **Projede React Native'den direkt component kullanmak YASAKTIR!** Tüm component'ler base components'ten alınmalıdır.
@@ -546,6 +656,47 @@ const MyComponent = ({ theme }: { theme: ThemeMode }) => {
 };
 ```
 
+#### Layout Bileşeni
+```typescript
+// Layout kullanımı
+import { Layout, PageHeader } from '@/components';
+
+const MyScreen = () => {
+  return (
+    <Layout
+      headerComponent={
+        <PageHeader
+          title="Sayfa Başlığı"
+          showBackButton={true}
+          onBackPress={goBack}
+        />
+      }
+    >
+      <ScrollView>
+        <Text>Ana içerik</Text>
+      </ScrollView>
+    </Layout>
+  );
+};
+```
+
+#### PageHeader Bileşeni
+```typescript
+// PageHeader kullanımı
+import { PageHeader } from '@/components';
+
+const MyScreen = () => {
+  return (
+    <PageHeader
+      title="Sayfa Başlığı"
+      showBackButton={true}
+      onBackPress={goBack}
+      rightElement={<Text>Sağ element</Text>}
+    />
+  );
+};
+```
+
 #### BottomTabBar Bileşeni
 ```typescript
 // BottomTabBar kullanımı
@@ -754,6 +905,26 @@ interface RadioButtonProps {
   disabled?: boolean;
   style?: any;
   orientation?: 'vertical' | 'horizontal';
+}
+
+// Layout props
+interface LayoutProps {
+  children: React.ReactNode;
+  showHeader?: boolean;
+  showFooter?: boolean;
+  headerComponent?: React.ReactNode;
+  footerComponent?: React.ReactNode;
+  style?: any;
+  contentStyle?: any;
+}
+
+// PageHeader props
+interface PageHeaderProps {
+  title: string;
+  showBackButton?: boolean;
+  onBackPress?: () => void;
+  rightElement?: React.ReactNode;
+  style?: any;
 }
 ```
 

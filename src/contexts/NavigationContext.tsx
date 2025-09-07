@@ -1,14 +1,15 @@
 // Navigation Context - Global navigation state yönetimi
 import React, { createContext, useContext, useState, useCallback, ReactNode } from 'react';
 
-export type ScreenType = 'home' | 'settings' | 'categories' | 'transactions' | 'accounts' | 'reports';
+export type ScreenType = 'home' | 'settings' | 'categories' | 'addCategory' | 'editCategory' | 'transactions' | 'accounts' | 'reports';
 
 interface NavigationContextType {
   currentScreen: ScreenType;
-  navigateTo: (screen: ScreenType) => void;
+  navigateTo: (screen: ScreenType, params?: any) => void;
   goBack: () => void;
   resetToHome: () => void;
   screenHistory: ScreenType[];
+  currentParams: any;
 }
 
 const NavigationContext = createContext<NavigationContextType | undefined>(undefined);
@@ -20,9 +21,11 @@ interface NavigationProviderProps {
 export const NavigationProvider: React.FC<NavigationProviderProps> = ({ children }) => {
   const [currentScreen, setCurrentScreen] = useState<ScreenType>('home');
   const [screenHistory, setScreenHistory] = useState<ScreenType[]>(['home']);
+  const [currentParams, setCurrentParams] = useState<any>(null);
 
-  const navigateTo = useCallback((screen: ScreenType) => {
+  const navigateTo = useCallback((screen: ScreenType, params?: any) => {
     setCurrentScreen(screen);
+    setCurrentParams(params);
     setScreenHistory(prev => [...prev, screen]);
   }, []);
 
@@ -33,12 +36,14 @@ export const NavigationProvider: React.FC<NavigationProviderProps> = ({ children
       const previousScreen = newHistory[newHistory.length - 1];
       setCurrentScreen(previousScreen);
       setScreenHistory(newHistory);
+      setCurrentParams(null);
     }
   }, [screenHistory]);
 
   const resetToHome = useCallback(() => {
     setCurrentScreen('home');
     setScreenHistory(['home']);
+    setCurrentParams(null);
   }, []);
 
   const value: NavigationContextType = {
@@ -47,6 +52,7 @@ export const NavigationProvider: React.FC<NavigationProviderProps> = ({ children
     goBack,
     resetToHome,
     screenHistory,
+    currentParams,
   };
 
   return (

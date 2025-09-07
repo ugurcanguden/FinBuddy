@@ -12,5 +12,32 @@
   "confirm": "Bestätigen",
   "edit": "Bearbeiten",
   "delete": "Löschen",
-  "ok": "OK"
+  "ok": "OK",
+  "category_name": "Kategorie-Name",
+  "category_icon": "Symbol",
+  "category_color": "Farbe",
+  "save": "Speichern",
+  "name_required": "Kategorie-Name ist erforderlich",
+  "icon_required": "Symbol-Auswahl ist erforderlich",
+  "color_required": "Farbe-Auswahl ist erforderlich",
+  "category_created": "Kategorie erfolgreich erstellt",
+  "category_updated": "Kategorie erfolgreich aktualisiert",
+  "category_deleted": "Kategorie erfolgreich gelöscht",
+  "error_creating": "Fehler beim Erstellen der Kategorie",
+  "error_updating": "Fehler beim Aktualisieren der Kategorie",
+  "error_deleting": "Fehler beim Löschen der Kategorie",
+  "loading": "Wird geladen...",
+  "no_categories": "Keine Kategorien gefunden",
+  "add_first_category": "Fügen Sie Ihre erste Kategorie hinzu",
+  "default_category": "Standard",
+  "default": {
+    "rent": "Miete",
+    "bills": "Rechnungen",
+    "education": "Bildung",
+    "food": "Essen",
+    "transport": "Transport",
+    "health": "Gesundheit",
+    "entertainment": "Unterhaltung",
+    "other": "Andere"
+  }
 }

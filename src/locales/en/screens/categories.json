@@ -12,5 +12,69 @@
   "confirm": "Confirm",
   "edit": "Edit",
   "delete": "Delete",
-  "ok": "OK"
+  "ok": "OK",
+  "category_name": "Category Name",
+  "category_icon": "Icon",
+  "category_color": "Color",
+  "save": "Save",
+  "name_required": "Category name is required",
+  "icon_required": "Icon selection is required",
+  "color_required": "Color selection is required",
+  "category_created": "Category created successfully",
+  "category_updated": "Category updated successfully",
+  "category_deleted": "Category deleted successfully",
+  "error_creating": "Error creating category",
+  "error_updating": "Error updating category",
+  "error_deleting": "Error deleting category",
+  "category_create_error": "Error creating category",
+  "category_update_error": "Error updating category",
+  "category_not_found": "Category not found",
+  "loading": "Loading...",
+  "no_categories": "No categories found",
+  "add_first_category": "Add your first category",
+  "default_category": "Default",
+  "enter_category_name": "Enter category name",
+  "select_icon": "Select icon",
+  "preview": "Preview",
+  "preview_description": "How the category card will look",
+  "saving": "Saving...",
+  "icons": {
+    "home": "Home",
+    "bills": "Bills",
+    "education": "Education",
+    "food": "Food",
+    "transport": "Transport",
+    "health": "Health",
+    "entertainment": "Entertainment",
+    "other": "Other",
+    "shopping": "Shopping",
+    "sports": "Sports",
+    "work": "Work",
+    "travel": "Travel"
+  },
+  "default": {
+    "rent": "Rent",
+    "bills": "Bills",
+    "education": "Education",
+    "food": "Food",
+    "transport": "Transport",
+    "health": "Health",
+    "entertainment": "Entertainment",
+    "other": "Other"
+  },
+  "add_category": {
+    "title": "New Category",
+    "subtitle": "Create a new category"
+  },
+  "edit_category": {
+    "title": "Edit Category",
+    "subtitle": "Update category information"
+  },
+  "messages": {
+    "category_created_message": "Category created successfully",
+    "category_updated_message": "Category updated successfully",
+    "category_create_error": "Error creating category",
+    "category_update_error": "Error updating category",
+    "category_not_found": "Category not found"
+  }
 }

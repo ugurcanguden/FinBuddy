@@ -2,25 +2,24 @@
 import React from 'react';
 import { StyleSheet } from 'react-native';
 import { useLocale } from '@/hooks';
-import { SafeArea, Container, Text, StatusBar, BottomTabBar } from '@/components';
+import { Container, Text, PageHeader, Layout } from '@/components';
 
 const HomeScreen: React.FC = () => {
   const { t } = useLocale();
 
   return (
-    <SafeArea  >
-      <StatusBar />
-      
-      {/* Header */}
-      <Container variant="surface" padding="small" style={styles.header}>
-        <Text variant="primary" size="large" weight="bold">
-          {t('screens.home.title')}
-        </Text>
-        <Text variant="secondary" size="small" style={styles.headerSubtitle}>
-          {t('screens.home.subtitle')}
-        </Text>
-      </Container>
-
+    <Layout
+      headerComponent={
+        <PageHeader
+          title={t('screens.home.title')}
+          rightElement={
+            <Text variant="secondary" size="small">
+              {t('screens.home.subtitle')}
+            </Text>
+          }
+        />
+      }
+    >
       {/* Content */}
       <Container padding="large" style={styles.content}>
         <Text variant="primary" size="large" align="center">
@@ -28,9 +27,7 @@ const HomeScreen: React.FC = () => {
         </Text>
       </Container>
 
-      {/* Bottom Tab Bar */}
-      <BottomTabBar />
-    </SafeArea>
+    </Layout>
   );
 };
 

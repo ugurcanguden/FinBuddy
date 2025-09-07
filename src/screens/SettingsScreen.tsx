@@ -6,17 +6,16 @@ import { LANGUAGE_OPTIONS } from '@/constants/languageOptions';
 import { useLocale, usePaymentReminders } from '@/hooks';
 import { useNavigation, useTheme } from '@/contexts';
 import { 
-  SafeArea, 
   Container, 
   Text, 
   Card, 
   ScrollView, 
   TouchableOpacity, 
-  StatusBar, 
   Switch, 
   Dropdown, 
-  BottomTabBar, 
-  View
+  View,
+  PageHeader,
+  Layout
 } from '@/components';
 
 const SettingsScreen: React.FC = () => {
@@ -62,20 +61,15 @@ const SettingsScreen: React.FC = () => {
   };
 
   return (
-    <SafeArea>
-      <StatusBar />
-      
-      {/* Header */}
-      <Container variant="surface" padding="small" style={styles.header}>
-        <TouchableOpacity variant="transparent" style={styles.backButton} onPress={goBack}>
-          <Text variant="primary" size="medium">←</Text>
-        </TouchableOpacity>
-        <Text variant="primary" size="large" weight="bold">
-          {t('screens.settings.title')}
-        </Text>
-        <View style={styles.headerSpacer} />
-      </Container>
-
+    <Layout
+      headerComponent={
+        <PageHeader
+          title={t('screens.settings.title')}
+          showBackButton={true}
+          onBackPress={goBack}
+        />
+      }
+    >
       {/* Content */}
       <ScrollView variant="transparent" style={styles.content} showsVerticalScrollIndicator={false}>
         {/* Genel Ayarlar */}
@@ -223,9 +217,7 @@ const SettingsScreen: React.FC = () => {
         </View>
       </ScrollView>
 
-      {/* Bottom Tab Bar */}
-      <BottomTabBar />
-    </SafeArea>
+    </Layout>
   );
 };
 

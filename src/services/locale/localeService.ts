@@ -56,7 +56,7 @@ class LocaleService {
     switch (language) {
       case 'en':
         return {
-          common: (await import('@/locales/en/categories/common.json')).default,
+          common: (await import('@/locales/en/common.json')).default,
           navigation: (await import('@/locales/en/categories/navigation.json')).default,
           screens: {
             home: (await import('@/locales/en/screens/home.json')).default,
@@ -66,7 +66,7 @@ class LocaleService {
         };
       case 'tr':
         return {
-          common: (await import('@/locales/tr/categories/common.json')).default,
+          common: (await import('@/locales/tr/common.json')).default,
           navigation: (await import('@/locales/tr/categories/navigation.json')).default,
           screens: {
             home: (await import('@/locales/tr/screens/home.json')).default,
@@ -76,7 +76,7 @@ class LocaleService {
         };
       case 'de':
         return {
-          common: (await import('@/locales/de/categories/common.json')).default,
+          common: (await import('@/locales/de/common.json')).default,
           navigation: (await import('@/locales/de/categories/navigation.json')).default,
           screens: {
             home: (await import('@/locales/de/screens/home.json')).default,
@@ -86,7 +86,7 @@ class LocaleService {
         };
       case 'fr':
         return {
-          common: (await import('@/locales/fr/categories/common.json')).default,
+          common: (await import('@/locales/fr/common.json')).default,
           navigation: (await import('@/locales/fr/categories/navigation.json')).default,
           screens: {
             home: (await import('@/locales/fr/screens/home.json')).default,
@@ -96,7 +96,7 @@ class LocaleService {
         };
       case 'it':
         return {
-          common: (await import('@/locales/it/categories/common.json')).default,
+          common: (await import('@/locales/it/common.json')).default,
           navigation: (await import('@/locales/it/categories/navigation.json')).default,
           screens: {
             home: (await import('@/locales/it/screens/home.json')).default,
@@ -106,7 +106,7 @@ class LocaleService {
         };
       case 'es':
         return {
-          common: (await import('@/locales/es/categories/common.json')).default,
+          common: (await import('@/locales/es/common.json')).default,
           navigation: (await import('@/locales/es/categories/navigation.json')).default,
           screens: {
             home: (await import('@/locales/es/screens/home.json')).default,

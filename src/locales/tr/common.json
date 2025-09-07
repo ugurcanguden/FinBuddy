@@ -17,7 +17,8 @@
     "sort": "Sırala",
     "refresh": "Yenile",
     "loading": "Yükleniyor...",
-    "retry": "Tekrar Dene"
+    "retry": "Tekrar Dene",
+    "ok": "Tamam"
   },
   "labels": {
     "title": "Başlık",

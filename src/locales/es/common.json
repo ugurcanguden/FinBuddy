@@ -17,7 +17,8 @@
     "sort": "Ordenar",
     "refresh": "Actualizar",
     "loading": "Cargando...",
-    "retry": "Reintentar"
+    "retry": "Reintentar",
+    "ok": "OK"
   },
   "labels": {
     "title": "Título",

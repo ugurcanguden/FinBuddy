@@ -12,5 +12,69 @@
   "confirm": "Onayla",
   "edit": "Düzenle",
   "delete": "Sil",
-  "ok": "Tamam"
+  "ok": "Tamam",
+  "category_name": "Kategori Adı",
+  "category_icon": "İkon",
+  "category_color": "Renk",
+  "save": "Kaydet",
+  "name_required": "Kategori adı gereklidir",
+  "icon_required": "İkon seçimi gereklidir",
+  "color_required": "Renk seçimi gereklidir",
+  "category_created": "Kategori başarıyla oluşturuldu",
+  "category_updated": "Kategori başarıyla güncellendi",
+  "category_deleted": "Kategori başarıyla silindi",
+  "error_creating": "Kategori oluşturulurken hata oluştu",
+  "error_updating": "Kategori güncellenirken hata oluştu",
+  "error_deleting": "Kategori silinirken hata oluştu",
+  "category_create_error": "Kategori oluşturulurken hata oluştu",
+  "category_update_error": "Kategori güncellenirken hata oluştu",
+  "category_not_found": "Kategori bulunamadı",
+  "loading": "Yükleniyor...",
+  "no_categories": "Henüz kategori bulunmuyor",
+  "add_first_category": "İlk kategorinizi ekleyin",
+  "default_category": "Varsayılan",
+  "enter_category_name": "Kategori adını girin",
+  "select_icon": "İkon seçiniz",
+  "preview": "Önizleme",
+  "preview_description": "Kategori kartı nasıl görünecek",
+  "saving": "Kaydediliyor...",
+  "icons": {
+    "home": "Ev",
+    "bills": "Faturalar",
+    "education": "Eğitim",
+    "food": "Yemek",
+    "transport": "Ulaşım",
+    "health": "Sağlık",
+    "entertainment": "Eğlence",
+    "other": "Diğer",
+    "shopping": "Alışveriş",
+    "sports": "Spor",
+    "work": "İş",
+    "travel": "Seyahat"
+  },
+  "default": {
+    "rent": "Kira",
+    "bills": "Faturalar",
+    "education": "Eğitim",
+    "food": "Yemek",
+    "transport": "Ulaşım",
+    "health": "Sağlık",
+    "entertainment": "Eğlence",
+    "other": "Diğer"
+  },
+  "add_category": {
+    "title": "Yeni Kategori",
+    "subtitle": "Yeni bir kategori oluşturun"
+  },
+  "edit_category": {
+    "title": "Kategori Düzenle",
+    "subtitle": "Kategori bilgilerini güncelleyin"
+  },
+  "messages": {
+    "category_created_message": "Kategori başarıyla oluşturuldu",
+    "category_updated_message": "Kategori başarıyla güncellendi",
+    "category_create_error": "Kategori oluşturulurken hata oluştu",
+    "category_update_error": "Kategori güncellenirken hata oluştu",
+    "category_not_found": "Kategori bulunamadı"
+  }
 }

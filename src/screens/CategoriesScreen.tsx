@@ -1,41 +1,28 @@
 // Categories Screen - Kategoriler yönetim sayfası
-import React, { useState } from 'react';
+import React from 'react';
 import { StyleSheet, Alert } from 'react-native';
-import { useLocale } from '@/hooks';
+import { useLocale, useCategories } from '@/hooks';
 import { useNavigation } from '@/contexts';
 import { 
-  SafeArea, 
-  Container, 
   Text, 
   ScrollView, 
   TouchableOpacity, 
-  StatusBar, 
-  BottomTabBar,
-  View
+  View,
+  PageHeader,
+  Layout
 } from '@/components';
-
-interface Category {
-  id: string;
-  name: string;
-  icon: string;
-  color: string;
-}
+import { Category } from '@/types';
 
 const CategoriesScreen: React.FC = () => {
   const { t } = useLocale();
-  const { goBack } = useNavigation();
-
-  // Örnek kategoriler
-  const [categories, setCategories] = useState<Category[]>([
-    { id: '1', name: 'Kira', icon: 'home', color: '#29382f' },
-    { id: '2', name: 'Faturalar', icon: 'receipt_long', color: '#29382f' },
-    { id: '3', name: 'Eğitim', icon: 'school', color: '#29382f' },
-    { id: '4', name: 'Yemek', icon: 'fastfood', color: '#29382f' },
-    { id: '5', name: 'Ulaşım', icon: 'directions_bus', color: '#29382f' },
-    { id: '6', name: 'Sağlık', icon: 'favorite', color: '#29382f' },
-    { id: '7', name: 'Eğlence', icon: 'movie', color: '#29382f' },
-    { id: '8', name: 'Diğer', icon: 'apps', color: '#29382f' },
-  ]);
+  const { goBack, navigateTo } = useNavigation();
+  const { 
+    categories, 
+    loading, 
+    error, 
+    deleteCategory, 
+    getDisplayName 
+  } = useCategories();
 
 
   const getIconStyle = (category: Category) => {
@@ -45,116 +32,143 @@ const CategoriesScreen: React.FC = () => {
     };
   };
 
+  const getIconUnicode = (iconName: string): string => {
+    const iconMap: { [key: string]: string } = {
+      'home': '🏠',
+      'receipt_long': '🧾',
+      'school': '🎓',
+      'fastfood': '🍔',
+      'directions_bus': '🚌',
+      'favorite': '❤️',
+      'movie': '🎬',
+      'apps': '📱',
+    };
+    return iconMap[iconName] || '📁';
+  };
+
   const handleEditCategory = (category: Category) => {
-    Alert.alert(
-      t('screens.categories.edit_category'),
-      `${category.name} ${t('screens.categories.edit_category_message')}`,
-      [
-        { text: t('screens.categories.cancel'), style: 'cancel' },
-        { text: t('screens.categories.edit'), onPress: () => console.log('Edit category:', category.id) }
-      ]
-    );
+    navigateTo('editCategory', { categoryId: category.id });
+  };
+
+  const handleAddCategory = () => {
+    navigateTo('addCategory');
   };
 
   const handleDeleteCategory = (category: Category) => {
+    const categoryName = getDisplayName(category, t);
+    
     Alert.alert(
       t('screens.categories.delete_category'),
-      `${category.name} ${t('screens.categories.delete_category_message')}`,
+      `${categoryName} ${t('screens.categories.delete_category_message')}`,
       [
-        { text: t('screens.categories.cancel'), style: 'cancel' },
+        { text: t('common.buttons.cancel'), style: 'cancel' },
         { 
-          text: t('screens.categories.delete'), 
+          text: t('common.buttons.delete'), 
           style: 'destructive',
-          onPress: () => {
-            setCategories(categories.filter(cat => cat.id !== category.id));
+          onPress: async () => {
+            try {
+              await deleteCategory(category.id);
+              Alert.alert(t('common.messages.delete_success'));
+            } catch (error) {
+              Alert.alert(t('common.messages.delete_error'));
+            }
           }
         }
       ]
     );
   };
 
-  const handleAddCategory = () => {
-    Alert.alert(
-      t('screens.categories.new_category'),
-      t('screens.categories.new_category_message'),
-      [{ text: t('screens.categories.ok') }]
-    );
-  };
 
-  const renderCategory = (category: Category) => (
-    <View key={category.id} style={styles.categoryCard}>
-      <View style={styles.categoryInfo}>
-        <View variant="transparent" style={[styles.categoryIcon, getIconStyle(category)] as any}>
-          <Text style={styles.iconText}>{category.icon}</Text>
-        </View>
-        <Text variant="primary" size="medium">
-          {category.name}
-        </Text>
-      </View>
-      <View style={styles.categoryActions}>
-        <TouchableOpacity
-          variant="transparent"
-          style={styles.actionButton}
-          onPress={() => handleEditCategory(category)}
-        >
-          <Text variant="secondary" size="medium">
-            {t('screens.categories.edit')}
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          variant="transparent"
-          style={styles.actionButton}
-          onPress={() => handleDeleteCategory(category)}
-        >
-          <Text variant="secondary" size="medium">
-            {t('screens.categories.delete')}
-          </Text>
-        </TouchableOpacity>
-      </View>
-    </View>
-  );
+
 
   return (
-    <SafeArea style={styles.container}>
-      <StatusBar />
-      
-      {/* Header */}
-      <Container variant="surface" padding="small" style={styles.header}>
-        <TouchableOpacity variant="transparent" style={styles.backButton} onPress={goBack}>
-          <Text variant="secondary" size="medium">
-            ←
-          </Text>
-        </TouchableOpacity>
-        <Text variant="primary" size="large" weight="bold">
-          {t('screens.categories.title')}
-        </Text>
-        <View style={styles.headerSpacer} />
-      </Container>
-
+    <Layout
+      headerComponent={
+        <PageHeader
+          title={t('screens.categories.title')}
+          showBackButton={true}
+          onBackPress={goBack}
+          showAddButton={true}
+          onAddPress={handleAddCategory}
+          addButtonText={t('common.buttons.add')}
+        />
+      }
+    >
       {/* Content */}
       <ScrollView variant="transparent" style={styles.content} showsVerticalScrollIndicator={false}>
-        <View style={styles.categoriesList}>
-          {categories.map(renderCategory)}
-        </View>
+        {loading ? (
+          <View variant="transparent" style={styles.loadingContainer}>
+            <Text variant="secondary" size="medium">
+              {t('screens.categories.loading')}
+            </Text>
+          </View>
+        ) : error ? (
+          <View variant="transparent" style={styles.errorContainer}>
+            <Text variant="error" size="medium">
+              {error}
+            </Text>
+          </View>
+        ) : categories.length === 0 ? (
+          <View variant="transparent" style={styles.emptyContainer}>
+            <Text variant="secondary" size="medium">
+              {t('screens.categories.no_categories')}
+            </Text>
+            <Text variant="secondary" size="small" style={styles.emptySubtext}>
+              {t('screens.categories.add_first_category')}
+            </Text>
+          </View>
+        ) : (
+          <View variant="transparent" style={styles.categoriesList}>
+            {categories.map((category) => (
+              <View key={category.id} variant="surface" style={styles.categoryCard}>
+                <View variant="transparent" style={styles.categoryInfo}>
+                  <View variant="transparent" style={[styles.categoryIcon, getIconStyle(category)] as any}>
+                    <Text style={[styles.iconText, { color: category.color }] as any}>
+                      {getIconUnicode(category.icon)}
+                    </Text>
+                  </View>
+                  <View variant="transparent" style={styles.categoryTextContainer}>
+                    <Text variant="primary" size="medium" weight="medium">
+                      {getDisplayName(category, t)}
+                    </Text>
+                    {category.is_default && (
+                      <Text variant="secondary" size="small" style={styles.defaultLabel}>
+                        {t('screens.categories.default_category')}
+                      </Text>
+                    )}
+                  </View>
+                </View>
+                <View variant="transparent" style={styles.categoryActions}>
+                  {!category.is_default && (
+                    <>
+                      <TouchableOpacity
+                        variant="transparent"
+                        style={styles.actionButton}
+                        onPress={() => handleEditCategory(category)}
+                      >
+                        <Text variant="secondary" size="medium">
+                          {t('screens.categories.edit')}
+                        </Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity
+                        variant="transparent"
+                        style={styles.actionButton}
+                        onPress={() => handleDeleteCategory(category)}
+                      >
+                        <Text variant="secondary" size="medium">
+                          {t('screens.categories.delete')}
+                        </Text>
+                      </TouchableOpacity>
+                    </>
+                  )}
+                </View>
+              </View>
+            ))}
+          </View>
+        )}
       </ScrollView>
 
-      {/* Add Button */}
-      <Container variant="background" padding="medium" style={styles.addButtonContainer}>
-        <TouchableOpacity
-          variant="primary"
-          style={styles.addButton}
-          onPress={handleAddCategory}
-        >
-          <Text variant="primary" size="large">+</Text>
-          <Text variant="primary" size="medium" weight="semibold">
-            {t('screens.categories.add_category')}
-          </Text>
-        </TouchableOpacity>
-      </Container>
-
-      {/* Bottom Tab Bar */}
-      <BottomTabBar />
-    </SafeArea>
+    </Layout>
   );
 };
 
@@ -205,6 +219,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flex: 1,
   },
+  categoryTextContainer: {
+    flex: 1,
+    marginLeft: 16,
+  },
+  defaultLabel: {
+    marginTop: 2,
+    fontStyle: 'italic',
+  },
   categoryIcon: {
     width: 48,
     height: 48,
@@ -253,6 +275,30 @@ const styles = StyleSheet.create({
   addButtonText: {
     fontSize: 16,
     fontWeight: 'bold',
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: 40,
+  },
+  errorContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: 40,
+    paddingHorizontal: 20,
+  },
+  emptyContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: 40,
+    paddingHorizontal: 20,
+  },
+  emptySubtext: {
+    marginTop: 8,
+    textAlign: 'center',
   },
 });
 

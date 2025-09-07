@@ -12,5 +12,32 @@
   "confirm": "Conferma",
   "edit": "Modifica",
   "delete": "Elimina",
-  "ok": "OK"
+  "ok": "OK",
+  "category_name": "Nome categoria",
+  "category_icon": "Icona",
+  "category_color": "Colore",
+  "save": "Salva",
+  "name_required": "Il nome della categoria è richiesto",
+  "icon_required": "La selezione dell'icona è richiesta",
+  "color_required": "La selezione del colore è richiesta",
+  "category_created": "Categoria creata con successo",
+  "category_updated": "Categoria aggiornata con successo",
+  "category_deleted": "Categoria eliminata con successo",
+  "error_creating": "Errore durante la creazione della categoria",
+  "error_updating": "Errore durante l'aggiornamento della categoria",
+  "error_deleting": "Errore durante l'eliminazione della categoria",
+  "loading": "Caricamento...",
+  "no_categories": "Nessuna categoria trovata",
+  "add_first_category": "Aggiungi la tua prima categoria",
+  "default_category": "Predefinito",
+  "default": {
+    "rent": "Affitto",
+    "bills": "Bollette",
+    "education": "Istruzione",
+    "food": "Cibo",
+    "transport": "Trasporto",
+    "health": "Salute",
+    "entertainment": "Intrattenimento",
+    "other": "Altro"
+  }
 }
