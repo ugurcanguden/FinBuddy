@@ -1,0 +1,41 @@
+{
+  "tabs": {
+    "home": "Inicio",
+    "transactions": "Transacciones",
+    "accounts": "Cuentas",
+    "categories": "Categorías",
+    "reports": "Reportes",
+    "settings": "Configuración",
+    "profile": "Perfil",
+    "add_payment": "Nuevo pago"
+  },
+  "screens": {
+    "dashboard": "Panel de control",
+    "transaction_list": "Lista de transacciones",
+    "transaction_detail": "Detalle de transacción",
+    "add_transaction": "Agregar transacción",
+    "edit_transaction": "Editar transacción",
+    "account_list": "Lista de cuentas",
+    "account_detail": "Detalle de cuenta",
+    "add_account": "Agregar cuenta",
+    "edit_account": "Editar cuenta",
+    "category_list": "Lista de categorías",
+    "category_detail": "Detalle de categoría",
+    "add_category": "Agregar categoría",
+    "edit_category": "Editar categoría",
+    "monthly_report": "Reporte mensual",
+    "yearly_report": "Reporte anual",
+    "settings": "Configuración",
+    "language_settings": "Configuración de idioma",
+    "theme_settings": "Configuración de tema",
+    "notification_settings": "Configuración de notificaciones"
+  },
+  "menu": {
+    "logout": "Cerrar sesión",
+    "about": "Acerca de",
+    "help": "Ayuda",
+    "feedback": "Comentarios",
+    "privacy": "Política de privacidad",
+    "terms": "Términos de servicio"
+  }
+}

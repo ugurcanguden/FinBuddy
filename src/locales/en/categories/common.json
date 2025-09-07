@@ -1,0 +1,62 @@
+{
+  "buttons": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "add": "Add",
+    "close": "Close",
+    "confirm": "Confirm",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "submit": "Submit",
+    "reset": "Reset",
+    "search": "Search",
+    "filter": "Filter",
+    "sort": "Sort",
+    "refresh": "Refresh",
+    "loading": "Loading...",
+    "retry": "Retry"
+  },
+  "labels": {
+    "title": "Title",
+    "description": "Description",
+    "name": "Name",
+    "email": "Email",
+    "password": "Password",
+    "phone": "Phone",
+    "address": "Address",
+    "date": "Date",
+    "time": "Time",
+    "amount": "Amount",
+    "currency": "Currency",
+    "category": "Category",
+    "status": "Status",
+    "type": "Type",
+    "notes": "Notes",
+    "tags": "Tags"
+  },
+  "messages": {
+    "success": "Operation completed successfully",
+    "error": "An error occurred",
+    "warning": "Warning",
+    "info": "Information",
+    "confirm_delete": "Are you sure you want to delete this item?",
+    "no_data": "No data available",
+    "loading": "Please wait...",
+    "saved": "Saved successfully",
+    "updated": "Updated successfully",
+    "deleted": "Deleted successfully",
+    "created": "Created successfully"
+  },
+  "validation": {
+    "required": "This field is required",
+    "email_invalid": "Please enter a valid email address",
+    "phone_invalid": "Please enter a valid phone number",
+    "min_length": "Minimum length is {min} characters",
+    "max_length": "Maximum length is {max} characters",
+    "numeric": "Please enter a valid number",
+    "positive": "Please enter a positive number"
+  }
+}

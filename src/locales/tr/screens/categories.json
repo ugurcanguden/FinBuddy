@@ -1,0 +1,16 @@
+{
+  "title": "Kategoriler",
+  "add_category": "Yeni Kategori Ekle",
+  "edit_category": "Kategori Düzenle",
+  "delete_category": "Kategori Sil",
+  "new_category": "Yeni Kategori",
+  "new_category_message": "Yeni kategori ekleme özelliği yakında eklenecek",
+  "edit_category_message": "kategorisini düzenlemek istediğinizden emin misiniz?",
+  "delete_category_message": "kategorisini silmek istediğinizden emin misiniz?",
+  "confirm_delete": "Bu kategoriyi silmek istediğinizden emin misiniz?",
+  "cancel": "İptal",
+  "confirm": "Onayla",
+  "edit": "Düzenle",
+  "delete": "Sil",
+  "ok": "Tamam"
+}

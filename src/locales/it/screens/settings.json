@@ -1,0 +1,44 @@
+{
+  "title": "Impostazioni",
+  "subtitle": "Gestisci le preferenze dell'app",
+  "general": {
+    "title": "Generale",
+    "language": "Lingua",
+    "language_value": "Italiano",
+    "language_message": "Il cambio lingua sarà aggiunto presto",
+    "theme": "Tema",
+    "theme_dark": "Scuro",
+    "theme_light": "Chiaro",
+    "theme_colorful": "Blu Notte",
+    "currency": "Valuta",
+    "date_format": "Formato data"
+  },
+  "notifications": {
+    "title": "Notifiche",
+    "payment_reminders": "Promemoria pagamenti",
+    "payment_reminders_message": "Ricevi notifiche per ricordarti le date di pagamento",
+    "push_notifications": "Notifiche push",
+    "email_notifications": "Notifiche email",
+    "reminder_notifications": "Notifiche promemoria"
+  },
+  "privacy": {
+    "title": "Privacy",
+    "data_usage": "Utilizzo dei dati",
+    "analytics": "Analitica",
+    "crash_reports": "Report di arresto"
+  },
+  "about": {
+    "title": "Informazioni",
+    "version": "Versione",
+    "terms": "Termini di servizio",
+    "privacy_policy": "Informativa sulla privacy",
+    "contact": "Contatto"
+  },
+  "profile": {
+    "title": "Profilo",
+    "edit_profile": "Modifica profilo",
+    "edit_profile_message": "La modifica del profilo sarà aggiunta presto",
+    "security": "Sicurezza",
+    "logout": "Disconnetti"
+  }
+}

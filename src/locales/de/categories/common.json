@@ -1,0 +1,62 @@
+{
+  "buttons": {
+    "save": "Speichern",
+    "cancel": "Abbrechen",
+    "delete": "Löschen",
+    "edit": "Bearbeiten",
+    "add": "Hinzufügen",
+    "close": "Schließen",
+    "confirm": "Bestätigen",
+    "back": "Zurück",
+    "next": "Weiter",
+    "previous": "Vorherige",
+    "submit": "Absenden",
+    "reset": "Zurücksetzen",
+    "search": "Suchen",
+    "filter": "Filtern",
+    "sort": "Sortieren",
+    "refresh": "Aktualisieren",
+    "loading": "Wird geladen...",
+    "retry": "Wiederholen"
+  },
+  "labels": {
+    "title": "Titel",
+    "description": "Beschreibung",
+    "name": "Name",
+    "email": "E-Mail",
+    "password": "Passwort",
+    "phone": "Telefon",
+    "address": "Adresse",
+    "date": "Datum",
+    "time": "Zeit",
+    "amount": "Betrag",
+    "currency": "Währung",
+    "category": "Kategorie",
+    "status": "Status",
+    "type": "Typ",
+    "notes": "Notizen",
+    "tags": "Tags"
+  },
+  "messages": {
+    "success": "Vorgang erfolgreich abgeschlossen",
+    "error": "Ein Fehler ist aufgetreten",
+    "warning": "Warnung",
+    "info": "Information",
+    "confirm_delete": "Sind Sie sicher, dass Sie dieses Element löschen möchten?",
+    "no_data": "Keine Daten verfügbar",
+    "loading": "Bitte warten...",
+    "saved": "Erfolgreich gespeichert",
+    "updated": "Erfolgreich aktualisiert",
+    "deleted": "Erfolgreich gelöscht",
+    "created": "Erfolgreich erstellt"
+  },
+  "validation": {
+    "required": "Dieses Feld ist erforderlich",
+    "email_invalid": "Bitte geben Sie eine gültige E-Mail-Adresse ein",
+    "phone_invalid": "Bitte geben Sie eine gültige Telefonnummer ein",
+    "min_length": "Mindestlänge ist {min} Zeichen",
+    "max_length": "Maximale Länge ist {max} Zeichen",
+    "numeric": "Bitte geben Sie eine gültige Zahl ein",
+    "positive": "Bitte geben Sie eine positive Zahl ein"
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "title": "Einstellungen",
+  "subtitle": "Verwalten Sie Ihre App-Einstellungen",
+  "general": {
+    "title": "Allgemein",
+    "language": "Sprache",
+    "language_value": "Deutsch",
+    "language_message": "Sprachwechsel wird bald hinzugefügt",
+    "theme": "Theme",
+    "theme_dark": "Dunkel",
+    "theme_light": "Hell",
+    "theme_colorful": "Mitternachtsblau",
+    "currency": "Währung",
+    "date_format": "Datumsformat"
+  },
+  "notifications": {
+    "title": "Benachrichtigungen",
+    "payment_reminders": "Zahlungserinnerungen",
+    "payment_reminders_message": "Erhalten Sie Benachrichtigungen, um Sie an Zahlungstermine zu erinnern",
+    "push_notifications": "Push-Benachrichtigungen",
+    "email_notifications": "E-Mail-Benachrichtigungen",
+    "reminder_notifications": "Erinnerungsbenachrichtigungen"
+  },
+  "privacy": {
+    "title": "Datenschutz",
+    "data_usage": "Datennutzung",
+    "analytics": "Analytik",
+    "crash_reports": "Absturzberichte"
+  },
+  "about": {
+    "title": "Über",
+    "version": "Version",
+    "terms": "Nutzungsbedingungen",
+    "privacy_policy": "Datenschutzrichtlinie",
+    "contact": "Kontakt"
+  },
+  "profile": {
+    "title": "Profil",
+    "edit_profile": "Profil bearbeiten",
+    "edit_profile_message": "Profilbearbeitung wird bald hinzugefügt",
+    "security": "Sicherheit",
+    "logout": "Abmelden"
+  }
+}

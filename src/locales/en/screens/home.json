@@ -1,0 +1,28 @@
+{
+  "title": "Welcome to FinBuddy",
+  "subtitle": "Manage your finances easily",
+  "quick_actions": {
+    "title": "Quick Actions",
+    "add_transaction": "Add Transaction",
+    "view_balance": "View Balance",
+    "monthly_report": "Monthly Report"
+  },
+  "recent_transactions": {
+    "title": "Recent Transactions",
+    "no_transactions": "No recent transactions",
+    "view_all": "View All"
+  },
+  "balance_summary": {
+    "title": "Balance Summary",
+    "total_balance": "Total Balance",
+    "this_month_income": "This Month Income",
+    "this_month_expense": "This Month Expense",
+    "net_amount": "Net Amount"
+  },
+  "stats": {
+    "title": "Statistics",
+    "transactions_count": "Transactions",
+    "accounts_count": "Accounts",
+    "categories_count": "Categories"
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "title": "Paramètres",
+  "subtitle": "Gérez les préférences de votre application",
+  "general": {
+    "title": "Général",
+    "language": "Langue",
+    "language_value": "Français",
+    "language_message": "Le changement de langue sera bientôt ajouté",
+    "theme": "Thème",
+    "theme_dark": "Sombre",
+    "theme_light": "Clair",
+    "theme_colorful": "Bleu Nuit",
+    "currency": "Devise",
+    "date_format": "Format de date"
+  },
+  "notifications": {
+    "title": "Notifications",
+    "payment_reminders": "Rappels de paiement",
+    "payment_reminders_message": "Recevez des notifications pour vous rappeler les dates de paiement",
+    "push_notifications": "Notifications push",
+    "email_notifications": "Notifications par e-mail",
+    "reminder_notifications": "Notifications de rappel"
+  },
+  "privacy": {
+    "title": "Confidentialité",
+    "data_usage": "Utilisation des données",
+    "analytics": "Analytique",
+    "crash_reports": "Rapports de plantage"
+  },
+  "about": {
+    "title": "À propos",
+    "version": "Version",
+    "terms": "Conditions d'utilisation",
+    "privacy_policy": "Politique de confidentialité",
+    "contact": "Contact"
+  },
+  "profile": {
+    "title": "Profil",
+    "edit_profile": "Modifier le profil",
+    "edit_profile_message": "La modification du profil sera bientôt ajoutée",
+    "security": "Sécurité",
+    "logout": "Déconnexion"
+  }
+}

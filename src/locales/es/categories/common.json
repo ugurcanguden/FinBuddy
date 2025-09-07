@@ -1,0 +1,62 @@
+{
+  "buttons": {
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "delete": "Eliminar",
+    "edit": "Editar",
+    "add": "Agregar",
+    "close": "Cerrar",
+    "confirm": "Confirmar",
+    "back": "Atrás",
+    "next": "Siguiente",
+    "previous": "Anterior",
+    "submit": "Enviar",
+    "reset": "Restablecer",
+    "search": "Buscar",
+    "filter": "Filtrar",
+    "sort": "Ordenar",
+    "refresh": "Actualizar",
+    "loading": "Cargando...",
+    "retry": "Reintentar"
+  },
+  "labels": {
+    "title": "Título",
+    "description": "Descripción",
+    "name": "Nombre",
+    "email": "Correo electrónico",
+    "password": "Contraseña",
+    "phone": "Teléfono",
+    "address": "Dirección",
+    "date": "Fecha",
+    "time": "Hora",
+    "amount": "Cantidad",
+    "currency": "Moneda",
+    "category": "Categoría",
+    "status": "Estado",
+    "type": "Tipo",
+    "notes": "Notas",
+    "tags": "Etiquetas"
+  },
+  "messages": {
+    "success": "Operación completada exitosamente",
+    "error": "Ocurrió un error",
+    "warning": "Advertencia",
+    "info": "Información",
+    "confirm_delete": "¿Estás seguro de que quieres eliminar este elemento?",
+    "no_data": "No hay datos disponibles",
+    "loading": "Por favor espera...",
+    "saved": "Guardado exitosamente",
+    "updated": "Actualizado exitosamente",
+    "deleted": "Eliminado exitosamente",
+    "created": "Creado exitosamente"
+  },
+  "validation": {
+    "required": "Este campo es obligatorio",
+    "email_invalid": "Por favor ingresa una dirección de correo electrónico válida",
+    "phone_invalid": "Por favor ingresa un número de teléfono válido",
+    "min_length": "La longitud mínima es {min} caracteres",
+    "max_length": "La longitud máxima es {max} caracteres",
+    "numeric": "Por favor ingresa un número válido",
+    "positive": "Por favor ingresa un número positivo"
+  }
+}

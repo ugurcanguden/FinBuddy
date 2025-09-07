@@ -1,0 +1,41 @@
+{
+  "tabs": {
+    "home": "Home",
+    "transactions": "Transactions",
+    "accounts": "Accounts",
+    "categories": "Categories",
+    "reports": "Reports",
+    "settings": "Settings",
+    "profile": "Profile",
+    "add_payment": "Add Payment"
+  },
+  "screens": {
+    "dashboard": "Dashboard",
+    "transaction_list": "Transaction List",
+    "transaction_detail": "Transaction Detail",
+    "add_transaction": "Add Transaction",
+    "edit_transaction": "Edit Transaction",
+    "account_list": "Account List",
+    "account_detail": "Account Detail",
+    "add_account": "Add Account",
+    "edit_account": "Edit Account",
+    "category_list": "Category List",
+    "category_detail": "Category Detail",
+    "add_category": "Add Category",
+    "edit_category": "Edit Category",
+    "monthly_report": "Monthly Report",
+    "yearly_report": "Yearly Report",
+    "settings": "Settings",
+    "language_settings": "Language Settings",
+    "theme_settings": "Theme Settings",
+    "notification_settings": "Notification Settings"
+  },
+  "menu": {
+    "logout": "Logout",
+    "about": "About",
+    "help": "Help",
+    "feedback": "Feedback",
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Service"
+  }
+}

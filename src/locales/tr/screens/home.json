@@ -1,0 +1,28 @@
+{
+  "title": "FinBuddy'ye Hoş Geldiniz",
+  "subtitle": "Finanslarınızı kolayca yönetin",
+  "quick_actions": {
+    "title": "Hızlı İşlemler",
+    "add_transaction": "İşlem Ekle",
+    "view_balance": "Bakiyeyi Görüntüle",
+    "monthly_report": "Aylık Rapor"
+  },
+  "recent_transactions": {
+    "title": "Son İşlemler",
+    "no_transactions": "Son işlem bulunmuyor",
+    "view_all": "Tümünü Görüntüle"
+  },
+  "balance_summary": {
+    "title": "Bakiye Özeti",
+    "total_balance": "Toplam Bakiye",
+    "this_month_income": "Bu Ay Gelir",
+    "this_month_expense": "Bu Ay Gider",
+    "net_amount": "Net Tutar"
+  },
+  "stats": {
+    "title": "İstatistikler",
+    "transactions_count": "İşlemler",
+    "accounts_count": "Hesaplar",
+    "categories_count": "Kategoriler"
+  }
+}

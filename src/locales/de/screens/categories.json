@@ -1,0 +1,16 @@
+{
+  "title": "Kategorien",
+  "add_category": "Neue Kategorie hinzufügen",
+  "edit_category": "Kategorie bearbeiten",
+  "delete_category": "Kategorie löschen",
+  "new_category": "Neue Kategorie",
+  "new_category_message": "Neue Kategorie-Funktion wird bald hinzugefügt",
+  "edit_category_message": "Sind Sie sicher, dass Sie diese Kategorie bearbeiten möchten?",
+  "delete_category_message": "Sind Sie sicher, dass Sie diese Kategorie löschen möchten?",
+  "confirm_delete": "Sind Sie sicher, dass Sie diese Kategorie löschen möchten?",
+  "cancel": "Abbrechen",
+  "confirm": "Bestätigen",
+  "edit": "Bearbeiten",
+  "delete": "Löschen",
+  "ok": "OK"
+}

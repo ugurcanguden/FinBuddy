@@ -1,0 +1,44 @@
+{
+  "title": "Settings",
+  "subtitle": "Manage your app preferences",
+  "general": {
+    "title": "General",
+    "language": "Language",
+    "language_value": "English",
+    "language_message": "Language change will be added soon",
+    "theme": "Theme",
+    "theme_dark": "Dark",
+    "theme_light": "Light",
+    "theme_colorful": "Midnight Blue",
+    "currency": "Currency",
+    "date_format": "Date Format"
+  },
+  "notifications": {
+    "title": "Notifications",
+    "payment_reminders": "Payment Reminders",
+    "payment_reminders_message": "Receive notifications to remind you of payment dates",
+    "push_notifications": "Push Notifications",
+    "email_notifications": "Email Notifications",
+    "reminder_notifications": "Reminder Notifications"
+  },
+  "privacy": {
+    "title": "Privacy",
+    "data_usage": "Data Usage",
+    "analytics": "Analytics",
+    "crash_reports": "Crash Reports"
+  },
+  "about": {
+    "title": "About",
+    "version": "Version",
+    "terms": "Terms of Service",
+    "privacy_policy": "Privacy Policy",
+    "contact": "Contact"
+  },
+  "profile": {
+    "title": "Profile",
+    "edit_profile": "Edit Profile",
+    "edit_profile_message": "Profile editing will be added soon",
+    "security": "Security",
+    "logout": "Logout"
+  }
+}

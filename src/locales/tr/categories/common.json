@@ -1,0 +1,62 @@
+{
+  "buttons": {
+    "save": "Kaydet",
+    "cancel": "İptal",
+    "delete": "Sil",
+    "edit": "Düzenle",
+    "add": "Ekle",
+    "close": "Kapat",
+    "confirm": "Onayla",
+    "back": "Geri",
+    "next": "İleri",
+    "previous": "Önceki",
+    "submit": "Gönder",
+    "reset": "Sıfırla",
+    "search": "Ara",
+    "filter": "Filtrele",
+    "sort": "Sırala",
+    "refresh": "Yenile",
+    "loading": "Yükleniyor...",
+    "retry": "Tekrar Dene"
+  },
+  "labels": {
+    "title": "Başlık",
+    "description": "Açıklama",
+    "name": "Ad",
+    "email": "E-posta",
+    "password": "Şifre",
+    "phone": "Telefon",
+    "address": "Adres",
+    "date": "Tarih",
+    "time": "Saat",
+    "amount": "Tutar",
+    "currency": "Para Birimi",
+    "category": "Kategori",
+    "status": "Durum",
+    "type": "Tip",
+    "notes": "Notlar",
+    "tags": "Etiketler"
+  },
+  "messages": {
+    "success": "İşlem başarıyla tamamlandı",
+    "error": "Bir hata oluştu",
+    "warning": "Uyarı",
+    "info": "Bilgi",
+    "confirm_delete": "Bu öğeyi silmek istediğinizden emin misiniz?",
+    "no_data": "Veri bulunamadı",
+    "loading": "Lütfen bekleyin...",
+    "saved": "Başarıyla kaydedildi",
+    "updated": "Başarıyla güncellendi",
+    "deleted": "Başarıyla silindi",
+    "created": "Başarıyla oluşturuldu"
+  },
+  "validation": {
+    "required": "Bu alan zorunludur",
+    "email_invalid": "Lütfen geçerli bir e-posta adresi girin",
+    "phone_invalid": "Lütfen geçerli bir telefon numarası girin",
+    "min_length": "Minimum uzunluk {min} karakterdir",
+    "max_length": "Maksimum uzunluk {max} karakterdir",
+    "numeric": "Lütfen geçerli bir sayı girin",
+    "positive": "Lütfen pozitif bir sayı girin"
+  }
+}

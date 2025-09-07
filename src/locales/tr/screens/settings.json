@@ -1,0 +1,44 @@
+{
+  "title": "Ayarlar",
+  "subtitle": "Uygulama ayarlarını yönetin",
+  "general": {
+    "title": "Genel",
+    "language": "Dil",
+    "language_value": "Türkçe",
+    "language_message": "Dil değiştirme özelliği yakında eklenecek",
+    "theme": "Tema",
+    "theme_dark": "Koyu",
+    "theme_light": "Açık",
+    "theme_colorful": "Gece Mavisi",
+    "currency": "Para Birimi",
+    "date_format": "Tarih Formatı"
+  },
+  "notifications": {
+    "title": "Bildirimler",
+    "payment_reminders": "Ödeme Hatırlatıcıları",
+    "payment_reminders_message": "Ödeme tarihlerinizi hatırlatmak için bildirimler alın",
+    "push_notifications": "Anlık Bildirimler",
+    "email_notifications": "E-posta Bildirimleri",
+    "reminder_notifications": "Hatırlatma Bildirimleri"
+  },
+  "privacy": {
+    "title": "Gizlilik",
+    "data_usage": "Veri Kullanımı",
+    "analytics": "Analitik",
+    "crash_reports": "Çökme Raporları"
+  },
+  "about": {
+    "title": "Hakkında",
+    "version": "Sürüm",
+    "terms": "Kullanım Şartları",
+    "privacy_policy": "Gizlilik Politikası",
+    "contact": "İletişim"
+  },
+  "profile": {
+    "title": "Profil",
+    "edit_profile": "Profili Düzenle",
+    "edit_profile_message": "Profil düzenleme özelliği yakında eklenecek",
+    "security": "Güvenlik",
+    "logout": "Çıkış Yap"
+  }
+}

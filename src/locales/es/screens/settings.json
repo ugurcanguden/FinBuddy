@@ -1,0 +1,44 @@
+{
+  "title": "Configuración",
+  "subtitle": "Administra las preferencias de la app",
+  "general": {
+    "title": "General",
+    "language": "Idioma",
+    "language_value": "Español",
+    "language_message": "El cambio de idioma se añadirá pronto",
+    "theme": "Tema",
+    "theme_dark": "Oscuro",
+    "theme_light": "Claro",
+    "theme_colorful": "Azul Medianoche",
+    "currency": "Moneda",
+    "date_format": "Formato de fecha"
+  },
+  "notifications": {
+    "title": "Notificaciones",
+    "payment_reminders": "Recordatorios de pago",
+    "payment_reminders_message": "Recibe notificaciones para recordarte las fechas de pago",
+    "push_notifications": "Notificaciones push",
+    "email_notifications": "Notificaciones por correo",
+    "reminder_notifications": "Notificaciones de recordatorio"
+  },
+  "privacy": {
+    "title": "Privacidad",
+    "data_usage": "Uso de datos",
+    "analytics": "Analítica",
+    "crash_reports": "Informes de fallos"
+  },
+  "about": {
+    "title": "Acerca de",
+    "version": "Versión",
+    "terms": "Términos de servicio",
+    "privacy_policy": "Política de privacidad",
+    "contact": "Contacto"
+  },
+  "profile": {
+    "title": "Perfil",
+    "edit_profile": "Editar perfil",
+    "edit_profile_message": "La edición de perfil se añadirá pronto",
+    "security": "Seguridad",
+    "logout": "Cerrar sesión"
+  }
+}

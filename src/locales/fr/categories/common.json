@@ -1,0 +1,62 @@
+{
+  "buttons": {
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "delete": "Supprimer",
+    "edit": "Modifier",
+    "add": "Ajouter",
+    "close": "Fermer",
+    "confirm": "Confirmer",
+    "back": "Retour",
+    "next": "Suivant",
+    "previous": "Précédent",
+    "submit": "Soumettre",
+    "reset": "Réinitialiser",
+    "search": "Rechercher",
+    "filter": "Filtrer",
+    "sort": "Trier",
+    "refresh": "Actualiser",
+    "loading": "Chargement...",
+    "retry": "Réessayer"
+  },
+  "labels": {
+    "title": "Titre",
+    "description": "Description",
+    "name": "Nom",
+    "email": "E-mail",
+    "password": "Mot de passe",
+    "phone": "Téléphone",
+    "address": "Adresse",
+    "date": "Date",
+    "time": "Heure",
+    "amount": "Montant",
+    "currency": "Devise",
+    "category": "Catégorie",
+    "status": "Statut",
+    "type": "Type",
+    "notes": "Notes",
+    "tags": "Étiquettes"
+  },
+  "messages": {
+    "success": "Opération terminée avec succès",
+    "error": "Une erreur s'est produite",
+    "warning": "Avertissement",
+    "info": "Information",
+    "confirm_delete": "Êtes-vous sûr de vouloir supprimer cet élément ?",
+    "no_data": "Aucune donnée disponible",
+    "loading": "Veuillez patienter...",
+    "saved": "Enregistré avec succès",
+    "updated": "Mis à jour avec succès",
+    "deleted": "Supprimé avec succès",
+    "created": "Créé avec succès"
+  },
+  "validation": {
+    "required": "Ce champ est obligatoire",
+    "email_invalid": "Veuillez saisir une adresse e-mail valide",
+    "phone_invalid": "Veuillez saisir un numéro de téléphone valide",
+    "min_length": "La longueur minimale est de {min} caractères",
+    "max_length": "La longueur maximale est de {max} caractères",
+    "numeric": "Veuillez saisir un nombre valide",
+    "positive": "Veuillez saisir un nombre positif"
+  }
+}

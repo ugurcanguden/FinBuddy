@@ -1,0 +1,41 @@
+{
+  "tabs": {
+    "home": "Ana Sayfa",
+    "transactions": "İşlemler",
+    "accounts": "Hesaplar",
+    "categories": "Kategoriler",
+    "reports": "Raporlar",
+    "settings": "Ayarlar",
+    "profile": "Profil",
+    "add_payment": "Yeni Ödeme"
+  },
+  "screens": {
+    "dashboard": "Kontrol Paneli",
+    "transaction_list": "İşlem Listesi",
+    "transaction_detail": "İşlem Detayı",
+    "add_transaction": "İşlem Ekle",
+    "edit_transaction": "İşlem Düzenle",
+    "account_list": "Hesap Listesi",
+    "account_detail": "Hesap Detayı",
+    "add_account": "Hesap Ekle",
+    "edit_account": "Hesap Düzenle",
+    "category_list": "Kategori Listesi",
+    "category_detail": "Kategori Detayı",
+    "add_category": "Kategori Ekle",
+    "edit_category": "Kategori Düzenle",
+    "monthly_report": "Aylık Rapor",
+    "yearly_report": "Yıllık Rapor",
+    "settings": "Ayarlar",
+    "language_settings": "Dil Ayarları",
+    "theme_settings": "Tema Ayarları",
+    "notification_settings": "Bildirim Ayarları"
+  },
+  "menu": {
+    "logout": "Çıkış Yap",
+    "about": "Hakkında",
+    "help": "Yardım",
+    "feedback": "Geri Bildirim",
+    "privacy": "Gizlilik Politikası",
+    "terms": "Kullanım Şartları"
+  }
+}
