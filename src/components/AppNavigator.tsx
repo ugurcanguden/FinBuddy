@@ -1,7 +1,21 @@
 // App Navigator - Ana navigasyon bileşeni
 import React from 'react';
 import { useNavigation } from '@/contexts';
-import { HomeScreen, SettingsScreen, CategoriesScreen, AddCategoryScreen, EditCategoryScreen } from '@/screens';
+import {
+  HomeScreen,
+  SettingsScreen,
+  CategoriesScreen,
+  AddCategoryScreen,
+  EditCategoryScreen,
+  PaymentsScreen,
+  PaymentsHubScreen,
+  PaymentDetailsScreen,
+  AddPaymentScreen,
+  AddEntryScreen,
+  IncomesScreen,
+  ReportsHubScreen,
+  ReportBuilderScreen,
+} from '@/screens';
 import { SafeArea } from './common';
 
 interface AppNavigatorProps {
@@ -9,7 +23,9 @@ interface AppNavigatorProps {
 }
 
 const AppNavigator: React.FC<AppNavigatorProps> = () => {
-  const { currentScreen, currentParams } = useNavigation();
+  const navigation = useNavigation();
+  const currentScreen = navigation.currentScreen;
+  const currentParams = navigation.getCurrentParams();
 
   const renderScreen = () => {
     switch (currentScreen) {
@@ -21,14 +37,28 @@ const AppNavigator: React.FC<AppNavigatorProps> = () => {
         return <CategoriesScreen />;
       case 'addCategory':
         return <AddCategoryScreen />;
+      case 'addPayment':
+        return <AddPaymentScreen />;
+      case 'addEntry':
+        return <AddEntryScreen />;
       case 'editCategory':
         return <EditCategoryScreen categoryId={currentParams?.categoryId} />;
+      case 'payments':
+        return <PaymentsScreen/>;
+      case 'paymentsHub':
+        return <PaymentsHubScreen/>;
+      case 'paymentDetails':
+        return <PaymentDetailsScreen entryId={currentParams?.entryId}/>;
       case 'transactions':
         return <HomeScreen />;
       case 'accounts':
         return <HomeScreen />;
       case 'reports':
-        return <HomeScreen />;
+        return <ReportsHubScreen />;
+      case 'reportBuilder':
+        return <ReportBuilderScreen />;
+      case 'incomes':
+        return <IncomesScreen/>;
       default:
         return <HomeScreen />;
     }

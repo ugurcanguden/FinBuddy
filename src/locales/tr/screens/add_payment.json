@@ -1,0 +1,14 @@
+{
+  "title": "Yeni Ödeme Ekle",
+  "amount": "Ödeme Tutarı",
+  "amount_placeholder": "Tutarı giriniz",
+  "months": "Toplam Ay (taksit)",
+  "months_placeholder": "Örn. 10",
+  "start_date": "Başlangıç Tarihi",
+  "payment_title": "Ödeme Adı",
+  "payment_title_placeholder": "Örn. Kredi Ödemesi",
+  "category": "Kategori",
+  "category_placeholder": "Kategori Seçin",
+  "alert_title": "Kayıt",
+  "alert_body": "Ödeme kaydı örnek olarak oluşturulacak (WIP)."
+}

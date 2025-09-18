@@ -2,6 +2,7 @@
 import React, { useMemo } from 'react';
 import {
   View as RNView,
+  Text as RNText,
   ViewStyle,
   StyleProp,
 } from 'react-native';
@@ -35,9 +36,17 @@ const View: React.FC<ViewProps> = ({
     return { ...base, ...byVariant[variant] };
   }, [colors, variant]);
 
+  // Düz metinleri otomatik olarak <Text> içine sar
+  const safeChildren = React.Children.map(children, (child) => {
+    if (typeof child === 'string' || typeof child === 'number') {
+      return <RNText>{child}</RNText>;
+    }
+    return child as React.ReactNode;
+  });
+
   return (
     <RNView style={[containerStyle, style]} testID={testID}>
-      {children}
+      {safeChildren}
     </RNView>
   );
 };

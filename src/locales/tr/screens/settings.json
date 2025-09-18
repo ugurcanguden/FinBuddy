@@ -21,6 +21,15 @@
     "email_notifications": "E-posta Bildirimleri",
     "reminder_notifications": "Hatırlatma Bildirimleri"
   },
+  "data": {
+    "title": "Veri",
+    "description": "Tüm ödeme, gelir ve kaydedilmiş rapor kayıtlarını temizler. Varsayılan kategoriler korunur.",
+    "reset_title": "Tablolar sıfırlansın mı?",
+    "reset_message": "Bu işlem tüm ödeme, gelir ve rapor kayıtlarını kalıcı olarak silecek.",
+    "reset_button": "Tabloları Sıfırla",
+    "reset_confirm": "Sıfırla",
+    "reset_success": "Veriler başarıyla sıfırlandı"
+  },
   "privacy": {
     "title": "Gizlilik",
     "data_usage": "Veri Kullanımı",

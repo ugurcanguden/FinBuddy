@@ -9,8 +9,6 @@ import {
   TextInput,
   TouchableOpacity, 
   Container,
-  SafeArea,
-  StatusBar,
   ScrollView,
   IconDropdown
 } from '@/components';
@@ -32,6 +30,7 @@ const CategoryForm: React.FC<CategoryFormProps> = ({
   const { t } = useLocale();
   const { colors } = useTheme();
   const [formData, setFormData] = useState<CategoryFormData>({
+    custom_name: '',
     name: '',
     icon: 'home',
     color: colors.primary
@@ -42,12 +41,14 @@ const CategoryForm: React.FC<CategoryFormProps> = ({
   useEffect(() => {
     if (category) {
       setFormData({
-        name: category.custom_name || '',
+        custom_name: category.custom_name || '',
+        name: category.name_key || '',
         icon: category.icon,
         color: category.color
       });
     } else {
       setFormData({
+        custom_name: '',
         name: '',
         icon: 'home',
         color: colors.primary
@@ -79,7 +80,7 @@ const CategoryForm: React.FC<CategoryFormProps> = ({
   ];
 
   const handleSave = async () => {
-    if (!formData.name.trim()) {
+    if (!formData.custom_name.trim()) {
       Alert.alert(t('common.validation.required'));
       return;
     }
@@ -106,39 +107,31 @@ const CategoryForm: React.FC<CategoryFormProps> = ({
 
   if (!visible) return null;
 
-  return (
-    <SafeArea>
-      <StatusBar />
-      
-      {/* Header */}
-      <Container variant="surface" padding="small">
-        <TouchableOpacity variant="transparent" onPress={onCancel}>
-          <Text variant="secondary" size="medium">←</Text>
-        </TouchableOpacity>
-        <Text variant="primary" size="large" weight="bold">
-          {category ? t('screens.categories.edit_category') : t('screens.categories.add_category.title')}
-        </Text>
-        <View variant="transparent" />
-      </Container>
+  const isValid = formData.custom_name.trim().length >= 3;
 
+  return (
       <ScrollView variant="transparent" showsVerticalScrollIndicator={false}>
-        {/* Kategori Adı */}
+        
         <Container variant="surface" padding="medium">
           <Text variant="primary" size="medium" weight="semibold">
             {t('common.labels.name')}
           </Text>
           <TextInput
-            value={formData.name}
-            onChangeText={(text) => setFormData({ ...formData, name: text })}
+            value={formData.custom_name}
+            onChangeText={(text) => setFormData({ ...formData, custom_name: text })}
             placeholder={t('screens.categories.enter_category_name')}
             autoFocus={true}
             returnKeyType="done"
             variant="outlined"
             size="medium"
           />
+          {!isValid && (
+            <Text variant="warning" size="small" style={{ marginTop: 6 }}>
+              {t('screens.categories.name_required')}
+            </Text>
+          )}
         </Container>
-
-        {/* İkon Seçimi */}
+ 
         <Container variant="surface" padding="medium">
           <Text variant="primary" size="medium" weight="semibold">
             {t('screens.categories.category_icon')}
@@ -150,18 +143,34 @@ const CategoryForm: React.FC<CategoryFormProps> = ({
             placeholder={t('screens.categories.select_icon')}
           />
         </Container>
-
-        {/* Renk Seçimi */}
+ 
         <Container variant="surface" padding="medium">
           <Text variant="primary" size="medium" weight="semibold">
             {t('screens.categories.category_color')}
           </Text>
-          <View variant="transparent">
-            {colorOptions.map(renderColorOption)}
+          <View variant="transparent" style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 12, marginTop: 12 }}>
+            {colorOptions.map((color, idx) => (
+              <TouchableOpacity
+                key={`${color}-${idx}`}
+                variant="transparent"
+                onPress={() => setFormData({ ...formData, color })}
+                style={{
+                  width: 36,
+                  height: 36,
+                  borderRadius: 18,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  borderWidth: formData.color === color ? 2 : 1,
+                  borderColor: formData.color === color ? colors.primary : colors.border,
+                  backgroundColor: color + '20',
+                }}
+              >
+                <View variant="transparent" style={{ width: 22, height: 22, borderRadius: 11, backgroundColor: color }} />
+              </TouchableOpacity>
+            ))}
           </View>
         </Container>
-
-        {/* Önizleme */}
+ 
         <Container variant="surface" padding="medium">
           <Text variant="primary" size="medium" weight="semibold">
             {t('screens.categories.preview')}
@@ -191,7 +200,7 @@ const CategoryForm: React.FC<CategoryFormProps> = ({
             </View>
             <View variant="transparent" style={{ flex: 1 }}>
               <Text variant="primary" size="medium" weight="medium">
-                {formData.name || t('screens.categories.category_name')}
+                {formData.custom_name || t('screens.categories.category_name')}
               </Text>
               <Text variant="secondary" size="small">
                 {t('screens.categories.preview_description')}
@@ -199,9 +208,7 @@ const CategoryForm: React.FC<CategoryFormProps> = ({
             </View>
           </View>
         </Container>
-      </ScrollView>
 
-      {/* Footer */}
       <Container variant="background" padding="medium">
         <View variant="transparent" style={{ flexDirection: 'row', gap: 12 }}>
           <TouchableOpacity
@@ -215,17 +222,21 @@ const CategoryForm: React.FC<CategoryFormProps> = ({
           </TouchableOpacity>
           <TouchableOpacity
             variant="primary"
-            style={{ flex: 1, paddingVertical: 12, paddingHorizontal: 16, borderRadius: 8, alignItems: 'center', backgroundColor: colors.primary }}
+            style={{ 
+              flex: 1, paddingVertical: 12, paddingHorizontal: 16, borderRadius: 8, alignItems: 'center', 
+              backgroundColor: isValid ? colors.primary : colors.border 
+            }}
             onPress={handleSave}
-            disabled={loading}
+            disabled={loading || !isValid}
           >
-            <Text variant="primary" size="medium" weight="semibold">
+            <Text weight="semibold" style={{ color: colors.onPrimary }}>
               {loading ? t('common.buttons.loading') : t('common.buttons.save')}
             </Text>
           </TouchableOpacity>
         </View>
-      </Container>
-    </SafeArea>
+      </Container>        
+      </ScrollView> 
+
   );
 };
 

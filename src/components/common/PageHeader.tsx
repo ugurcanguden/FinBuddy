@@ -75,7 +75,7 @@ const PageHeader: React.FC<PageHeaderProps> = ({
               backgroundColor: colors.primary
             }}
           >
-            <Text variant="secondary" size="small" weight="semibold" style={{ color: '#ffffff' }}>
+            <Text variant="secondary" size="small" weight="semibold" style={{ color: colors.onPrimary }}>
               {addButtonText}
             </Text>
           </TouchableOpacity>

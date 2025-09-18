@@ -1,0 +1,13 @@
+{
+  "title": "Add New Income",
+  "amount": "Income Amount",
+  "amount_placeholder": "Enter amount",
+  "months": "Total Months (installments)",
+  "months_placeholder": "e.g. 10",
+  "start_date": "Start Date",
+  "payment_title": "Income Title",
+  "payment_title_placeholder": "e.g. Salary",
+  "category": "Category",
+  "category_placeholder": "Select Category"
+}
+

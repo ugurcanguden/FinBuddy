@@ -15,7 +15,7 @@ import {
 import { Category, CategoryFormData } from '@/types';
 
 interface EditCategoryScreenProps {
-  categoryId?: string;
+  categoryId: string;
 }
 
 const EditCategoryScreen: React.FC<EditCategoryScreenProps> = ({ categoryId }) => {
@@ -23,32 +23,35 @@ const EditCategoryScreen: React.FC<EditCategoryScreenProps> = ({ categoryId }) =
   const { goBack } = useNavigation();
   const { 
     categories, 
-    updateCategory
+    updateCategory,
+    getCategoryById
   } = useCategories();
 
   // Form state'leri
   const [category, setCategory] = useState<Category | null>(null);
 
-  useEffect(() => {
-    if (!categoryId) {
-      Alert.alert(
-        t('common.error'),
-        t('common.messages.not_found'),
-        [{ text: t('common.buttons.ok'), onPress: goBack }]
-      );
-      return;
-    }
-
-    const foundCategory = categories.find(cat => cat.id === categoryId);
-    if (foundCategory) {
-      setCategory(foundCategory);
-    } else {
-      Alert.alert(
-        t('common.error'),
-        t('common.messages.not_found'),
-        [{ text: t('common.buttons.ok'), onPress: goBack }]
-      );
-    }
+  useEffect(() => { 
+    const loadCategory = async () => {
+      try {
+        const foundCategory = await getCategoryById(categoryId);
+        if (foundCategory) {
+          setCategory(foundCategory);
+        } else {
+          Alert.alert(
+            t('common.error'),
+            t('common.messages.not_found'),
+            [{ text: t('common.buttons.ok'), onPress: goBack }]
+          );
+        }
+      } catch (error) {
+        Alert.alert(
+          t('common.error'),
+          t('common.messages.not_found'),
+          [{ text: t('common.buttons.ok'), onPress: goBack }]
+        );
+      }
+    };
+    loadCategory();
   }, [categoryId, categories, t, goBack]);
 
   const handleSave = async (formData: CategoryFormData) => {
@@ -110,30 +113,17 @@ const EditCategoryScreen: React.FC<EditCategoryScreenProps> = ({ categoryId }) =
         />
       }
     >
-      <ScrollView variant="transparent" style={styles.content} showsVerticalScrollIndicator={false}>
-        <Container variant="background" padding="medium" style={styles.formContainer}>
-          <CategoryForm
-            category={category}
-            onSave={handleSave}
-            onCancel={handleCancel}
-            visible={true}
-          />
-        </Container>
-      </ScrollView>
+      <CategoryForm
+        category={category}
+        onSave={handleSave}
+        onCancel={handleCancel}
+        visible={true}
+      />
     </Layout>
   );
 };
 
 const styles = StyleSheet.create({
-  content: {
-    flex: 1,
-    paddingHorizontal: 16,
-    paddingTop: 12,
-  },
-  formContainer: {
-    borderRadius: 12,
-    marginBottom: 16,
-  },
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',

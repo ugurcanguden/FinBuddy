@@ -1,0 +1,11 @@
+{
+  "tabs": {
+    "home": "Ana Sayfa",
+    "add_payment": "Yeni Ödeme",
+    "payments": "Ödemeler",
+    "payments_incomes": "Ödemeler / Gelirler",
+    "incomes": "Gelirler",
+    "reports": "Raporlar",
+    "settings": "Ayarlar"
+  }
+}

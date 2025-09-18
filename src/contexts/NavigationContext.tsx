@@ -1,7 +1,22 @@
 // Navigation Context - Global navigation state yönetimi
 import React, { createContext, useContext, useState, useCallback, ReactNode } from 'react';
 
-export type ScreenType = 'home' | 'settings' | 'categories' | 'addCategory' | 'editCategory' | 'transactions' | 'accounts' | 'reports';
+export type ScreenType =
+  | 'home'
+  | 'settings'
+  | 'categories'
+  | 'addCategory'
+  | 'editCategory'
+  | 'addPayment'
+  | 'payments'
+  | 'paymentDetails'
+  | 'incomes'
+  | 'addEntry'
+  | 'paymentsHub'
+  | 'reportBuilder'
+  | 'transactions'
+  | 'accounts'
+  | 'reports';
 
 interface NavigationContextType {
   currentScreen: ScreenType;
@@ -10,6 +25,7 @@ interface NavigationContextType {
   resetToHome: () => void;
   screenHistory: ScreenType[];
   currentParams: any;
+  getCurrentParams: () => any;
 }
 
 const NavigationContext = createContext<NavigationContextType | undefined>(undefined);
@@ -34,7 +50,7 @@ export const NavigationProvider: React.FC<NavigationProviderProps> = ({ children
       const newHistory = [...screenHistory];
       newHistory.pop(); // Son ekranı çıkar
       const previousScreen = newHistory[newHistory.length - 1];
-      setCurrentScreen(previousScreen);
+      setCurrentScreen(previousScreen!); // previousScreen'in undefined olmayacağından eminiz çünkü length > 1 kontrolü yaptık
       setScreenHistory(newHistory);
       setCurrentParams(null);
     }
@@ -53,6 +69,7 @@ export const NavigationProvider: React.FC<NavigationProviderProps> = ({ children
     resetToHome,
     screenHistory,
     currentParams,
+    getCurrentParams: () => currentParams,
   };
 
   return (

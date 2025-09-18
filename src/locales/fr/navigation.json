@@ -1,0 +1,11 @@
+{
+  "tabs": {
+    "home": "Accueil",
+    "add_payment": "Nouveau Paiement",
+    "payments": "Paiements",
+    "payments_incomes": "Paiements / Revenus",
+    "incomes": "Revenus",
+    "reports": "Rapports",
+    "settings": "Réglages"
+  }
+}

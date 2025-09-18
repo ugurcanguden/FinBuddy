@@ -1,0 +1,11 @@
+{
+  "tabs": {
+    "home": "Startseite",
+    "add_payment": "Neue Zahlung",
+    "payments": "Zahlungen",
+    "payments_incomes": "Zahlungen / Einnahmen",
+    "incomes": "Einnahmen",
+    "reports": "Berichte",
+    "settings": "Einstellungen"
+  }
+}

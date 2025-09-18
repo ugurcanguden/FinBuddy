@@ -61,6 +61,44 @@ export interface UpdateCategoryData {
 // Kategori form tipleri
 export interface CategoryFormData {
   name: string;
+  custom_name : string;
   icon: string;
   color: string;
+}
+
+// Entry/Payment tipleri
+export interface Entry {
+  id: string;
+  category_id: string;
+  type: 'expense' | 'income' | 'receivable';
+  title?: string;
+  amount: number;
+  months: number;
+  start_date: string; // YYYY-MM-DD
+  schedule_type: 'once' | 'installment';
+  reminder_days_before?: number | null;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface Payment {
+  id: string;
+  entry_id: string;
+  due_date: string; // YYYY-MM-DD
+  amount: number;
+  status: 'pending' | 'paid' | 'received';
+  paid_at?: string | null;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface CreatePaymentEntryInput {
+  categoryId: string;
+  title: string;
+  amount: number;
+  months: number;
+  startDate: string;
+  type?: 'expense' | 'income' | 'receivable';
 }

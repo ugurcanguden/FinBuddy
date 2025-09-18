@@ -1478,3 +1478,76 @@ test: test eklendi
 ---
 
 **Not**: Bu rehber sürekli güncellenmektedir. Yeni kurallar veya değişiklikler için dokümanı kontrol edin.
+# Development Guide
+
+Bu kılavuz, günlük geliştirme akışını, çalıştırma komutlarını, değişiklik süreçlerini ve Definition of Done ölçütlerini tanımlar.
+
+## Amaçlar
+- Tutarlı bir geliştirme akışı sağlamak
+- Ekipçe anlaşılır standartlarla ilerlemek
+- PR süresini kısaltmak ve kaliteyi artırmak
+
+## Geliştirme Ortamı
+- Node.js LTS (örn. 18+). Paket yöneticisi: npm (varsayılan).
+- React Native ortamı: Expo (varsayılan)
+  - Kurulum: `npm install`
+  - Başlatma: `npm run start`
+
+## Kurulum ve Çalıştırma
+- Bağımlılıklar: `npm install`
+- Çalıştırma (Expo): `npm run start`
+- Platform kısayolları:
+  - Android: `npm run android`
+  - iOS: `npm run ios`
+
+Proje özel komutları için `package.json` içindeki `scripts` alanına bakın.
+
+## Klasör Yapısı (özet)
+`src/` altında temel dizinler:
+- `screens/`: Ekranlar (örn. `CategoriesScreen.tsx`, `EditCategoryScreen.tsx`)
+- `components/`: Tekrar kullanılabilir UI bileşenleri
+- `navigation/`: Navigasyon katmanı (örn. `AppNavigator.tsx`)
+- `hooks/`: Özel React hook’ları (örn. `useCategories.ts`)
+- `services/`: API, yerel depolama, ağ katmanı
+- `store/`: Global state (Redux/Zustand/Recoil tercihinize göre)
+- `utils/`: Yardımcı fonksiyonlar
+- `theme/`: Renkler, tipografi, spacing
+- `types/`: Paylaşılan TypeScript tipleri
+
+Detaylar için `docs/ARCHITECTURE.md`.
+
+## Geliştirme Akışı
+1) Issue/brief hazırla: `docs/TASK_BRIEF_TEMPLATE.md` şablonunu kısaca doldur.
+2) Dal aç: `feature/<kısa-konu>` veya `fix/<kısa-konu>`
+3) Uygula: Küçük, odaklı commit’ler (Conventional Commits önerilir)
+4) Test et: Manuel senaryolar + varsa birim testler
+5) PR aç: `docs/PR_CHECKLIST.md` üzerinden doğrula
+
+## Definition of Done (DoD)
+- Kabul kriterleri sağlandı (brief’e göre)
+- Derleme hatası yok; TypeScript hatası yok
+- Temel flow’lar manuel test edildi (ekranlar arası navigasyon dahil)
+- UI tutarlılığı: tema ve bileşen standartlarına uygun
+- İlgili dokümantasyon güncellendi (gerekirse)
+
+## Commit ve PR Kuralları
+- Commit: Conventional Commits (örn. `feat: add category validation`)
+- PR başlığı: Kısa ve amaca yönelik; açıklamada “Ne, Neden, Nasıl”
+- Küçük PR’lar tercih edilir (kolay review, hızlı geri bildirim)
+- GitHub şablonları: `.github/ISSUE_TEMPLATE/*` ve `.github/pull_request_template.md`
+
+## Şablonlar
+- Ekran şablonu: `templates/screen/ScreenTemplate.tsx`
+- Bileşen şablonu: `templates/component/ComponentTemplate.tsx`
+
+## Testler
+- Önerilen kurulum ve örnek için `docs/TESTING_SETUP.md`
+
+## Sık Kararlar (Hızlı Rehber)
+- Yeni ekran mı, bileşen mi? Ekrana özel ise `screens/`, tekrar kullanılabilir ise `components/`.
+- State nerede tutulmalı? UI’a özgü: local state; ekranlar arası paylaşılan: `store/` veya `context`.
+- API çağrıları: `services/api/` altında tek yerde toplanmalı.
+
+## SSS
+- Expo mu RN CLI mı? Mevcut projeye göre tercih edin; her ikisi için komutlar yukarıda.
+- Tasarım sistemi? `theme/` altında renk ve spacing token’ları kullanın; inline renk tanımlamayın.

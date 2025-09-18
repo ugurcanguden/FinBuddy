@@ -1,0 +1,15 @@
+{
+  "title": "Neue Zahlung hinzufügen",
+  "amount": "Betrag",
+  "amount_placeholder": "Betrag eingeben",
+  "months": "Gesamtmonate (Raten)",
+  "months_placeholder": "z. B. 10",
+  "start_date": "Startdatum",
+  "payment_title": "Zahlungsname",
+  "payment_title_placeholder": "z. B. Kreditrate",
+  "category": "Kategorie",
+  "category_placeholder": "Kategorie wählen",
+  "alert_title": "Speichern",
+  "alert_body": "Zahlung wird als Beispiel erstellt (WIP)."
+}
+

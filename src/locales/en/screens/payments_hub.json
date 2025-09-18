@@ -1,0 +1,15 @@
+{
+  "title": "Payments / Incomes",
+  "tab_payments": "Payments",
+  "tab_incomes": "Incomes",
+  "payments_empty": "No payments yet",
+  "incomes_empty": "No incomes yet",
+  "payment": "Payment",
+  "income": "Income",
+  "installments": "installments",
+  "once": "One-time",
+  "pay": "Pay",
+  "paid": "Paid",
+  "no_records": "No records"
+}
+

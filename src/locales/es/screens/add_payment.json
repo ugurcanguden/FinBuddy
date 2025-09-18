@@ -1,0 +1,15 @@
+{
+  "title": "Agregar Pago Nuevo",
+  "amount": "Cantidad",
+  "amount_placeholder": "Ingrese la cantidad",
+  "months": "Total de Meses (cuotas)",
+  "months_placeholder": "ej. 10",
+  "start_date": "Fecha de Inicio",
+  "payment_title": "Nombre del Pago",
+  "payment_title_placeholder": "ej. Pago de Préstamo",
+  "category": "Categoría",
+  "category_placeholder": "Seleccione Categoría",
+  "alert_title": "Guardar",
+  "alert_body": "El pago se creará como ejemplo (WIP)."
+}
+

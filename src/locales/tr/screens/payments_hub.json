@@ -1,0 +1,15 @@
+{
+  "title": "Ödemeler / Gelirler",
+  "tab_payments": "Ödemeler",
+  "tab_incomes": "Gelirler",
+  "payments_empty": "Henüz ödeme yok",
+  "incomes_empty": "Henüz gelir yok",
+  "payment": "Ödeme",
+  "income": "Gelir",
+  "installments": "taksit",
+  "once": "Tek seferlik",
+  "pay": "Öde",
+  "paid": "Ödendi",
+  "no_records": "Kayıt bulunamadı"
+}
+

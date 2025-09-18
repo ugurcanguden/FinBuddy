@@ -1,0 +1,43 @@
+name: Bug report
+description: Hata bildirimi
+title: "fix: "
+labels: ["bug"]
+body:
+  - type: textarea
+    id: current
+    attributes:
+      label: Mevcut Davranış
+      description: Hatanın net açıklaması ve ekran görüntüsü varsa ekleyin
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Beklenen Davranış
+      description: Ne olmalıydı?
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Sürüm/Ortam
+      placeholder: iOS/Android, cihaz, Expo SDK, app sürümü
+    validations:
+      required: false
+  - type: textarea
+    id: steps
+    attributes:
+      label: Tekrarlama Adımları
+      value: |
+        1. …
+        2. …
+        3. …
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Loglar / Hata Mesajları
+    validations:
+      required: false
+

@@ -1,0 +1,18 @@
+{
+  "monthly_summary": "Aylık Özet",
+  "expense_total": "Gider Toplam",
+  "expense_paid": "Ödenen",
+  "expense_pending": "Bekleyen",
+  "income_total": "Gelir Toplam",
+  "category_distribution": "Kategori Dağılımı",
+  "month": "Ay",
+  "cash_flow": "Nakit Akışı",
+  "income": "Gelir",
+  "expense": "Gider",
+  "create_report": "Rapor Oluştur",
+  "saved_reports_title": "Kaydedilen Raporlar",
+  "saved_reports_empty": "Henüz kaydedilmiş rapor yok.",
+  "saved_reports_view": "Aç",
+  "saved_reports_preview": "Önizle",
+  "saved_reports_delete": "Sil"
+}

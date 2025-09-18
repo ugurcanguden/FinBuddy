@@ -1,0 +1,11 @@
+{
+  "tabs": {
+    "home": "Home",
+    "add_payment": "Add Payment",
+    "payments": "Payments",
+    "payments_incomes": "Payments / Incomes",
+    "incomes": "Incomes",
+    "reports": "Reports",
+    "settings": "Settings"
+  }
+}

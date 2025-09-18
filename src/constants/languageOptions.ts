@@ -1,5 +1,5 @@
 // Language Options - Dil seçenekleri
-import { DropdownOption } from '@/components/common/Dropdown';
+import type { DropdownOption } from '@/components';
 
 export const LANGUAGE_OPTIONS: DropdownOption[] = [
   {

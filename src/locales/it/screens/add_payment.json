@@ -1,0 +1,15 @@
+{
+  "title": "Aggiungi Nuovo Pagamento",
+  "amount": "Importo",
+  "amount_placeholder": "Inserisci importo",
+  "months": "Mesi Totali (rate)",
+  "months_placeholder": "es. 10",
+  "start_date": "Data di Inizio",
+  "payment_title": "Titolo Pagamento",
+  "payment_title_placeholder": "es. Rata Prestito",
+  "category": "Categoria",
+  "category_placeholder": "Seleziona Categoria",
+  "alert_title": "Salva",
+  "alert_body": "Il pagamento verrà creato come esempio (WIP)."
+}
+

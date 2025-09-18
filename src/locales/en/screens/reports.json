@@ -1,0 +1,18 @@
+{
+  "monthly_summary": "Monthly Summary",
+  "expense_total": "Expense Total",
+  "expense_paid": "Paid",
+  "expense_pending": "Pending",
+  "income_total": "Income Total",
+  "category_distribution": "Category Distribution",
+  "month": "Month",
+  "cash_flow": "Cash Flow",
+  "income": "Income",
+  "expense": "Expense",
+  "create_report": "Create Report",
+  "saved_reports_title": "Saved Reports",
+  "saved_reports_empty": "No saved reports yet.",
+  "saved_reports_view": "Open",
+  "saved_reports_preview": "Preview",
+  "saved_reports_delete": "Delete"
+}

@@ -1,5 +1,6 @@
 // useLocale Hook - Çok dilli yapı için React hook
-import { localeService, SupportedLanguage } from '@/services';
+import { localeService } from '@/services/locale/localeService';
+import type { SupportedLanguage } from '@/services/locale/localeService';
 import { useState, useEffect, useCallback } from 'react'; 
 
 export function useLocale() {

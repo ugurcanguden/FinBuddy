@@ -18,6 +18,7 @@ export interface Colors {
   warning: string;
   info: string;
   accent: string;
+  onPrimary: string; // primary üzerindeki metin rengi
 }
 
 // 3) Temalar (aynı key seti)
@@ -36,22 +37,25 @@ export const themes: Record<ThemeMode, { name: ThemeMode; colors: Colors }> = {
       warning: '#f59e0b',
       info: '#2563eb',   // light için info
       accent: '#8b5cf6', // light için accent
+      onPrimary: '#ffffff',
     },
   },
   dark: {
     name: 'dark',
     colors: {
-      primary: '#38e07b',
-      background: '#111714',
-      card: '#1c2620',
-      border: '#29382f',
-      text: '#ffffff',
-      textSecondary: '#9ca3af',
-      success: '#22c55e',
-      danger: '#ef4444',
-      warning: '#f59e0b', // EKLENDİ
-      info: '#3b82f6',
-      accent: '#a855f7',
+      // Tailwind slate-based dark palette aligned with designs
+      primary: '#4dd0e1',        // brand cyan
+      background: '#0f172a',     // slate-900
+      card: '#1e293b',           // slate-800/700 mix
+      border: '#334155',         // slate-700
+      text: '#cbd5e1',           // slate-300
+      textSecondary: '#94a3b8',  // slate-400
+      success: '#34d399',        // green-400
+      danger: '#f87171',         // red-400
+      warning: '#fbbf24',        // amber-400
+      info: '#38bdf8',           // sky-400
+      accent: '#4dd0e1',         // align with primary
+      onPrimary: '#0f172a',      // koyu zemin uyumlu metin
     },
   },
   colorful: {
@@ -68,6 +72,7 @@ export const themes: Record<ThemeMode, { name: ThemeMode; colors: Colors }> = {
       warning: '#f59e0b', // EKLENDİ
       info: '#38bdf8',    // açık mavi
       accent: '#0ea5e9',  // turkuaz-mavi
+      onPrimary: '#001f3f',
     },
   },
 };
@@ -87,7 +92,7 @@ interface ThemeProviderProps {
 }
 
 export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
-  const [currentTheme, setCurrentTheme] = useState<ThemeMode>('light');
+  const [currentTheme, setCurrentTheme] = useState<ThemeMode>('dark');
   const [isLoading, setIsLoading] = useState(true);
 
   const loadTheme = useCallback(async () => {

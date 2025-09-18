@@ -1,0 +1,38 @@
+name: Feature request
+description: Yeni özellik veya iyileştirme talebi
+title: "feat: "
+labels: ["feature"]
+body:
+  - type: textarea
+    id: goal
+    attributes:
+      label: Amaç / İş Değeri
+      description: Bu özelliğin çözmeye çalıştığı problem ve değeri
+      placeholder: Neden önemli? Kime değer sağlar?
+    validations:
+      required: true
+  - type: textarea
+    id: behavior
+    attributes:
+      label: Hedef Davranış
+      description: Kullanıcı açısından beklenen davranış, senaryolarla
+      placeholder: Kullanıcı X yaptığında Y görür…
+    validations:
+      required: true
+  - type: textarea
+    id: scope
+    attributes:
+      label: Kapsam / Sınırlar
+      description: Dahil olanlar, hariç olanlar, teknik tercihler
+    validations:
+      required: false
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Kabul Kriterleri
+      value: |
+        - [ ] …
+        - [ ] …
+    validations:
+      required: true
+

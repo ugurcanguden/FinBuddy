@@ -77,22 +77,12 @@ const BottomTabBar: React.FC<BottomTabBarProps> = ({ activeTab: propActiveTab })
         </TouchableOpacity>
 
         <TouchableOpacity
-          style={getTabContainerStyle('add_payment')}
-          onPress={() => navigateTo('home')}  
+          style={getTabContainerStyle('paymentsHub')}
+          onPress={() => navigateTo('paymentsHub')}  
         >
-          <Text style={getIconTextStyle('add_payment')}>➕</Text>
-          <Text style={getLabelTextStyle('add_payment')}>
-            {t('navigation.tabs.add_payment')}
-          </Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={getTabContainerStyle('categories')}
-          onPress={() => navigateTo('categories')}  
-        >
-          <Text style={getIconTextStyle('categories')}>📂</Text>
-          <Text style={getLabelTextStyle('categories')}>
-            {t('navigation.tabs.categories')}
+          <Text style={getIconTextStyle('paymentsHub')}>💳</Text>
+          <Text style={getLabelTextStyle('paymentsHub')}>
+            {t('navigation.tabs.payments_incomes')}
           </Text>
         </TouchableOpacity>
 
@@ -116,6 +106,27 @@ const BottomTabBar: React.FC<BottomTabBarProps> = ({ activeTab: propActiveTab })
           </Text>
         </TouchableOpacity>
       </View>
+
+      {/* Floating central action */}
+      <TouchableOpacity
+        variant="primary"
+        onPress={() => navigateTo('addEntry')}
+        style={{
+          position: 'absolute',
+          alignSelf: 'center',
+          top: -28,
+          width: 56,
+          height: 56,
+          borderRadius: 28,
+          alignItems: 'center',
+          justifyContent: 'center',
+          backgroundColor: colors.primary,
+          borderWidth: 2,
+          borderColor: withAlpha(colors.primary, 0.32),
+        }}
+      >
+        <Text style={{ color: colors.onPrimary, fontSize: 28, lineHeight: 28 }}>+</Text>
+      </TouchableOpacity>
     </View>
   );
 };

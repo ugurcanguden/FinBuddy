@@ -1,0 +1,15 @@
+{
+  "title": "Add New Payment",
+  "amount": "Amount",
+  "amount_placeholder": "Enter amount",
+  "months": "Total Months (installments)",
+  "months_placeholder": "e.g. 10",
+  "start_date": "Start Date",
+  "payment_title": "Payment Title",
+  "payment_title_placeholder": "e.g. Loan Payment",
+  "category": "Category",
+  "category_placeholder": "Select Category",
+  "alert_title": "Save",
+  "alert_body": "Payment record will be created as a sample (WIP)."
+}
+

@@ -55,30 +55,16 @@ const AddCategoryScreen: React.FC = () => {
         />
       }
     >
-      <ScrollView variant="transparent" style={styles.content} showsVerticalScrollIndicator={false}>
-        <Container variant="background" padding="medium" style={styles.formContainer}>
-          <CategoryForm
-            category={null}
-            onSave={handleSave}
-            onCancel={handleCancel}
-            visible={true}
-          />
-        </Container>
-      </ScrollView>
+      <CategoryForm
+        category={null}
+        onSave={handleSave}
+        onCancel={handleCancel}
+        visible={true}
+      />
     </Layout>
   );
 };
 
-const styles = StyleSheet.create({
-  content: {
-    flex: 1,
-    paddingHorizontal: 16,
-    paddingTop: 12,
-  },
-  formContainer: {
-    borderRadius: 12,
-    marginBottom: 16,
-  },
-});
+const styles = StyleSheet.create({});
 
 export default AddCategoryScreen;

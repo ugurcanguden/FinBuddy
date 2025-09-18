@@ -12,10 +12,12 @@ import {
   Layout
 } from '@/components';
 import { Category } from '@/types';
+import { useTheme } from '@/contexts';
 
 const CategoriesScreen: React.FC = () => {
   const { t } = useLocale();
   const { goBack, navigateTo } = useNavigation();
+  const { colors } = useTheme();
   const { 
     categories, 
     loading, 
@@ -88,9 +90,6 @@ const CategoriesScreen: React.FC = () => {
           title={t('screens.categories.title')}
           showBackButton={true}
           onBackPress={goBack}
-          showAddButton={true}
-          onAddPress={handleAddCategory}
-          addButtonText={t('common.buttons.add')}
         />
       }
     >
@@ -120,7 +119,7 @@ const CategoriesScreen: React.FC = () => {
         ) : (
           <View variant="transparent" style={styles.categoriesList}>
             {categories.map((category) => (
-              <View key={category.id} variant="surface" style={styles.categoryCard}>
+              <View key={category.id} variant="surface" style={[styles.categoryCard, { borderColor: colors.border }] as any}>
                 <View variant="transparent" style={styles.categoryInfo}>
                   <View variant="transparent" style={[styles.categoryIcon, getIconStyle(category)] as any}>
                     <Text style={[styles.iconText, { color: category.color }] as any}>
@@ -168,6 +167,20 @@ const CategoriesScreen: React.FC = () => {
         )}
       </ScrollView>
 
+      {/* Sticky Add Button (tasarımla uyumlu) */}
+      <View variant="transparent" style={styles.addButtonContainer}>
+        <TouchableOpacity
+          variant="transparent"
+          style={[styles.addButton, { backgroundColor: colors.primary }] as any}
+          onPress={handleAddCategory}
+          activeOpacity={0.9}
+        >
+          <Text style={[styles.addButtonIcon] as any}>＋</Text>
+          <Text style={[styles.addButtonText, { color: colors.onPrimary }] as any}>
+            {t('screens.categories.add_category.title')}
+          </Text>
+        </TouchableOpacity>
+      </View>
     </Layout>
   );
 };

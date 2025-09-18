@@ -1,5 +1,5 @@
 // Locale Service - Çok dilli yapı yönetimi
-import { storageService } from '@/services';
+import { storageService } from '../storage';
 
 export type SupportedLanguage = 'en' | 'tr' | 'de' | 'fr' | 'it' | 'es';
 
@@ -57,61 +57,77 @@ class LocaleService {
       case 'en':
         return {
           common: (await import('@/locales/en/common.json')).default,
-          navigation: (await import('@/locales/en/categories/navigation.json')).default,
+          navigation: (await import('@/locales/en/navigation.json')).default,
           screens: {
             home: (await import('@/locales/en/screens/home.json')).default,
             settings: (await import('@/locales/en/screens/settings.json')).default,
             categories: (await import('@/locales/en/screens/categories.json')).default,
+            add_income: (await import('@/locales/en/screens/add_income.json')).default,
+            add_payment: (await import('@/locales/en/screens/add_payment.json')).default,
+            add_entry: (await import('@/locales/en/screens/add_entry.json')).default,
+            payments_hub: (await import('@/locales/en/screens/payments_hub.json')).default,
+            reports: (await import('@/locales/en/screens/reports.json')).default,
+            report_builder: (await import('@/locales/en/screens/report_builder.json')).default,
           }
         };
       case 'tr':
         return {
           common: (await import('@/locales/tr/common.json')).default,
-          navigation: (await import('@/locales/tr/categories/navigation.json')).default,
+          navigation: (await import('@/locales/tr/navigation.json')).default,
           screens: {
             home: (await import('@/locales/tr/screens/home.json')).default,
             settings: (await import('@/locales/tr/screens/settings.json')).default,
             categories: (await import('@/locales/tr/screens/categories.json')).default,
+            add_income: (await import('@/locales/tr/screens/add_income.json')).default,
+            add_payment: (await import('@/locales/tr/screens/add_payment.json')).default,
+            add_entry: (await import('@/locales/tr/screens/add_entry.json')).default,
+            payments_hub: (await import('@/locales/tr/screens/payments_hub.json')).default,
+            reports: (await import('@/locales/tr/screens/reports.json')).default,
+            report_builder: (await import('@/locales/tr/screens/report_builder.json')).default,
           }
         };
       case 'de':
         return {
           common: (await import('@/locales/de/common.json')).default,
-          navigation: (await import('@/locales/de/categories/navigation.json')).default,
+          navigation: (await import('@/locales/de/navigation.json')).default,
           screens: {
             home: (await import('@/locales/de/screens/home.json')).default,
             settings: (await import('@/locales/de/screens/settings.json')).default,
             categories: (await import('@/locales/de/screens/categories.json')).default,
+            add_payment: (await import('@/locales/de/screens/add_payment.json')).default,
           }
         };
       case 'fr':
         return {
           common: (await import('@/locales/fr/common.json')).default,
-          navigation: (await import('@/locales/fr/categories/navigation.json')).default,
+          navigation: (await import('@/locales/fr/navigation.json')).default,
           screens: {
             home: (await import('@/locales/fr/screens/home.json')).default,
             settings: (await import('@/locales/fr/screens/settings.json')).default,
             categories: (await import('@/locales/fr/screens/categories.json')).default,
+            add_payment: (await import('@/locales/fr/screens/add_payment.json')).default,
           }
         };
       case 'it':
         return {
           common: (await import('@/locales/it/common.json')).default,
-          navigation: (await import('@/locales/it/categories/navigation.json')).default,
+          navigation: (await import('@/locales/it/navigation.json')).default,
           screens: {
             home: (await import('@/locales/it/screens/home.json')).default,
             settings: (await import('@/locales/it/screens/settings.json')).default,
             categories: (await import('@/locales/it/screens/categories.json')).default,
+            add_payment: (await import('@/locales/it/screens/add_payment.json')).default,
           }
         };
       case 'es':
         return {
           common: (await import('@/locales/es/common.json')).default,
-          navigation: (await import('@/locales/es/categories/navigation.json')).default,
+          navigation: (await import('@/locales/es/navigation.json')).default,
           screens: {
             home: (await import('@/locales/es/screens/home.json')).default,
             settings: (await import('@/locales/es/screens/settings.json')).default,
             categories: (await import('@/locales/es/screens/categories.json')).default,
+            add_payment: (await import('@/locales/es/screens/add_payment.json')).default,
           }
         };
       default:

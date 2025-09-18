@@ -1,0 +1,15 @@
+{
+  "title": "Ajouter un Paiement",
+  "amount": "Montant",
+  "amount_placeholder": "Saisir le montant",
+  "months": "Nombre de mois (échéances)",
+  "months_placeholder": "ex. 10",
+  "start_date": "Date de début",
+  "payment_title": "Titre du paiement",
+  "payment_title_placeholder": "ex. Paiement de prêt",
+  "category": "Catégorie",
+  "category_placeholder": "Sélectionner une catégorie",
+  "alert_title": "Enregistrer",
+  "alert_body": "Le paiement sera créé à titre d'exemple (WIP)."
+}
+

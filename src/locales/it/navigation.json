@@ -1,0 +1,11 @@
+{
+  "tabs": {
+    "home": "Home",
+    "add_payment": "Nuovo Pagamento",
+    "payments": "Pagamenti",
+    "payments_incomes": "Pagamenti / Entrate",
+    "incomes": "Entrate",
+    "reports": "Report",
+    "settings": "Impostazioni"
+  }
+}

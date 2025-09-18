@@ -21,6 +21,15 @@
     "email_notifications": "Email Notifications",
     "reminder_notifications": "Reminder Notifications"
   },
+  "data": {
+    "title": "Data",
+    "description": "Resets payments, incomes, and saved reports. Default categories remain.",
+    "reset_title": "Reset app data?",
+    "reset_message": "This will delete all payments, incomes, and saved reports. This action cannot be undone.",
+    "reset_button": "Reset Tables",
+    "reset_confirm": "Reset",
+    "reset_success": "Data reset completed"
+  },
   "privacy": {
     "title": "Privacy",
     "data_usage": "Data Usage",

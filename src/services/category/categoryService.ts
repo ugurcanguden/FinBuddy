@@ -7,20 +7,11 @@ class CategoryService {
   // Veritabanını başlat ve varsayılan kategorileri ekle
   async initialize(): Promise<void> {
     try {
-      // Eski categories tablosu var mı kontrol et
-      const tableExists = await databaseService.tableExists('categories');
-      
-      if (tableExists) {
-        // Eski tabloyu sil ve yeniden oluştur
-        console.log('🔄 Recreating categories table with new schema...');
-        await databaseService.dropTable('categories');
-      }
-      
-      // Kategori tablosunu oluştur
-      await databaseService.query(CATEGORY_SCRIPTS.CREATE_TABLE);
-      
-      // Varsayılan kategorileri ekle
-      await databaseService.query(CATEGORY_SCRIPTS.INSERT_DEFAULT_CATEGORIES);
+      // Idempotent kurulum: tabloyu oluştur (varsa dokunma) ve varsayılanları ekle (OR IGNORE)
+      await databaseService.transaction(async () => {
+        await databaseService.query(CATEGORY_SCRIPTS.CREATE_TABLE);
+        await databaseService.query(CATEGORY_SCRIPTS.INSERT_DEFAULT_CATEGORIES);
+      });
       
       console.log('✅ Category service initialized successfully');
     } catch (error) {
@@ -33,10 +24,12 @@ class CategoryService {
   async create(data: CreateCategoryData): Promise<Category> {
     try {
       const id = `cat_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-      
+      console.log('🔄 Creating category:', data);
+      console.log('🔄 Creating category id:', id);
+
       await databaseService.query(CATEGORY_SCRIPTS.INSERT, [
         id,
-        null, // name_key = null (kullanıcı kategorisi için)
+        data.name_key || null, // name_key = null (kullanıcı kategorisi için)
         data.custom_name || null,
         data.icon,
         data.color,
@@ -58,6 +51,12 @@ class CategoryService {
   // Kategori güncelle
   async update(id: string, data: UpdateCategoryData): Promise<Category> {
     try {
+      // Varsayılan kategorilerin düzenlenmesine izin verme (UI saklıyor olsa bile servis seviyesinde koru)
+      const existing = await this.getById(id);
+      if (existing?.is_default) {
+        throw new Error('Varsayılan kategoriler düzenlenemez');
+      }
+
       await databaseService.query(CATEGORY_SCRIPTS.UPDATE, [
         null, // name_key = null (kullanıcı kategorisi için)
         data.custom_name || null,
@@ -81,6 +80,12 @@ class CategoryService {
   // Kategori sil (soft delete)
   async delete(id: string): Promise<void> {
     try {
+      // Varsayılan kategori silinemez (servis koruması)
+      const existing = await this.getById(id);
+      if (existing?.is_default) {
+        throw new Error('Varsayılan kategoriler silinemez');
+      }
+
       await databaseService.query(CATEGORY_SCRIPTS.DELETE, [id]);
       console.log(`✅ Category ${id} deleted successfully`);
     } catch (error) {
@@ -105,8 +110,10 @@ class CategoryService {
   // Tüm kategorileri getir
   async getAll(): Promise<Category[]> {
     try {
-      return await databaseService.getAll<Category>(CATEGORY_SCRIPTS.GET_ALL);
-    } catch (error) {
+      let categories = await databaseService.getAll<Category>(CATEGORY_SCRIPTS.GET_ALL);
+      console.log('🔄 Getting all categories:', categories);
+        return categories;
+      } catch (error) {
       console.error('❌ Get all categories failed:', error);
       throw error;
     }
