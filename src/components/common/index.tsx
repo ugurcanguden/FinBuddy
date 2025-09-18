@@ -24,3 +24,7 @@ export { default as RadioButton } from './RadioButton';
 export { default as BottomTabBar } from './BottomTabBar';
 export { default as DatePicker } from './DatePicker';
 export { default as DatePickerFieldNative } from './DatePickerFieldNative';
+
+// Keyboard Components
+export { default as KeyboardAvoidingView } from './KeyboardAvoidingView';
+export { default as KeyboardAwareScrollView } from './KeyboardAwareScrollView';

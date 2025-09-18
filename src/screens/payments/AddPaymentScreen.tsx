@@ -1,7 +1,7 @@
 // Add Payment Screen - Yeni ödeme ekle
 import React, { useMemo, useState } from 'react';
 import { Alert, StyleSheet } from 'react-native';
-import { Layout, PageHeader, ScrollView, View, Text, TextInput, Dropdown, TouchableOpacity, DatePickerField, DatePickerFieldNative } from '@/components';
+import { Layout, PageHeader, ScrollView, View, Text, TextInput, Dropdown, TouchableOpacity, DatePickerField, DatePickerFieldNative, KeyboardAwareScrollView } from '@/components';
 import { Platform } from 'react-native';
 import { useLocale } from '@/hooks';
 import { paymentService } from '@/services';
@@ -168,7 +168,7 @@ const AddPaymentScreen: React.FC<AddPaymentScreenProps> = ({ entryType = 'expens
 
   return (
     <Layout headerComponent={<PageHeader title={t(`screens.${i18nKey}.title`)} showBackButton onBackPress={goBack} />}>
-      <ScrollView style={styles.container}>{formContent}</ScrollView>
+      <KeyboardAwareScrollView style={styles.container}>{formContent}</KeyboardAwareScrollView>
     </Layout>
   );
 };

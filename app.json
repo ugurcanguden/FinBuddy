@@ -27,6 +27,18 @@
     },
     "plugins": [
       "expo-sqlite"
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "0087995b-1520-4e81-aa5a-d2fe8f1c05d5"
+      }
+    },
+    "owner": "ugurcanguden",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/0087995b-1520-4e81-aa5a-d2fe8f1c05d5"
+    }
   }
 }

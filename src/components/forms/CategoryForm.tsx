@@ -10,7 +10,8 @@ import {
   TouchableOpacity, 
   Container,
   ScrollView,
-  IconDropdown
+  IconDropdown,
+  KeyboardAwareScrollView
 } from '@/components';
 import { Category, CategoryFormData } from '@/types';
 
@@ -110,7 +111,7 @@ const CategoryForm: React.FC<CategoryFormProps> = ({
   const isValid = formData.custom_name.trim().length >= 3;
 
   return (
-      <ScrollView variant="transparent" showsVerticalScrollIndicator={false}>
+      <KeyboardAwareScrollView variant="transparent" showsVerticalScrollIndicator={false}>
         
         <Container variant="surface" padding="medium">
           <Text variant="primary" size="medium" weight="semibold">
@@ -235,7 +236,7 @@ const CategoryForm: React.FC<CategoryFormProps> = ({
           </TouchableOpacity>
         </View>
       </Container>        
-      </ScrollView> 
+      </KeyboardAwareScrollView> 
 
   );
 };

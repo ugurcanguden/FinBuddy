@@ -1,7 +1,7 @@
 // Add Entry Screen - Ödeme/Gelir ekleme için iki sekmeli ekran
 import React, { useState } from 'react';
 import { StyleSheet, Platform } from 'react-native';
-import { Layout, PageHeader, View, Text, TouchableOpacity, ScrollView } from '@/components';
+import { Layout, PageHeader, View, Text, TouchableOpacity, ScrollView, KeyboardAwareScrollView } from '@/components';
 import { useNavigation, useTheme } from '@/contexts';
 import AddPaymentScreen from './AddPaymentScreen';
 import { useLocale } from '@/hooks';
@@ -14,7 +14,7 @@ const AddEntryScreen: React.FC = () => {
 
   return (
     <Layout headerComponent={<PageHeader title={t('screens.add_entry.title')} showBackButton onBackPress={goBack} />} showFooter={false}>
-      <ScrollView style={styles.container}>
+      <KeyboardAwareScrollView style={styles.container}>
         {/* Tabs */}
         <View variant="transparent" style={styles.tabs}>
           {(['expense','income'] as const).map((key) => (
@@ -37,7 +37,7 @@ const AddEntryScreen: React.FC = () => {
         ) : (
           <AddPaymentScreen entryType="income" i18nKey="add_income" embedded />
         )}
-      </ScrollView>
+      </KeyboardAwareScrollView>
     </Layout>
   );
 };
