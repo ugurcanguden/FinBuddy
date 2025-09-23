@@ -1,11 +1,11 @@
 // Add Payment Screen - Yeni ödeme ekle
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useImperativeHandle, useMemo, useState, forwardRef, useCallback } from 'react';
 import { Alert, StyleSheet } from 'react-native';
-import { Layout, PageHeader, ScrollView, View, Text, TextInput, Dropdown, TouchableOpacity, DatePickerField, DatePickerFieldNative, KeyboardAwareScrollView } from '@/components';
+import { Layout, PageHeader, View, TextInput, Dropdown, DatePickerField, DatePickerFieldNative, KeyboardAwareScrollView, FormSection, Button } from '@/components';
 import { Platform } from 'react-native';
 import { useLocale } from '@/hooks';
 import { paymentService } from '@/services';
-import { useNavigation, useTheme } from '@/contexts';
+import { useNavigation } from '@/contexts';
 import { useCategories } from '@/hooks';
 
 interface FormState {
@@ -16,17 +16,24 @@ interface FormState {
   categoryId: string;
 }
 
-interface AddPaymentScreenProps {
-  entryType?: 'expense' | 'income';
-  i18nKey?: 'add_payment' | 'add_income';
-  embedded?: boolean; // AddEntryScreen içinde içerik olarak kullanmak için
+export interface AddPaymentScreenHandle {
+  submit: () => Promise<boolean>;
+  isValid: () => boolean;
 }
 
-const AddPaymentScreen: React.FC<AddPaymentScreenProps> = ({ entryType = 'expense', i18nKey = 'add_payment', embedded = false }) => {
-  const { goBack } = useNavigation();
-  const { colors } = useTheme();
-  const { categories, getDisplayName } = useCategories();
-  const { t } = useLocale();
+export interface AddPaymentScreenProps {
+  entryType?: 'expense' | 'income';
+  i18nKey?: 'add_payment' | 'add_income';
+  embedded?: boolean;
+  onValidityChange?: (valid: boolean) => void;
+  onSubmitSuccess?: () => void;
+}
+
+const AddPaymentScreen = forwardRef<AddPaymentScreenHandle, AddPaymentScreenProps>(
+  ({ entryType = 'expense', i18nKey = 'add_payment', embedded = false, onValidityChange, onSubmitSuccess }, ref) => {
+    const { goBack } = useNavigation();
+    const { categories, getDisplayName } = useCategories();
+    const { t } = useLocale();
 
   const getIconEmoji = (iconName: string): string => {
     const iconMap: Record<string, string> = {
@@ -54,39 +61,78 @@ const AddPaymentScreen: React.FC<AddPaymentScreenProps> = ({ entryType = 'expens
     [categories, getDisplayName, t]
   );
 
-  const [form, setForm] = useState<FormState>({ amount: '', months: '', startDate: '', title: '', categoryId: '' });
+    const [form, setForm] = useState<FormState>({ amount: '', months: '', startDate: '', title: '', categoryId: '' });
 
-  const isValid = useMemo(() => {
-    const amountNum = Number(form.amount);
-    const monthsNum = Number(form.months);
-    return (
-      !!form.title.trim() && !!form.categoryId && amountNum > 0 && Number.isFinite(amountNum) && (monthsNum === 0 || monthsNum >= 1)
+    const isValid = useMemo(() => {
+      const amountNum = Number(form.amount);
+      const monthsNum = Number(form.months);
+      return (
+        !!form.title.trim() && !!form.categoryId && amountNum > 0 && Number.isFinite(amountNum) && (monthsNum === 0 || monthsNum >= 1)
+      );
+    }, [form]);
+
+    useEffect(() => {
+      onValidityChange?.(isValid);
+    }, [isValid, onValidityChange]);
+
+    const handleSave = useCallback(async () => {
+      if (!isValid) {
+        return false;
+      }
+
+      try {
+        await paymentService.createEntryWithSchedule({
+          categoryId: form.categoryId,
+          title: form.title.trim(),
+          amount: Number(form.amount),
+          months: Number(form.months || 0),
+          startDate: form.startDate || new Date().toISOString().slice(0, 10),
+          type: entryType,
+        });
+
+        Alert.alert(t('common.messages.success'), t('common.messages.created'));
+        onSubmitSuccess?.();
+
+        if (!embedded) {
+          goBack();
+        }
+
+        return true;
+      } catch (e) {
+        Alert.alert(t('common.messages.error'), String((e as Error).message || ''));
+        return false;
+      }
+    }, [embedded, entryType, form, goBack, isValid, onSubmitSuccess, t]);
+
+    useImperativeHandle(
+      ref,
+      () => ({
+        submit: handleSave,
+        isValid: () => isValid,
+      }),
+      [handleSave, isValid]
     );
-  }, [form]);
-
-  const handleSave = async () => {
-    if (!isValid) return;
-    try {
-      await paymentService.createEntryWithSchedule({
-        categoryId: form.categoryId,
-        title: form.title.trim(),
-        amount: Number(form.amount),
-        months: Number(form.months || 0),
-        startDate: form.startDate || new Date().toISOString().slice(0, 10),
-        type: entryType,
-      });
-      Alert.alert(t('common.messages.success'), t('common.messages.created'));
-      goBack();
-    } catch (e) {
-      Alert.alert(t('common.messages.error'), String((e as Error).message || ''));
-    }
-  };
 
   const formContent = (
-    <>
-      {/* Tutar */}
-      <View variant="surface" style={[styles.fieldCard, { borderColor: colors.border }] as any}>
-        <Text variant="primary" size="medium" weight="semibold">{t(`screens.${i18nKey}.amount`)}</Text>
+    <View variant="transparent" style={[styles.formStack, embedded && styles.embeddedStack]}>
+      <FormSection
+        spacing="none"
+        title={t(`screens.${i18nKey}.payment_title`)}
+        description={t(`screens.${i18nKey}.payment_title_placeholder`)}
+      >
+        <TextInput
+          placeholder={t(`screens.${i18nKey}.payment_title_placeholder`)}
+          value={form.title}
+          onChangeText={(title) => setForm((s) => ({ ...s, title }))}
+          variant="outlined"
+          returnKeyType="next"
+        />
+      </FormSection>
+
+      <FormSection
+        title={t(`screens.${i18nKey}.amount`)}
+        description={t(`screens.${i18nKey}.amount_placeholder`)}
+      >
         <TextInput
           placeholder={t(`screens.${i18nKey}.amount_placeholder`)}
           keyboardType="numeric"
@@ -94,11 +140,12 @@ const AddPaymentScreen: React.FC<AddPaymentScreenProps> = ({ entryType = 'expens
           onChangeText={(amount) => setForm((s) => ({ ...s, amount }))}
           variant="outlined"
         />
-      </View>
+      </FormSection>
 
-      {/* Toplam Ay */}
-      <View variant="surface" style={[styles.fieldCard, { borderColor: colors.border }] as any}>
-        <Text variant="primary" size="medium" weight="semibold">{t(`screens.${i18nKey}.months`)}</Text>
+      <FormSection
+        title={t(`screens.${i18nKey}.months`)}
+        description={t(`screens.${i18nKey}.months_placeholder`)}
+      >
         <TextInput
           placeholder={t(`screens.${i18nKey}.months_placeholder`)}
           keyboardType="numeric"
@@ -106,11 +153,12 @@ const AddPaymentScreen: React.FC<AddPaymentScreenProps> = ({ entryType = 'expens
           onChangeText={(months) => setForm((s) => ({ ...s, months }))}
           variant="outlined"
         />
-      </View>
+      </FormSection>
 
-      {/* Başlangıç Tarihi */}
-      <View variant="surface" style={[styles.fieldCard, { borderColor: colors.border }] as any}>
-        <Text variant="primary" size="medium" weight="semibold">{t(`screens.${i18nKey}.start_date`)}</Text>
+      <FormSection
+        title={t(`screens.${i18nKey}.start_date`)}
+        description={t(`screens.${i18nKey}.start_date`)}
+      >
         {Platform.OS === 'web' ? (
           <DatePickerField
             value={form.startDate}
@@ -124,58 +172,59 @@ const AddPaymentScreen: React.FC<AddPaymentScreenProps> = ({ entryType = 'expens
             placeholder={t(`screens.${i18nKey}.start_date`)}
           />
         )}
-      </View>
+      </FormSection>
 
-      {/* Başlık */}
-      <View variant="surface" style={[styles.fieldCard, { borderColor: colors.border }] as any}>
-        <Text variant="primary" size="medium" weight="semibold">{t(`screens.${i18nKey}.payment_title`)}</Text>
-        <TextInput
-          placeholder={t(`screens.${i18nKey}.payment_title_placeholder`)}
-          value={form.title}
-          onChangeText={(title) => setForm((s) => ({ ...s, title }))}
-          variant="outlined"
-        />
-      </View>
-
-      {/* Kategori */}
-      <View variant="surface" style={[styles.fieldCard, { borderColor: colors.border }] as any}>
-        <Text variant="primary" size="medium" weight="semibold">{t(`screens.${i18nKey}.category`)}</Text>
+      <FormSection
+        title={t(`screens.${i18nKey}.category`)}
+        description={t(`screens.${i18nKey}.category_placeholder`)}
+      >
         <Dropdown
           options={categoryOptions}
           selectedValue={form.categoryId}
           onSelect={(categoryId) => setForm((s) => ({ ...s, categoryId }))}
           placeholder={t(`screens.${i18nKey}.category_placeholder`)}
         />
-      </View>
+      </FormSection>
 
-      {/* Kaydet butonu (inline) */}
-      <View variant="transparent" style={{ padding: 16 }}>
-        <TouchableOpacity
-          variant="primary"
-          onPress={handleSave}
-          disabled={!isValid}
-          style={{ backgroundColor: isValid ? colors.accent : colors.border, borderRadius: 999, paddingVertical: 14, alignItems: 'center' }}
+      {!embedded && (
+        <View variant="transparent" style={styles.actions}>
+          <Button
+            title={t('common.buttons.save')}
+            onPress={handleSave}
+            disabled={!isValid}
+            style={styles.fullWidthButton}
+          />
+        </View>
+      )}
+    </View>
+  );
+
+    if (embedded) {
+      return <View variant="transparent" style={styles.container}>{formContent}</View>;
+    }
+
+    return (
+      <Layout headerComponent={<PageHeader title={t(`screens.${i18nKey}.title`)} showBackButton onBackPress={goBack} />}>
+        <KeyboardAwareScrollView
+          style={styles.container}
+          contentContainerStyle={styles.scrollContent}
         >
-          <Text weight="bold" style={{ color: colors.onPrimary }}>{t('common.buttons.save')}</Text>
-        </TouchableOpacity>
-      </View>
-    </>
-  );
-
-  if (embedded) {
-    return <View variant="transparent" style={styles.container}>{formContent}</View>;
+          {formContent}
+        </KeyboardAwareScrollView>
+      </Layout>
+    );
   }
-
-  return (
-    <Layout headerComponent={<PageHeader title={t(`screens.${i18nKey}.title`)} showBackButton onBackPress={goBack} />}>
-      <KeyboardAwareScrollView style={styles.container}>{formContent}</KeyboardAwareScrollView>
-    </Layout>
-  );
-};
+);
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 16 },
-  fieldCard: { gap: 8, borderRadius: 12, padding: 16, borderWidth: 1 },
+  container: { flex: 1 },
+  scrollContent: { padding: 20, paddingBottom: 40 },
+  formStack: { gap: 20 },
+  embeddedStack: { paddingTop: 12 },
+  actions: { marginTop: 12 },
+  fullWidthButton: { width: '100%' },
 });
+
+AddPaymentScreen.displayName = 'AddPaymentScreen';
 
 export default AddPaymentScreen;

@@ -12,6 +12,7 @@ export { default as SafeArea } from './SafeArea';
 // Layout Components
 export { default as Container } from './Container';
 export { default as Card } from './Card';
+export { default as FormSection } from './FormSection';
 export { default as PageHeader } from './PageHeader';
 export { default as Layout } from './Layout';
 

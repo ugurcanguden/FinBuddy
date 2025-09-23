@@ -8,7 +8,7 @@ export interface CardProps {
   variant?: 'default' | 'elevated' | 'outlined';
   padding?: 'none' | 'small' | 'medium' | 'large';
   style?: ViewStyle;
-  testID?: string;
+  testID?: string | undefined;
 }
 
 const Card: React.FC<CardProps> = ({

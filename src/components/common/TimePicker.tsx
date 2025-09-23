@@ -68,13 +68,19 @@ const TimePicker: React.FC<TimePickerProps> = ({
         disabled={disabled}
       >
         <Text 
-          variant={value ? 'primary' : 'secondary'} 
+          variant={value ? 'accent' : 'secondary'} 
           size="medium"
-          style={{ color: disabled ? colors.textSecondary : undefined }}
+          style={{ color: disabled ? colors.textSecondary : value ? colors.primary : colors.textSecondary }}
         >
           {formatTime(value)}
         </Text>
-        <Text variant="secondary" size="medium">🕐</Text>
+        <Text
+          variant="secondary"
+          size="medium"
+          style={{ color: disabled ? colors.textSecondary : colors.textSecondary }}
+        >
+          🕐
+        </Text>
       </TouchableOpacity>
 
       <Modal

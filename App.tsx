@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text } from 'react-native';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { useLocale } from '@/hooks';
 import { NavigationProvider, ThemeProvider, CurrencyProvider } from '@/contexts';
 import { databaseService, migrationService, categoryService, storageService, notificationService } from '@/services';
@@ -63,22 +64,24 @@ const App: React.FC = () => {
   }
 
   return (
-    <ThemeProvider>
-      <CurrencyProvider>
-        <NavigationProvider>
-        {showOnboarding ? (
-          <OnboardingScreen
-            onComplete={async () => {
-              await storageService.set('onboarding_completed', true);
-              setShowOnboarding(false);
-            }}
-          />
-        ) : (
-          <AppNavigator/>
-        )}
-        </NavigationProvider>
-      </CurrencyProvider>
-    </ThemeProvider>
+    <SafeAreaProvider>
+      <ThemeProvider>
+        <CurrencyProvider>
+          <NavigationProvider>
+            {showOnboarding ? (
+              <OnboardingScreen
+                onComplete={async () => {
+                  await storageService.set('onboarding_completed', true);
+                  setShowOnboarding(false);
+                }}
+              />
+            ) : (
+              <AppNavigator />
+            )}
+          </NavigationProvider>
+        </CurrencyProvider>
+      </ThemeProvider>
+    </SafeAreaProvider>
   );
 };
 
