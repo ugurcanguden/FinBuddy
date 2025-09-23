@@ -1,10 +1,7 @@
 // SafeArea Component - Tema destekli SafeAreaView bileşeni
 import React, { useMemo } from 'react';
-import {
-  SafeAreaView as RNSafeAreaView,
-  ViewStyle,
-  StyleProp,
-} from 'react-native';
+import type { ViewStyle, StyleProp } from 'react-native';
+import { SafeAreaView as RNSafeAreaView, type Edge } from 'react-native-safe-area-context';
 import { useTheme } from '@/contexts';
 
 export interface SafeAreaProps {
@@ -13,6 +10,7 @@ export interface SafeAreaProps {
   style?: StyleProp<ViewStyle>;
   testID?: string;
   nativeID?: string; // RN için geçerli prop
+  edges?: Edge[];
 }
 
 const SafeArea: React.FC<SafeAreaProps> = ({
@@ -21,6 +19,7 @@ const SafeArea: React.FC<SafeAreaProps> = ({
   style,
   testID,
   nativeID,
+  edges,
 }) => {
   const { colors } = useTheme();
 
@@ -41,6 +40,7 @@ const SafeArea: React.FC<SafeAreaProps> = ({
       style={[containerStyle, style]}
       testID={testID}
       nativeID={nativeID}
+      edges={edges ?? ['top', 'left', 'right']}
     >
       {children}
     </RNSafeAreaView>
