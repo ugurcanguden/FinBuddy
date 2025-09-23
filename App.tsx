@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { View, Text } from 'react-native';
 import { useLocale } from '@/hooks';
 import { NavigationProvider, ThemeProvider, CurrencyProvider } from '@/contexts';
-import { databaseService, migrationService, categoryService, storageService } from '@/services';
+import { databaseService, migrationService, categoryService, storageService, notificationService } from '@/services';
+import * as Notifications from 'expo-notifications';
 import AppNavigator from '@/components/AppNavigator';
 import OnboardingScreen from '@/screens/OnboardingScreen';
 
@@ -19,6 +20,10 @@ const App: React.FC = () => {
         await databaseService.initialize();
         await migrationService.migrateToLatest();
         await categoryService.initialize();
+        
+        // Bildirim servisini başlat
+        await notificationService.initialize();
+        
         const done = await storageService.get<boolean>('onboarding_completed');
         setShowOnboarding(!done);
         setDbInitialized(true);
@@ -30,6 +35,22 @@ const App: React.FC = () => {
     };
 
     initializeDatabase();
+  }, []);
+
+  // Bildirim listener'ları
+  useEffect(() => {
+    const subscription = Notifications.addNotificationReceivedListener(notification => {
+      console.log('🔔 Bildirim alındı (received):', notification);
+    });
+
+    const responseSubscription = Notifications.addNotificationResponseReceivedListener(response => {
+      console.log('🔔 Bildirim yanıtı alındı (response):', response);
+    });
+
+    return () => {
+      subscription.remove();
+      responseSubscription.remove();
+    };
   }, []);
 
   if (localeLoading || !dbInitialized) {

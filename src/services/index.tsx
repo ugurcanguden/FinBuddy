@@ -6,3 +6,5 @@ export * from './locale';
 export * from './category';
 export * from './payment';
 export * from './reports/reportsService';
+export { default as notificationService } from './notifications/notificationService';
+export * from './notifications/notificationService';

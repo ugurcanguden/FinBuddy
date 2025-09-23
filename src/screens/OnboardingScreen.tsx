@@ -1,8 +1,9 @@
 // Onboarding Screen - İlk açılış tanıtım ekranı
-import React from 'react';
-import { StyleSheet } from 'react-native';
+import React, { useState } from 'react';
+import { StyleSheet, Alert } from 'react-native';
 import { Layout, View, Text, TouchableOpacity } from '@/components';
 import { useTheme } from '@/contexts';
+import { notificationService } from '@/services';
 
 interface OnboardingScreenProps {
   onComplete: () => void;
@@ -10,6 +11,27 @@ interface OnboardingScreenProps {
 
 const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }) => {
   const { colors } = useTheme();
+  const [requestingPermission, setRequestingPermission] = useState(false);
+
+  const handleComplete = async () => {
+    setRequestingPermission(true);
+    
+    try {
+      // Bildirim izni iste
+      const hasPermission = await notificationService.initialize();
+      
+      if (hasPermission) {
+        console.log('✅ Notification permission granted');
+      } else {
+        console.log('❌ Notification permission denied');
+      }
+    } catch (error) {
+      console.error('Notification permission error:', error);
+    } finally {
+      setRequestingPermission(false);
+      onComplete();
+    }
+  };
 
   return (
     <Layout showHeader={false} showFooter={false}>
@@ -29,9 +51,12 @@ const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }) => {
         <TouchableOpacity
           variant="transparent"
           style={[styles.ctaButton, { backgroundColor: colors.primary }] as any}
-          onPress={onComplete}
+          onPress={handleComplete}
+          disabled={requestingPermission}
         >
-          <Text weight="bold" style={{ color: colors.onPrimary }}>Devam et</Text>
+          <Text weight="bold" style={{ color: colors.onPrimary }}>
+            {requestingPermission ? 'İzin isteniyor...' : 'Devam et'}
+          </Text>
         </TouchableOpacity>
       </View>
     </Layout>

@@ -1,14 +1,13 @@
 // Settings Screen - Ayarlar sayfası
-import React, { useCallback } from 'react';
-import { Alert, StyleSheet } from 'react-native';
+import React, { useCallback, useEffect, useState } from 'react';
+import { Alert, StyleSheet, Platform } from 'react-native';
 import type { ThemeMode } from '@/contexts';
 import { themes } from '@/contexts';
 import { LANGUAGE_OPTIONS } from '@/constants/languageOptions';
-import { useLocale, usePaymentReminders } from '@/hooks';
+import { useLocale, usePaymentReminders, useBiometric } from '@/hooks';
 import { useNavigation, useTheme, useCurrency } from '@/contexts';
-import { migrationService, categoryService } from '@/services';
+import { migrationService, categoryService, notificationService } from '@/services';
 import { 
-  Container, 
   Text, 
   Card, 
   ScrollView, 
@@ -17,7 +16,8 @@ import {
   Dropdown, 
   View,
   PageHeader,
-  Layout
+  Layout,
+  TimePicker
 } from '@/components';
 import { CURRENCY_OPTIONS } from '@/constants';
 import type { Currency } from '@/types';
@@ -28,6 +28,13 @@ const SettingsScreen: React.FC = () => {
   const { currentTheme, setTheme, colors } = useTheme();
   const { goBack, navigateTo } = useNavigation();
   const { currency, setCurrency } = useCurrency();
+  const { authenticate, isAvailable, isEnrolled, checkBiometricAvailability } = useBiometric();
+  const [notificationTime, setNotificationTime] = useState('09:00');
+
+  // Component mount olduğunda biometric availability'yi kontrol et
+  useEffect(() => {
+    checkBiometricAvailability();
+  }, [checkBiometricAvailability]);
 
 
   const handleThemeSelect = async (selectedTheme: ThemeMode) => {
@@ -38,12 +45,6 @@ const SettingsScreen: React.FC = () => {
     }
   };
 
-  const handleEditProfile = () => {
-    Alert.alert(
-      t('screens.settings.profile.edit_profile'),
-      t('screens.settings.profile.edit_profile_message')
-    );
-  };
 
   const handleLanguageChange = (languageCode: string) => {
     changeLanguage(languageCode as any);
@@ -55,9 +56,82 @@ const SettingsScreen: React.FC = () => {
 
   const handlePaymentRemindersToggle = async (enabled: boolean) => {
     await toggleReminders(enabled);
+    
+    // Bildirim servisini güncelle
+    const settings = {
+      enabled,
+      time: notificationTime,
+    };
+    
+    if (enabled) {
+      // Bildirim izni iste
+      const hasPermission = await notificationService.initialize();
+      if (hasPermission) {
+        await notificationService.schedulePaymentReminders(settings);
+        console.log('✅ Bildirimler zamanlandı:', settings);
+      } else {
+        Alert.alert(
+          'Bildirim İzni Gerekli',
+          'FinBuddy size hatırlatma bildirimleri gönderebilmek için bildirim iznine ihtiyaç duyuyor.\n\nLütfen:\n1. Ayarlar > Bildirimler > FinBuddy\n2. "İzin Ver" seçeneğini açın\n3. Tekrar deneyin',
+          [
+            { text: 'Tamam', style: 'default' },
+            { 
+              text: 'Ayarlara Git', 
+              onPress: () => {
+                // iOS Settings'e yönlendirme (Android'de otomatik açılır)
+                if (Platform.OS === 'ios') {
+                  Alert.alert(
+                    'Ayarlara Gidin',
+                    'Lütfen Ayarlar > Bildirimler > FinBuddy bölümünden bildirim iznini açın.'
+                  );
+                }
+              }
+            }
+          ]
+        );
+      }
+    } else {
+      // Bildirimleri iptal et
+      await notificationService.cancelAllScheduledNotifications();
+      console.log('❌ Bildirimler iptal edildi');
+    }
   };
 
-  const handleResetData = useCallback(() => {
+  // Saat değiştiğinde bildirimleri güncelle
+  const handleNotificationTimeChange = async (time: string) => {
+    setNotificationTime(time);
+    
+    // Eğer bildirimler açıksa, yeni saatle yeniden zamanla
+    if (paymentReminders.enabled) {
+      const settings = {
+        enabled: true,
+        time: time,
+      };
+      
+      try {
+        await notificationService.schedulePaymentReminders(settings);
+        console.log('✅ Bildirim saati güncellendi:', settings);
+      } catch (error) {
+        console.error('❌ Bildirim saati güncellenirken hata:', error);
+      }
+    }
+  };
+
+  const handleResetData = useCallback(async () => {
+    // Önce biometric authentication kontrol et
+    if (isAvailable && isEnrolled) {
+      const authResult = await authenticate(t('screens.settings.data.biometric_prompt') || 'Please authenticate to reset all data');
+      
+      if (!authResult.success) {
+        Alert.alert(
+          t('common.messages.error'),
+          authResult.error || t('screens.settings.data.biometric_failed') || 'Authentication failed'
+        );
+        return;
+      }
+    }
+
+    // Biometric authentication başarılı veya mevcut değil, onay al
     Alert.alert(
       t('screens.settings.data.reset_title'),
       t('screens.settings.data.reset_message'),
@@ -78,7 +152,7 @@ const SettingsScreen: React.FC = () => {
         },
       ]
     );
-  }, [t]);
+  }, [t, isAvailable, isEnrolled, authenticate]);
 
 
   const getThemePreviewStyle = (themeType: ThemeMode) => {
@@ -105,17 +179,19 @@ const SettingsScreen: React.FC = () => {
       {/* Content */}
       <ScrollView variant="transparent" style={styles.content} showsVerticalScrollIndicator={false}>
         {/* Genel Ayarlar */}
-        <Container padding="medium" style={styles.section}>
-          <Text variant="secondary" size="medium" weight="semibold">
+        <View style={styles.section}>
+          <Text variant="secondary" size="medium" weight="semibold" style={styles.sectionTitle}>
             {t('screens.settings.general.title')}
           </Text>
           
-          <Card variant="default" padding="none">
+          <Card variant="default" padding="none" style={styles.card}>
             {/* Dil Seçimi */}
-            <Container padding="medium"  >
-              <Text variant="primary" size="medium">
-                {t('screens.settings.general.language')}
-              </Text>
+            <View variant="transparent" style={[styles.settingItem, { borderBottomWidth: 1, borderBottomColor: colors.border }]}>
+              <View variant="transparent" style={styles.settingInfo}>
+                <Text variant="primary" size="medium">
+                  {t('screens.settings.general.language')}
+                </Text>
+              </View>
               <View variant="transparent" style={styles.dropdownContainer}>
                 <Dropdown
                   options={LANGUAGE_OPTIONS}
@@ -124,12 +200,15 @@ const SettingsScreen: React.FC = () => {
                   style={styles.languageDropdown}
                 />
               </View>
-            </Container>
+            </View>
 
-            <Container padding="medium" style={{ borderTopWidth: 1, borderTopColor: colors.border }}>
-              <Text variant="primary" size="medium">
-                {t('screens.settings.general.currency') || t('common.currency')}
-              </Text>
+            {/* Para Birimi */}
+            <View variant="transparent" style={[styles.settingItem, { borderBottomWidth: 1, borderBottomColor: colors.border }]}>
+              <View variant="transparent" style={styles.settingInfo}>
+                <Text variant="primary" size="medium">
+                  {t('screens.settings.general.currency') || t('common.currency')}
+                </Text>
+              </View>
               <View variant="transparent" style={styles.dropdownContainer}>
                 <Dropdown
                   options={CURRENCY_OPTIONS}
@@ -138,14 +217,15 @@ const SettingsScreen: React.FC = () => {
                   style={styles.languageDropdown}
                 />
               </View>
-            </Container>
+            </View>
 
             {/* Tema Seçimi */}
-            <View variant="transparent" style={[styles.settingItem, { borderBottomColor: colors.border } as any]}>
-              <Text variant="primary" size="medium">
-                {t('screens.settings.general.theme')}
-              </Text>
-              <Text variant="secondary" size="medium">›</Text>
+            <View variant="transparent" style={[styles.settingItem, { borderBottomWidth: 0 }]}>
+              <View variant="transparent" style={styles.settingInfo}>
+                <Text variant="primary" size="medium">
+                  {t('screens.settings.general.theme')}
+                </Text>
+              </View>
             </View>
 
             {/* Tema Önizlemeleri */}
@@ -216,20 +296,21 @@ const SettingsScreen: React.FC = () => {
               </View>
             </View>
           </Card>
-        </Container>
+        </View>
 
         {/* Bildirimler */}
         <View style={styles.section}>
-          <Text variant="secondary" size="medium" weight="semibold">
+          <Text variant="secondary" size="medium" weight="semibold" style={styles.sectionTitle}>
             {t('screens.settings.notifications.title')}
           </Text>
-          <Card variant="default" padding="medium">
-            <View variant="transparent" style={[styles.settingItem, { borderBottomWidth: 0 }]}>
+          <Card variant="default" padding="none" style={styles.card}>
+            {/* Bildirim Açma/Kapama */}
+            <View variant="transparent" style={[styles.settingItem, { borderBottomWidth: 1, borderBottomColor: colors.border }]}>
               <View variant="transparent" style={styles.settingInfo}>
                 <Text variant="primary" size="medium">
                   {t('screens.settings.notifications.payment_reminders')}
                 </Text>
-                <Text variant="secondary" size="small">
+                <Text variant="secondary" size="small" style={styles.settingDescription}>
                   {t('screens.settings.notifications.payment_reminders_message')}
                 </Text>
               </View>
@@ -238,39 +319,93 @@ const SettingsScreen: React.FC = () => {
                 onValueChange={handlePaymentRemindersToggle}
               />
             </View>
-          </Card>
-        </View>
 
-        {/* Veri temizliği */}
-        <View style={styles.section}>
-          <Text variant="secondary" size="medium" weight="semibold">
-            {t('screens.settings.data.title')}
-          </Text>
-          <Card variant="default" padding="medium" style={{ gap: 12 }}>
-            <Text variant="secondary" size="small">
-              {t('screens.settings.data.description')}
-            </Text>
-            <TouchableOpacity
-              variant="transparent"
-              style={[styles.dangerButton, { borderColor: colors.danger }]}
-              onPress={handleResetData}
-            >
-              <Text style={[styles.dangerButtonText, { color: colors.danger }]}>
-                {t('screens.settings.data.reset_button')}
-              </Text>
-            </TouchableOpacity>
+            {/* Bildirim Saati */}
+            {paymentReminders.enabled && (
+              <View variant="transparent" style={[styles.settingItem, { paddingHorizontal: 16, paddingVertical: 12 }]}>
+                <View variant="transparent" style={styles.settingInfo}>
+                  <Text variant="primary" size="medium">
+                    Bildirim Saati
+                  </Text>
+                  <Text variant="secondary" size="small" style={styles.settingDescription}>
+                    Günlük hatırlatma bildiriminin gönderileceği saat
+                  </Text>
+                </View>
+                <TimePicker
+                  value={notificationTime}
+                  onChange={handleNotificationTimeChange}
+                  placeholder="Saat seçin"
+                />
+              </View>
+            )}
+
+            {/* Test Bildirimi */}
+            {paymentReminders.enabled && (
+              <View variant="transparent" style={[styles.settingItem, { paddingHorizontal: 16, paddingVertical: 12, borderTopWidth: 1, borderTopColor: colors.border }]}>
+                <View variant="transparent" style={styles.settingInfo}>
+                  <Text variant="primary" size="medium">
+                    Test Bildirimi
+                  </Text>
+                  <Text variant="secondary" size="small" style={styles.settingDescription}>
+                    Bildirim sisteminin çalışıp çalışmadığını test edin
+                  </Text>
+                </View>
+                <TouchableOpacity
+                  variant="transparent"
+                  style={[styles.testButton, { backgroundColor: colors.primary }] as any}
+                  onPress={async () => {
+                    try {
+                      console.log('🧪 Test bildirimi butonuna basıldı');
+                      
+                      // Önce mevcut bildirimleri kontrol et
+                      const scheduled = await notificationService.getScheduledNotifications();
+                      console.log('📋 Mevcut zamanlanan bildirimler:', scheduled.length);
+                      
+                      await notificationService.sendTestNotification();
+                      
+                      // Başarılı olduktan sonra tekrar kontrol et
+                      const newScheduled = await notificationService.getScheduledNotifications();
+                      console.log('📋 Yeni zamanlanan bildirimler:', newScheduled.length);
+                      
+                      Alert.alert(
+                        'Test Bildirimi', 
+                        `2 saniye içinde test bildirimi gelecek!\n\nZamanlanan bildirim sayısı: ${newScheduled.length}`,
+                        [
+                          { text: 'Tamam', style: 'default' },
+                          { 
+                            text: 'Bildirimleri Gör', 
+                            onPress: async () => {
+                              const allScheduled = await notificationService.getScheduledNotifications();
+                              console.log('📋 Tüm zamanlanan bildirimler:', allScheduled);
+                              Alert.alert('Zamanlanan Bildirimler', `Toplam ${allScheduled.length} bildirim zamanlandı`);
+                            }
+                          }
+                        ]
+                      );
+                    } catch (error) {
+                      console.error('❌ Test bildirimi hatası:', error);
+                      Alert.alert('Hata', 'Test bildirimi gönderilemedi: ' + String(error));
+                    }
+                  }}
+                >
+                  <Text variant="primary" size="small" weight="semibold" style={{ color: 'white' }}>
+                    Test Gönder
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            )}
           </Card>
         </View>
 
         {/* Kategoriler */}
         <View style={styles.section}>
-          <Text variant="secondary" size="medium" weight="semibold">
+          <Text variant="secondary" size="medium" weight="semibold" style={styles.sectionTitle}>
             {t('screens.categories.title')}
           </Text>
-          <Card variant="default" padding="none">
+          <Card variant="default" padding="none" style={styles.card}>
             <TouchableOpacity 
               variant="transparent"
-              style={[styles.settingItem, { borderBottomWidth: 0 }]}
+              style={styles.settingItem}
               onPress={() => navigateTo('categories')}
             >
               <Text variant="primary" size="medium">
@@ -281,21 +416,23 @@ const SettingsScreen: React.FC = () => {
           </Card>
         </View>
 
-        {/* Profil */}
+        {/* Veri temizliği - En altta */}
         <View style={styles.section}>
-          <Text variant="secondary" size="medium" weight="semibold">
-            {t('screens.settings.profile.title')}
+          <Text variant="secondary" size="medium" weight="semibold" style={styles.sectionTitle}>
+            {t('screens.settings.data.title')}
           </Text>
-          <Card variant="default" padding="none">
-            <TouchableOpacity 
+          <Card variant="default" padding="medium" style={[styles.card, styles.dangerCard] as any}>
+            <Text variant="secondary" size="small" style={styles.dangerDescription}>
+              {t('screens.settings.data.description')}
+            </Text>
+            <TouchableOpacity
               variant="transparent"
-              style={[styles.settingItem, { borderBottomWidth: 0 }]}
-              onPress={handleEditProfile}
+              style={[styles.dangerButton, { borderColor: colors.danger }]}
+              onPress={handleResetData}
             >
-              <Text variant="primary" size="medium">
-                {t('screens.settings.profile.edit_profile')}
+              <Text style={[styles.dangerButtonText, { color: colors.danger }] as any}>
+                {t('screens.settings.data.reset_button')}
               </Text>
-              <Text variant="secondary" size="medium">›</Text>
             </TouchableOpacity>
           </Card>
         </View>
@@ -349,8 +486,20 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 16,
     fontWeight: '600',
+    marginBottom: 8,
+    paddingHorizontal: 4,
+  },
+  card: {
+    borderRadius: 12,
+    overflow: 'hidden',
+  },
+  dangerCard: {
+    borderWidth: 1,
+    borderColor: 'rgba(220, 53, 69, 0.2)',
+  },
+  dangerDescription: {
     marginBottom: 12,
-    paddingHorizontal: 8,
+    lineHeight: 18,
   },
   sectionCard: {
     borderRadius: 12,
@@ -451,6 +600,11 @@ const styles = StyleSheet.create({
   },
   dangerButtonText: {
     fontWeight: '600',
+  },
+  testButton: {
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 6,
   },
 });
 

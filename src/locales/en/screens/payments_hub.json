@@ -10,6 +10,9 @@
   "once": "One-time",
   "pay": "Pay",
   "paid": "Paid",
-  "no_records": "No records"
+  "no_records": "No records",
+  "tab_pending": "Pending",
+  "tab_completed": "Completed",
+  "empty_pending": "No pending payments",
+  "empty_completed": "No completed payments"
 }
-

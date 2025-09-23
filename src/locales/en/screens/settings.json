@@ -28,7 +28,9 @@
     "reset_message": "This will delete all payments, incomes, and saved reports. This action cannot be undone.",
     "reset_button": "Reset Tables",
     "reset_confirm": "Reset",
-    "reset_success": "Data reset completed"
+    "reset_success": "Data reset completed",
+    "biometric_prompt": "Please authenticate to reset all data",
+    "biometric_failed": "Authentication failed"
   },
   "privacy": {
     "title": "Privacy",

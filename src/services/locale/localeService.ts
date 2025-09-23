@@ -56,78 +56,78 @@ class LocaleService {
     switch (language) {
       case 'en':
         return {
-          common: (await import('@/locales/en/common.json')).default,
-          navigation: (await import('@/locales/en/navigation.json')).default,
+          common: await this.unwrapJsonModule(import('@/locales/en/common.json')),
+          navigation: await this.unwrapJsonModule(import('@/locales/en/navigation.json')),
           screens: {
-            home: (await import('@/locales/en/screens/home.json')).default,
-            settings: (await import('@/locales/en/screens/settings.json')).default,
-            categories: (await import('@/locales/en/screens/categories.json')).default,
-            add_income: (await import('@/locales/en/screens/add_income.json')).default,
-            add_payment: (await import('@/locales/en/screens/add_payment.json')).default,
-            add_entry: (await import('@/locales/en/screens/add_entry.json')).default,
-            payments_hub: (await import('@/locales/en/screens/payments_hub.json')).default,
-            reports: (await import('@/locales/en/screens/reports.json')).default,
-            report_builder: (await import('@/locales/en/screens/report_builder.json')).default,
+            home: await this.unwrapJsonModule(import('@/locales/en/screens/home.json')),
+            settings: await this.unwrapJsonModule(import('@/locales/en/screens/settings.json')),
+            categories: await this.unwrapJsonModule(import('@/locales/en/screens/categories.json')),
+            add_income: await this.unwrapJsonModule(import('@/locales/en/screens/add_income.json')),
+            add_payment: await this.unwrapJsonModule(import('@/locales/en/screens/add_payment.json')),
+            add_entry: await this.unwrapJsonModule(import('@/locales/en/screens/add_entry.json')),
+            payments_hub: await this.unwrapJsonModule(import('@/locales/en/screens/payments_hub.json')),
+            reports: await this.unwrapJsonModule(import('@/locales/en/screens/reports.json')),
+            report_builder: await this.unwrapJsonModule(import('@/locales/en/screens/report_builder.json')),
           }
         };
       case 'tr':
         return {
-          common: (await import('@/locales/tr/common.json')).default,
-          navigation: (await import('@/locales/tr/navigation.json')).default,
+          common: await this.unwrapJsonModule(import('@/locales/tr/common.json')),
+          navigation: await this.unwrapJsonModule(import('@/locales/tr/navigation.json')),
           screens: {
-            home: (await import('@/locales/tr/screens/home.json')).default,
-            settings: (await import('@/locales/tr/screens/settings.json')).default,
-            categories: (await import('@/locales/tr/screens/categories.json')).default,
-            add_income: (await import('@/locales/tr/screens/add_income.json')).default,
-            add_payment: (await import('@/locales/tr/screens/add_payment.json')).default,
-            add_entry: (await import('@/locales/tr/screens/add_entry.json')).default,
-            payments_hub: (await import('@/locales/tr/screens/payments_hub.json')).default,
-            reports: (await import('@/locales/tr/screens/reports.json')).default,
-            report_builder: (await import('@/locales/tr/screens/report_builder.json')).default,
+            home: await this.unwrapJsonModule(import('@/locales/tr/screens/home.json')),
+            settings: await this.unwrapJsonModule(import('@/locales/tr/screens/settings.json')),
+            categories: await this.unwrapJsonModule(import('@/locales/tr/screens/categories.json')),
+            add_income: await this.unwrapJsonModule(import('@/locales/tr/screens/add_income.json')),
+            add_payment: await this.unwrapJsonModule(import('@/locales/tr/screens/add_payment.json')),
+            add_entry: await this.unwrapJsonModule(import('@/locales/tr/screens/add_entry.json')),
+            payments_hub: await this.unwrapJsonModule(import('@/locales/tr/screens/payments_hub.json')),
+            reports: await this.unwrapJsonModule(import('@/locales/tr/screens/reports.json')),
+            report_builder: await this.unwrapJsonModule(import('@/locales/tr/screens/report_builder.json')),
           }
         };
       case 'de':
         return {
-          common: (await import('@/locales/de/common.json')).default,
-          navigation: (await import('@/locales/de/navigation.json')).default,
+          common: await this.unwrapJsonModule(import('@/locales/de/common.json')),
+          navigation: await this.unwrapJsonModule(import('@/locales/de/navigation.json')),
           screens: {
-            home: (await import('@/locales/de/screens/home.json')).default,
-            settings: (await import('@/locales/de/screens/settings.json')).default,
-            categories: (await import('@/locales/de/screens/categories.json')).default,
-            add_payment: (await import('@/locales/de/screens/add_payment.json')).default,
+            home: await this.unwrapJsonModule(import('@/locales/de/screens/home.json')),
+            settings: await this.unwrapJsonModule(import('@/locales/de/screens/settings.json')),
+            categories: await this.unwrapJsonModule(import('@/locales/de/screens/categories.json')),
+            add_payment: await this.unwrapJsonModule(import('@/locales/de/screens/add_payment.json')),
           }
         };
       case 'fr':
         return {
-          common: (await import('@/locales/fr/common.json')).default,
-          navigation: (await import('@/locales/fr/navigation.json')).default,
+          common: await this.unwrapJsonModule(import('@/locales/fr/common.json')),
+          navigation: await this.unwrapJsonModule(import('@/locales/fr/navigation.json')),
           screens: {
-            home: (await import('@/locales/fr/screens/home.json')).default,
-            settings: (await import('@/locales/fr/screens/settings.json')).default,
-            categories: (await import('@/locales/fr/screens/categories.json')).default,
-            add_payment: (await import('@/locales/fr/screens/add_payment.json')).default,
+            home: await this.unwrapJsonModule(import('@/locales/fr/screens/home.json')),
+            settings: await this.unwrapJsonModule(import('@/locales/fr/screens/settings.json')),
+            categories: await this.unwrapJsonModule(import('@/locales/fr/screens/categories.json')),
+            add_payment: await this.unwrapJsonModule(import('@/locales/fr/screens/add_payment.json')),
           }
         };
       case 'it':
         return {
-          common: (await import('@/locales/it/common.json')).default,
-          navigation: (await import('@/locales/it/navigation.json')).default,
+          common: await this.unwrapJsonModule(import('@/locales/it/common.json')),
+          navigation: await this.unwrapJsonModule(import('@/locales/it/navigation.json')),
           screens: {
-            home: (await import('@/locales/it/screens/home.json')).default,
-            settings: (await import('@/locales/it/screens/settings.json')).default,
-            categories: (await import('@/locales/it/screens/categories.json')).default,
-            add_payment: (await import('@/locales/it/screens/add_payment.json')).default,
+            home: await this.unwrapJsonModule(import('@/locales/it/screens/home.json')),
+            settings: await this.unwrapJsonModule(import('@/locales/it/screens/settings.json')),
+            categories: await this.unwrapJsonModule(import('@/locales/it/screens/categories.json')),
+            add_payment: await this.unwrapJsonModule(import('@/locales/it/screens/add_payment.json')),
           }
         };
       case 'es':
         return {
-          common: (await import('@/locales/es/common.json')).default,
-          navigation: (await import('@/locales/es/navigation.json')).default,
+          common: await this.unwrapJsonModule(import('@/locales/es/common.json')),
+          navigation: await this.unwrapJsonModule(import('@/locales/es/navigation.json')),
           screens: {
-            home: (await import('@/locales/es/screens/home.json')).default,
-            settings: (await import('@/locales/es/screens/settings.json')).default,
-            categories: (await import('@/locales/es/screens/categories.json')).default,
-            add_payment: (await import('@/locales/es/screens/add_payment.json')).default,
+            home: await this.unwrapJsonModule(import('@/locales/es/screens/home.json')),
+            settings: await this.unwrapJsonModule(import('@/locales/es/screens/settings.json')),
+            categories: await this.unwrapJsonModule(import('@/locales/es/screens/categories.json')),
+            add_payment: await this.unwrapJsonModule(import('@/locales/es/screens/add_payment.json')),
           }
         };
       default:
@@ -225,6 +225,16 @@ class LocaleService {
   getLanguageName(code: SupportedLanguage): string {
     const language = this.getSupportedLanguages().find(lang => lang.code === code);
     return language?.nativeName || code;
+  }
+
+  private async unwrapJsonModule<T>(loader: Promise<any>): Promise<T> {
+    const mod = await loader;
+
+    if (mod == null) {
+      throw new Error('Failed to load translation module');
+    }
+
+    return (mod.default ?? mod) as T;
   }
 }
 

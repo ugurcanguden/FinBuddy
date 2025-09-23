@@ -10,6 +10,9 @@
   "once": "Tek seferlik",
   "pay": "Öde",
   "paid": "Ödendi",
-  "no_records": "Kayıt bulunamadı"
+  "no_records": "Kayıt bulunamadı",
+  "tab_pending": "Bekleyenler",
+  "tab_completed": "Tamamlananlar",
+  "empty_pending": "Bekleyen ödeme bulunmuyor",
+  "empty_completed": "Tamamlanan ödeme bulunmuyor"
 }
-

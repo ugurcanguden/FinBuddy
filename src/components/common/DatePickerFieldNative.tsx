@@ -7,6 +7,7 @@ import Text from './Text';
 import TouchableOpacity from './TouchableOpacity';
 import { useTheme } from '@/contexts';
 import { useLocale } from '@/hooks';
+import type { SupportedLanguage } from '@/services/locale/localeService';
 
 function formatISO(d: Date): string {
   const y = d.getFullYear();
@@ -32,11 +33,26 @@ export interface DatePickerFieldNativeProps {
 }
 
 const DatePickerFieldNative: React.FC<DatePickerFieldNativeProps> = ({ value, onChange, placeholder }) => {
-  const { colors } = useTheme();
-  const { t } = useLocale();
+  const { colors, currentTheme } = useTheme();
+  const { t, currentLanguage } = useLocale();
   const [open, setOpen] = useState(false);
   const normalizedValue = useMemo(() => (value && value.trim() ? value : undefined), [value]);
   const [temp, setTemp] = useState<Date>(parseISO(normalizedValue));
+
+  const localeMap: Record<SupportedLanguage, string> = useMemo(
+    () => ({
+      en: 'en-US',
+      tr: 'tr-TR',
+      de: 'de-DE',
+      fr: 'fr-FR',
+      it: 'it-IT',
+      es: 'es-ES',
+    }),
+    []
+  );
+
+  const pickerLocale = useMemo(() => localeMap[currentLanguage] ?? 'en-US', [localeMap, currentLanguage]);
+  const themeVariant = useMemo<'light' | 'dark'>(() => (currentTheme === 'dark' || currentTheme === 'colorful' ? 'dark' : 'light'), [currentTheme]);
 
   useEffect(() => {
     if (!open) {
@@ -84,8 +100,10 @@ const DatePickerFieldNative: React.FC<DatePickerFieldNativeProps> = ({ value, on
           <DateTimePicker
             value={parseISO(normalizedValue)}
             mode="date"
-            display="default"
+            display="calendar"
             onChange={handleAndroidChange}
+            locale={pickerLocale}
+            themeVariant={themeVariant}
           />
         ) : (
           <Modal visible transparent animationType="fade" onRequestClose={() => setOpen(false)}>
@@ -101,7 +119,10 @@ const DatePickerFieldNative: React.FC<DatePickerFieldNativeProps> = ({ value, on
                   mode="date"
                   display="inline"
                   onChange={(_, d) => d && setTemp(d)}
-                  style={{ alignSelf: 'center' }}
+                  locale={pickerLocale}
+                  themeVariant={themeVariant}
+                  accentColor={colors.primary}
+                  style={{ alignSelf: 'center', backgroundColor: colors.card, borderRadius: 12 }}
                 />
                 <View variant="transparent" style={styles.actions}>
                   <TouchableOpacity

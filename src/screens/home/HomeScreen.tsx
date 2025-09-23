@@ -89,9 +89,7 @@ const HomeScreen: React.FC = () => {
   const latestIncome = incomeSeries.length ? incomeSeries[incomeSeries.length - 1]!.total : 0;
   const previousIncome = incomeSeries.length > 1 ? incomeSeries[incomeSeries.length - 2]!.total : null;
   const latestExpense = expenseSeries.length ? expenseSeries[expenseSeries.length - 1]!.total : 0;
-  const latestExpensePaid = expenseSeries.length ? expenseSeries[expenseSeries.length - 1]!.paid : 0;
   const previousExpense = expenseSeries.length > 1 ? expenseSeries[expenseSeries.length - 2]!.total : null;
-  const latestExpenseOutstanding = Math.max(latestExpense - latestExpensePaid, 0);
 
   const expenseYearTotal = useMemo(
     () => expenseSeries.reduce((sum, item) => sum + (item.total || 0), 0),
@@ -294,7 +292,7 @@ const HomeScreen: React.FC = () => {
           />
         )}
       >
-        <Card padding="medium" style={[styles.walletCard, { marginBottom: 16 }]}> 
+        <Card padding="medium" style={[styles.walletCard, { marginBottom: 16 }] as any}> 
           <View style={styles.walletHeader}>
             <Text variant="primary" size="medium" weight="bold">
               {t('screens.home.wallet_title') || 'Cüzdan'}

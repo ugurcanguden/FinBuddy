@@ -1,5 +1,5 @@
 // Payment Details Screen - Bir entry'nin taksit/ödemeleri
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Alert, StyleSheet } from 'react-native';
 import { Layout, PageHeader, ScrollView, View, Text, TouchableOpacity } from '@/components';
 import { useNavigation, useTheme } from '@/contexts';
@@ -19,6 +19,7 @@ const PaymentDetailsScreen: React.FC<Props> = ({ entryId }) => {
   const [payments, setPayments] = useState<Payment[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState<'pending' | 'completed'>('pending');
 
   const load = async () => {
     if (!id) return;
@@ -70,33 +71,66 @@ const PaymentDetailsScreen: React.FC<Props> = ({ entryId }) => {
     );
   };
 
+  const isCompleted = (status: Payment['status']) => status === 'paid' || status === 'received';
+
+  const filteredPayments = useMemo(() => {
+    return payments.filter((payment) =>
+      activeTab === 'completed' ? isCompleted(payment.status) : !isCompleted(payment.status)
+    );
+  }, [payments, activeTab]);
+
+  const emptyText = activeTab === 'completed'
+    ? t('screens.payments_hub.empty_completed') || 'Tamamlanan kayıt bulunmuyor'
+    : t('screens.payments_hub.empty_pending') || 'Bekleyen kayıt bulunmuyor';
+
   return (
     <Layout headerComponent={<PageHeader title={t('navigation.tabs.payments')} showBackButton onBackPress={goBack} /> }>
       <ScrollView style={styles.container}>
+        <View variant="transparent" style={styles.tabContainer}>
+          {(['pending', 'completed'] as const).map((tabKey) => {
+            const isActive = activeTab === tabKey;
+            const label = tabKey === 'pending'
+              ? t('screens.payments_hub.tab_pending') || 'Bekleyenler'
+              : t('screens.payments_hub.tab_completed') || 'Tamamlananlar';
+            return (
+              <TouchableOpacity
+                key={tabKey}
+                variant="transparent"
+                style={[styles.tabButton, { borderColor: colors.border, backgroundColor: isActive ? colors.primary : 'transparent' }] as any}
+                onPress={() => setActiveTab(tabKey)}
+              >
+                <Text style={{ color: isActive ? colors.onPrimary : colors.text }}>{label}</Text>
+              </TouchableOpacity>
+            );
+          })}
+        </View>
         {loading ? (
           <View style={styles.center}><Text variant="secondary">{t('common.messages.loading')}</Text></View>
         ) : error ? (
           <View style={styles.center}><Text variant="error">{error}</Text></View>
-        ) : payments.length === 0 ? (
-          <View style={styles.center}><Text variant="secondary">Kayıt bulunamadı</Text></View>
+        ) : filteredPayments.length === 0 ? (
+          <View style={styles.center}><Text variant="secondary">{emptyText}</Text></View>
         ) : (
           <View style={{ gap: 10 }}>
-            {payments.map((p) => (
-              <View key={p.id} variant="transparent" style={{ borderWidth: 1, borderColor: colors.border, padding: 12, borderRadius: 12, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+            {filteredPayments.map((p) => {
+              const completed = isCompleted(p.status);
+              return (
+                <View key={p.id} variant="transparent" style={{ borderWidth: 1, borderColor: colors.border, padding: 12, borderRadius: 12, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
                 <View style={{ flex: 1 }}>
                   <Text weight="semibold">{p.due_date}</Text>
                   <Text variant="secondary" size="small">{p.amount}</Text>
                 </View>
                 <TouchableOpacity
-                  variant={p.status === 'paid' ? 'secondary' : 'primary'}
+                  variant={completed ? 'secondary' : 'primary'}
                   onPress={() => togglePaid(p.id, p.status)}
                 >
-                  <Text style={{ color: p.status === 'paid' ? colors.text : colors.onPrimary }}>
-                    {p.status === 'paid' ? 'Ödendi' : 'Öde'}
+                  <Text style={{ color: completed ? colors.text : colors.onPrimary }}>
+                    {completed ? (t('screens.payments_hub.paid') || 'Ödendi') : (t('screens.payments_hub.pay') || 'Öde')}
                   </Text>
                 </TouchableOpacity>
               </View>
-            ))}
+              );
+            })}
           </View>
         )}
         {id && (
@@ -118,6 +152,18 @@ const PaymentDetailsScreen: React.FC<Props> = ({ entryId }) => {
 const styles = StyleSheet.create({
   container: { flex: 1, padding: 16 },
   center: { alignItems: 'center', padding: 24 },
+  tabContainer: {
+    flexDirection: 'row',
+    gap: 8,
+    marginBottom: 16,
+  },
+  tabButton: {
+    flex: 1,
+    borderWidth: 1,
+    borderRadius: 999,
+    paddingVertical: 10,
+    alignItems: 'center',
+  },
 });
 
 export default PaymentDetailsScreen;

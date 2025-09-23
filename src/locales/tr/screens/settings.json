@@ -28,7 +28,9 @@
     "reset_message": "Bu işlem tüm ödeme, gelir ve rapor kayıtlarını kalıcı olarak silecek.",
     "reset_button": "Tabloları Sıfırla",
     "reset_confirm": "Sıfırla",
-    "reset_success": "Veriler başarıyla sıfırlandı"
+    "reset_success": "Veriler başarıyla sıfırlandı",
+    "biometric_prompt": "Tüm verileri sıfırlamak için kimlik doğrulaması yapın",
+    "biometric_failed": "Kimlik doğrulaması başarısız"
   },
   "privacy": {
     "title": "Gizlilik",
