@@ -17,6 +17,10 @@
     "title": "Bildirimler",
     "payment_reminders": "Ödeme Hatırlatıcıları",
     "payment_reminders_message": "Ödeme tarihlerinizi hatırlatmak için bildirimler alın",
+    "my_payments_title": "Ödemelerim",
+    "my_payments_message": "Henüz ödenmemiş giderler için hatırlatma al",
+    "upcoming_payments_title": "Gelecek ödemeler",
+    "upcoming_payments_message": "Beklediğiniz ödemeleri tarihinden önce takip edin",
     "push_notifications": "Anlık Bildirimler",
     "email_notifications": "E-posta Bildirimleri",
     "reminder_notifications": "Hatırlatma Bildirimleri"

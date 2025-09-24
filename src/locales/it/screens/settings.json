@@ -17,6 +17,10 @@
     "title": "Notifiche",
     "payment_reminders": "Promemoria pagamenti",
     "payment_reminders_message": "Ricevi notifiche per ricordarti le date di pagamento",
+    "my_payments_title": "I miei pagamenti",
+    "my_payments_message": "Ricevi promemoria per le spese ancora da saldare",
+    "upcoming_payments_title": "Pagamenti in arrivo",
+    "upcoming_payments_message": "Monitora gli incassi attesi prima che arrivino",
     "push_notifications": "Notifiche push",
     "email_notifications": "Notifiche email",
     "reminder_notifications": "Notifiche promemoria"

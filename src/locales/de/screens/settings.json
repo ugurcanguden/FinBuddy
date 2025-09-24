@@ -17,6 +17,10 @@
     "title": "Benachrichtigungen",
     "payment_reminders": "Zahlungserinnerungen",
     "payment_reminders_message": "Erhalten Sie Benachrichtigungen, um Sie an Zahlungstermine zu erinnern",
+    "my_payments_title": "Meine Zahlungen",
+    "my_payments_message": "Erhalten Sie Erinnerungen für noch offene Ausgaben",
+    "upcoming_payments_title": "Anstehende Zahlungen",
+    "upcoming_payments_message": "Behalten Sie erwartete Einnahmen rechtzeitig im Blick",
     "push_notifications": "Push-Benachrichtigungen",
     "email_notifications": "E-Mail-Benachrichtigungen",
     "reminder_notifications": "Erinnerungsbenachrichtigungen"

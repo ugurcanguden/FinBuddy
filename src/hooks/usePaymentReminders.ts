@@ -2,17 +2,20 @@
 import { useState, useEffect, useCallback } from 'react';
 import { storageService } from '@/services';
 import { STORAGE_KEYS } from '@/constants';
-
-interface PaymentRemindersSettings {
-  enabled: boolean;
-  time: string; // HH:MM formatında
-  days: number[]; // 0=Pazar, 1=Pazartesi, ..., 6=Cumartesi
-}
+import type {
+  PaymentReminderChannel,
+  PaymentReminderChannelsSettings,
+  PaymentRemindersSettings,
+} from '@/types';
 
 const defaultSettings: PaymentRemindersSettings = {
   enabled: true,
   time: '09:00',
   days: [1, 2, 3, 4, 5], // Hafta içi günler
+  channels: {
+    myPayments: true,
+    upcomingPayments: true,
+  },
 };
 
 export const usePaymentReminders = () => {
@@ -26,7 +29,14 @@ export const usePaymentReminders = () => {
       const savedSettings = await storageService.get(STORAGE_KEYS.PAYMENT_REMINDERS);
       
       if (savedSettings) {
-        setSettings({ ...defaultSettings, ...savedSettings });
+        setSettings({
+          ...defaultSettings,
+          ...savedSettings,
+          channels: {
+            ...defaultSettings.channels,
+            ...(savedSettings.channels ?? {}),
+          },
+        });
       } else {
         // İlk kez açılıyorsa default ayarları kaydet
         await storageService.set(STORAGE_KEYS.PAYMENT_REMINDERS, defaultSettings);
@@ -52,26 +62,55 @@ export const usePaymentReminders = () => {
 
   // Hatırlatıcıları aç/kapat
   const toggleReminders = useCallback(async (enabled: boolean) => {
-    const newSettings = { ...settings, enabled };
+    const newSettings: PaymentRemindersSettings = {
+      ...settings,
+      enabled,
+      channels: {
+        ...settings.channels,
+      },
+    };
     await saveSettings(newSettings);
+    return newSettings;
   }, [settings, saveSettings]);
 
   // Zamanı güncelle
   const updateTime = useCallback(async (time: string) => {
-    const newSettings = { ...settings, time };
+    const newSettings: PaymentRemindersSettings = {
+      ...settings,
+      time,
+      channels: {
+        ...settings.channels,
+      },
+    };
     await saveSettings(newSettings);
+    return newSettings;
   }, [settings, saveSettings]);
 
   // Günleri güncelle
   const updateDays = useCallback(async (days: number[]) => {
-    const newSettings = { ...settings, days };
+    const newSettings: PaymentRemindersSettings = {
+      ...settings,
+      days,
+      channels: {
+        ...settings.channels,
+      },
+    };
     await saveSettings(newSettings);
+    return newSettings;
   }, [settings, saveSettings]);
 
   // Tüm ayarları güncelle
   const updateSettings = useCallback(async (newSettings: Partial<PaymentRemindersSettings>) => {
-    const updatedSettings = { ...settings, ...newSettings };
+    const updatedSettings: PaymentRemindersSettings = {
+      ...settings,
+      ...newSettings,
+      channels: {
+        ...settings.channels,
+        ...(newSettings.channels ?? {}),
+      },
+    };
     await saveSettings(updatedSettings);
+    return updatedSettings;
   }, [settings, saveSettings]);
 
   // Ayarları sıfırla

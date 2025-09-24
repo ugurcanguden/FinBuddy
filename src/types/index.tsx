@@ -94,6 +94,21 @@ export interface Payment {
   updated_at: string;
 }
 
+// Payment reminder ayar tipleri
+export type PaymentReminderChannel = 'myPayments' | 'upcomingPayments';
+
+export interface PaymentReminderChannelsSettings {
+  myPayments: boolean;
+  upcomingPayments: boolean;
+}
+
+export interface PaymentRemindersSettings {
+  enabled: boolean;
+  time: string; // HH:MM formatında
+  days: number[]; // 0=Pazar, 1=Pazartesi, ..., 6=Cumartesi
+  channels: PaymentReminderChannelsSettings;
+}
+
 export interface CreatePaymentEntryInput {
   categoryId: string;
   title: string;

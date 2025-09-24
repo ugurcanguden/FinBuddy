@@ -17,6 +17,10 @@
     "title": "Notifications",
     "payment_reminders": "Rappels de paiement",
     "payment_reminders_message": "Recevez des notifications pour vous rappeler les dates de paiement",
+    "my_payments_title": "Mes paiements",
+    "my_payments_message": "Recevez des rappels pour vos dépenses non réglées",
+    "upcoming_payments_title": "Paiements à venir",
+    "upcoming_payments_message": "Suivez les encaissements attendus à l'avance",
     "push_notifications": "Notifications push",
     "email_notifications": "Notifications par e-mail",
     "reminder_notifications": "Notifications de rappel"

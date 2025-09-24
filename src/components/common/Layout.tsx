@@ -1,5 +1,7 @@
 // Layout Component - Sayfa düzeni için ana component
-import React from 'react';
+import React, { useMemo } from 'react';
+import { StyleSheet } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { View, SafeArea, StatusBar, BottomTabBar } from '@/components';
 import { useTheme } from '@/contexts';
 
@@ -20,50 +22,60 @@ const Layout: React.FC<LayoutProps> = ({
   headerComponent,
   footerComponent,
   style,
-  contentStyle
+  contentStyle,
 }) => {
   const { colors } = useTheme();
+  const insets = useSafeAreaInsets();
+
+  const headerContainerStyle = useMemo(
+    () => ({
+      borderBottomWidth: StyleSheet.hairlineWidth,
+      borderBottomColor: colors.border,
+      paddingTop: insets.top,
+      backgroundColor: colors.card,
+    }),
+    [colors.border, colors.card, insets.top],
+  );
+
+  const footerContainerStyle = useMemo(
+    () => ({
+      borderTopWidth: StyleSheet.hairlineWidth,
+      borderTopColor: colors.border,
+      paddingBottom: insets.bottom,
+      backgroundColor: colors.card,
+    }),
+    [colors.border, colors.card, insets.bottom],
+  );
+
+  const contentContainerStyle = useMemo(
+    () => ({
+      flex: 1,
+      backgroundColor: colors.background,
+      paddingTop: showHeader ? 0 : insets.top,
+      paddingBottom: showFooter ? 0 : insets.bottom,
+    }),
+    [colors.background, insets.bottom, insets.top, showFooter, showHeader],
+  );
 
   return (
-    <SafeArea style={[{ flex: 1, backgroundColor: colors.background }, style]}>
+    <SafeArea edges={['left', 'right']} style={[{ flex: 1, backgroundColor: colors.background }, style]}>
       <StatusBar />
-      
+
       {/* Header */}
       {showHeader && (
-        <View 
-          variant="surface" 
-          style={{
-            borderBottomWidth: 1,
-            borderBottomColor: colors.border,
-          }}
-        >
+        <View variant="surface" style={headerContainerStyle}>
           {headerComponent}
         </View>
       )}
 
       {/* Body/Content */}
-      <View 
-        variant="transparent" 
-        style={[
-          { 
-            flex: 1,
-            backgroundColor: colors.background 
-          }, 
-          contentStyle
-        ]}
-      >
+      <View variant="transparent" style={[contentContainerStyle, contentStyle]}>
         {children}
       </View>
 
       {/* Footer */}
       {showFooter && (
-        <View 
-          variant="surface" 
-          style={{
-            borderTopWidth: 1,
-            borderTopColor: colors.border,
-          }}
-        >
+        <View variant="surface" style={footerContainerStyle}>
           {footerComponent || <BottomTabBar />}
         </View>
       )}

@@ -12,6 +12,7 @@ class LocaleService {
   private currentLanguage: SupportedLanguage = 'en';
   private fallbackLanguage: SupportedLanguage = 'en';
   private translations: Record<string, any> = {};
+  private fallbackTranslations: Record<string, any> = {};
 
   // Dil servisini başlat
   async initialize(): Promise<void> {
@@ -22,7 +23,8 @@ class LocaleService {
         this.currentLanguage = savedLanguage;
       }
 
-      // Çevirileri yükle
+      // Yedek çevirileri hazırla ve ardından aktif dili yükle
+      await this.ensureFallbackTranslationsLoaded();
       await this.loadTranslations(this.currentLanguage);
       console.log('✅ Locale service initialized');
     } catch (error) {
@@ -38,16 +40,28 @@ class LocaleService {
 
   // Çevirileri yükle
   private async loadTranslations(language: SupportedLanguage): Promise<void> {
+    await this.ensureFallbackTranslationsLoaded();
+
     try {
       // Statik import kullan
       const translations = await this.getTranslationsForLanguage(language);
       this.translations = translations;
     } catch (error) {
       console.error(`❌ Failed to load translations for ${language}:`, error);
-      // Fallback dilini dene
-      if (language !== this.fallbackLanguage) {
-        await this.loadTranslations(this.fallbackLanguage);
-      }
+      this.translations = this.fallbackTranslations;
+    }
+  }
+
+  private async ensureFallbackTranslationsLoaded(): Promise<void> {
+    if (Object.keys(this.fallbackTranslations).length > 0) {
+      return;
+    }
+
+    try {
+      this.fallbackTranslations = await this.getTranslationsForLanguage(this.fallbackLanguage);
+    } catch (error) {
+      console.error(`❌ Failed to load fallback translations for ${this.fallbackLanguage}:`, error);
+      this.fallbackTranslations = {};
     }
   }
 
@@ -154,21 +168,8 @@ class LocaleService {
 
   // Çeviri al
   t(key: string, params?: Record<string, string | number>): string {
-    const keys = key.split('.');
-    let value: any = this.translations;
+    let value = this.getTranslationValue(this.translations, key);
 
-    // Nested key'e git
-    for (const k of keys) {
-      if (value && typeof value === 'object' && k in value) {
-        value = value[k];
-      } else {
-        // Fallback dilini dene
-        value = this.getFallbackTranslation(key);
-        break;
-      }
-    }
-
-    // String değilse fallback'e git
     if (typeof value !== 'string') {
       value = this.getFallbackTranslation(key);
     }
@@ -183,18 +184,29 @@ class LocaleService {
 
   // Fallback çevirisi al
   private getFallbackTranslation(key: string): string {
-    const keys = key.split('.');
-    let value: any = this.translations;
-
-    for (const k of keys) {
-      if (value && typeof value === 'object' && k in value) {
-        value = value[k];
-      } else {
-        return key; // Key'i döndür
+    if (Object.keys(this.fallbackTranslations).length > 0) {
+      const fallbackValue = this.getTranslationValue(this.fallbackTranslations, key);
+      if (typeof fallbackValue === 'string') {
+        return fallbackValue;
       }
     }
 
-    return typeof value === 'string' ? value : key;
+    const currentValue = this.getTranslationValue(this.translations, key);
+    if (typeof currentValue === 'string') {
+      return currentValue;
+    }
+
+    return key;
+  }
+
+  private getTranslationValue(source: Record<string, any>, key: string): any {
+    return key.split('.').reduce<any>((acc, current) => {
+      if (acc && typeof acc === 'object' && current in acc) {
+        return acc[current];
+      }
+
+      return undefined;
+    }, source);
   }
 
   // Parametreleri değiştir

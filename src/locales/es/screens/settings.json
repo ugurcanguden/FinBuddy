@@ -17,6 +17,10 @@
     "title": "Notificaciones",
     "payment_reminders": "Recordatorios de pago",
     "payment_reminders_message": "Recibe notificaciones para recordarte las fechas de pago",
+    "my_payments_title": "Mis pagos",
+    "my_payments_message": "Recibe avisos de los gastos que aún debes pagar",
+    "upcoming_payments_title": "Pagos próximos",
+    "upcoming_payments_message": "Haz seguimiento de los cobros esperados con antelación",
     "push_notifications": "Notificaciones push",
     "email_notifications": "Notificaciones por correo",
     "reminder_notifications": "Notificaciones de recordatorio"
