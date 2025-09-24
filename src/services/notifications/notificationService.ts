@@ -1,9 +1,105 @@
 import * as Notifications from 'expo-notifications';
 import { SchedulableTriggerInputTypes } from 'expo-notifications';
-import type { TimeIntervalTriggerInput } from 'expo-notifications';
+import type { NotificationContentInput, TimeIntervalTriggerInput } from 'expo-notifications';
 import * as Device from 'expo-device';
 import { Platform } from 'react-native';
 import { localeService } from '../locale';
+import { paymentService } from '../payment';
+import type { PaymentReminderChannel, PaymentRemindersSettings } from '@/types';
+
+type PaymentReminderTemplate = {
+  dayBeforeTitle: string;
+  dayOfTitle: string;
+  body: string;
+};
+
+const PAYMENT_REMINDER_TEMPLATES: Record<string, Record<PaymentReminderChannel, PaymentReminderTemplate>> = {
+  en: {
+    myPayments: {
+      dayBeforeTitle: 'Payment due tomorrow',
+      dayOfTitle: 'Payment due today',
+      body: "Don't forget {title} due on {dueDate}.",
+    },
+    upcomingPayments: {
+      dayBeforeTitle: 'Incoming payment expected tomorrow',
+      dayOfTitle: 'Incoming payment expected today',
+      body: 'Keep an eye on {title} scheduled for {dueDate}.',
+    },
+  },
+  tr: {
+    myPayments: {
+      dayBeforeTitle: 'Ödemenin son günü yarın',
+      dayOfTitle: 'Ödemenin son günü bugün',
+      body: '{title} ödemesini {dueDate} tarihinde tamamlamayı unutmayın.',
+    },
+    upcomingPayments: {
+      dayBeforeTitle: 'Beklenen ödeme yarın',
+      dayOfTitle: 'Beklenen ödeme bugün',
+      body: '{title} ödemesinin {dueDate} tarihinde hesabınıza geçmesi bekleniyor.',
+    },
+  },
+  de: {
+    myPayments: {
+      dayBeforeTitle: 'Zahlung fällig morgen',
+      dayOfTitle: 'Zahlung heute fällig',
+      body: 'Vergiss nicht, {title} bis {dueDate} zu begleichen.',
+    },
+    upcomingPayments: {
+      dayBeforeTitle: 'Eingangszahlung erwartet morgen',
+      dayOfTitle: 'Eingangszahlung erwartet heute',
+      body: 'Behalte {title} im Blick, geplant für den {dueDate}.',
+    },
+  },
+  fr: {
+    myPayments: {
+      dayBeforeTitle: 'Paiement dû demain',
+      dayOfTitle: "Paiement dû aujourd'hui",
+      body: "N'oubliez pas de régler {title} avant le {dueDate}.",
+    },
+    upcomingPayments: {
+      dayBeforeTitle: 'Encaissement attendu demain',
+      dayOfTitle: "Encaissement attendu aujourd'hui",
+      body: 'Surveillez {title} prévu pour le {dueDate}.',
+    },
+  },
+  it: {
+    myPayments: {
+      dayBeforeTitle: 'Pagamento in scadenza domani',
+      dayOfTitle: 'Pagamento in scadenza oggi',
+      body: 'Ricordati di saldare {title} entro il {dueDate}.',
+    },
+    upcomingPayments: {
+      dayBeforeTitle: 'Entrata prevista domani',
+      dayOfTitle: 'Entrata prevista oggi',
+      body: 'Tieniti pronto per {title} previsto per il {dueDate}.',
+    },
+  },
+  es: {
+    myPayments: {
+      dayBeforeTitle: 'Pago vence mañana',
+      dayOfTitle: 'Pago vence hoy',
+      body: 'No olvides liquidar {title} antes del {dueDate}.',
+    },
+    upcomingPayments: {
+      dayBeforeTitle: 'Cobro esperado mañana',
+      dayOfTitle: 'Cobro esperado hoy',
+      body: 'Presta atención a {title} programado para el {dueDate}.',
+    },
+  },
+};
+
+const PAYMENT_TITLE_FALLBACKS: Record<string, Record<PaymentReminderChannel, string>> = {
+  en: { myPayments: 'this payment', upcomingPayments: 'this payment' },
+  tr: { myPayments: 'bu ödeme', upcomingPayments: 'bu ödeme' },
+  de: { myPayments: 'diese Zahlung', upcomingPayments: 'diese Zahlung' },
+  fr: { myPayments: 'ce paiement', upcomingPayments: 'ce paiement' },
+  it: { myPayments: 'questo pagamento', upcomingPayments: 'questo pagamento' },
+  es: { myPayments: 'este pago', upcomingPayments: 'este pago' },
+};
+
+const PAYMENT_LOOKAHEAD_DAYS = 30;
+const MAX_SCHEDULED_PAYMENTS_PER_CHANNEL = 50;
+const DEFAULT_TEMPLATE_LANGUAGE = 'en';
 
 // Bildirim davranışını yapılandır
 Notifications.setNotificationHandler({
@@ -14,18 +110,6 @@ Notifications.setNotificationHandler({
     shouldSetBadge: false,
   }),
 });
-
-export interface NotificationSettings {
-  enabled: boolean;
-  hour: number;
-  minute: number;
-}
-
-export interface PaymentReminderSettings {
-  enabled: boolean;
-  time: string; // HH:MM formatı
-  days?: number[];
-}
 
 export class NotificationService {
   static async initialize(): Promise<boolean> {
@@ -122,23 +206,132 @@ export class NotificationService {
   }
 
   static async schedulePaymentReminders(
-    settings: PaymentReminderSettings,
+    settings: PaymentRemindersSettings,
     language?: string
-  ): Promise<string | null> {
+  ): Promise<string[] | null> {
     try {
-      if (!settings.enabled) {
+      if (!settings.enabled || !this.hasActiveReminderChannel(settings.channels)) {
         await this.cancelAllNotifications();
         return null;
       }
 
+      await this.cancelAllNotifications();
+
       const [hours, minutes] = this.parseTime(settings.time);
       const resolvedLanguage = language || localeService.getCurrentLanguage();
+      const now = new Date();
+      const identifiers: string[] = [];
 
-      return await this.scheduleDailyNotification(hours, minutes, resolvedLanguage);
+      if (settings.channels.myPayments) {
+        const expenses = await paymentService.getPendingPayments({
+          type: 'expense',
+          daysAhead: PAYMENT_LOOKAHEAD_DAYS,
+          limit: MAX_SCHEDULED_PAYMENTS_PER_CHANNEL,
+        });
+
+        const scheduled = await this.scheduleNotificationsForPayments({
+          payments: expenses,
+          channel: 'myPayments',
+          language: resolvedLanguage,
+          hour: hours,
+          minute: minutes,
+          now,
+        });
+
+        identifiers.push(...scheduled);
+      }
+
+      if (settings.channels.upcomingPayments) {
+        const incomes = await paymentService.getPendingPayments({
+          type: 'income',
+          daysAhead: PAYMENT_LOOKAHEAD_DAYS,
+          limit: MAX_SCHEDULED_PAYMENTS_PER_CHANNEL,
+        });
+
+        const scheduled = await this.scheduleNotificationsForPayments({
+          payments: incomes,
+          channel: 'upcomingPayments',
+          language: resolvedLanguage,
+          hour: hours,
+          minute: minutes,
+          now,
+        });
+
+        identifiers.push(...scheduled);
+      }
+
+      return identifiers.length > 0 ? identifiers : null;
     } catch (error) {
       console.error('Error scheduling payment reminders:', error);
       throw error;
     }
+  }
+
+  private static hasActiveReminderChannel(channels: PaymentRemindersSettings['channels']): boolean {
+    return Boolean(channels.myPayments || channels.upcomingPayments);
+  }
+
+  private static async scheduleNotificationsForPayments(params: {
+    payments: Array<{ id: string; title: string | null; due_date: string }>;
+    channel: PaymentReminderChannel;
+    language: string;
+    hour: number;
+    minute: number;
+    now: Date;
+  }): Promise<string[]> {
+    const identifiers: string[] = [];
+    const template = this.getReminderTemplate(params.language, params.channel);
+
+    for (const payment of params.payments) {
+      const title = payment.title || this.getFallbackPaymentTitle(params.language, params.channel);
+      const context = { title, dueDate: payment.due_date };
+
+      const dayBefore = this.combineDateAndTime(payment.due_date, params.hour, params.minute, -1);
+      if (dayBefore && dayBefore.getTime() > params.now.getTime()) {
+        const identifier = await this.scheduleCalendarNotification(
+          {
+            title: template.dayBeforeTitle,
+            body: this.formatTemplate(template.body, context),
+            data: {
+              type: 'payment_reminder',
+              channel: params.channel,
+              paymentId: payment.id,
+              dueDate: payment.due_date,
+              timing: 'dayBefore',
+            },
+          },
+          dayBefore,
+        );
+
+        if (identifier) {
+          identifiers.push(identifier);
+        }
+      }
+
+      const dueDate = this.combineDateAndTime(payment.due_date, params.hour, params.minute, 0);
+      if (dueDate && dueDate.getTime() > params.now.getTime()) {
+        const identifier = await this.scheduleCalendarNotification(
+          {
+            title: template.dayOfTitle,
+            body: this.formatTemplate(template.body, context),
+            data: {
+              type: 'payment_reminder',
+              channel: params.channel,
+              paymentId: payment.id,
+              dueDate: payment.due_date,
+              timing: 'dayOf',
+            },
+          },
+          dueDate,
+        );
+
+        if (identifier) {
+          identifiers.push(identifier);
+        }
+      }
+    }
+
+    return identifiers;
   }
 
   static async updateNotificationLanguage(language: string): Promise<boolean> {
@@ -287,6 +480,63 @@ export class NotificationService {
     }
 
     return [hour, minute];
+  }
+
+  private static combineDateAndTime(
+    dueDate: string,
+    hour: number,
+    minute: number,
+    dayOffset: number,
+  ): Date | null {
+    const [yearStr, monthStr, dayStr] = dueDate.split('-');
+    const year = Number.parseInt(yearStr ?? '', 10);
+    const month = Number.parseInt(monthStr ?? '', 10);
+    const day = Number.parseInt(dayStr ?? '', 10);
+
+    if (Number.isNaN(year) || Number.isNaN(month) || Number.isNaN(day)) {
+      return null;
+    }
+
+    const date = new Date(year, month - 1, day, hour, minute, 0, 0);
+
+    if (Number.isNaN(date.getTime())) {
+      return null;
+    }
+
+    if (dayOffset !== 0) {
+      date.setDate(date.getDate() + dayOffset);
+    }
+
+    return date;
+  }
+
+  private static formatTemplate(template: string, context: Record<string, string>): string {
+    return template.replace(/\{(\w+)\}/g, (_, key: string) => context[key] ?? '');
+  }
+
+  private static getReminderTemplate(language: string, channel: PaymentReminderChannel): PaymentReminderTemplate {
+    const templates = PAYMENT_REMINDER_TEMPLATES[language] ?? PAYMENT_REMINDER_TEMPLATES[DEFAULT_TEMPLATE_LANGUAGE];
+    return templates[channel] ?? PAYMENT_REMINDER_TEMPLATES[DEFAULT_TEMPLATE_LANGUAGE][channel];
+  }
+
+  private static getFallbackPaymentTitle(language: string, channel: PaymentReminderChannel): string {
+    const titles = PAYMENT_TITLE_FALLBACKS[language] ?? PAYMENT_TITLE_FALLBACKS[DEFAULT_TEMPLATE_LANGUAGE];
+    return titles[channel] ?? PAYMENT_TITLE_FALLBACKS[DEFAULT_TEMPLATE_LANGUAGE][channel];
+  }
+
+  private static async scheduleCalendarNotification(
+    content: NotificationContentInput,
+    triggerDate: Date,
+  ): Promise<string | null> {
+    try {
+      return await Notifications.scheduleNotificationAsync({
+        content,
+        trigger: triggerDate,
+      });
+    } catch (error) {
+      console.error('Error scheduling calendar notification:', error);
+      return null;
+    }
   }
 
 

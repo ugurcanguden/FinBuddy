@@ -22,6 +22,10 @@ const defaultSettings = {
   enabled: true,
   time: '09:00',
   days: [1, 2, 3, 4, 5],
+  channels: {
+    myPayments: true,
+    upcomingPayments: true,
+  },
 };
 
 describe('usePaymentReminders', () => {
@@ -38,9 +42,9 @@ describe('usePaymentReminders', () => {
 
     expect(mockedStorage.get).toHaveBeenCalledWith(STORAGE_KEYS.PAYMENT_REMINDERS);
     expect(result.current.settings).toEqual({
+      ...defaultSettings,
       enabled: false,
       time: '21:30',
-      days: defaultSettings.days,
     });
     expect(mockedStorage.set).not.toHaveBeenCalled();
   });

@@ -1,5 +1,5 @@
 // Settings Screen - Ayarlar sayfası
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { Alert, StyleSheet, Platform } from 'react-native';
 import type { ThemeMode } from '@/contexts';
 import { themes } from '@/contexts';
@@ -7,6 +7,7 @@ import { LANGUAGE_OPTIONS } from '@/constants/languageOptions';
 import { useLocale, usePaymentReminders, useBiometric } from '@/hooks';
 import { useNavigation, useTheme, useCurrency } from '@/contexts';
 import { migrationService, categoryService, notificationService } from '@/services';
+import type { PaymentReminderChannel } from '@/types';
 import { 
   Text, 
   Card, 
@@ -24,13 +25,11 @@ import type { Currency } from '@/types';
 
 const SettingsScreen: React.FC = () => {
   const { t, currentLanguage, changeLanguage } = useLocale();
-  const { settings: paymentReminders, toggleReminders } = usePaymentReminders();
+  const { settings: paymentReminders, toggleReminders, updateSettings } = usePaymentReminders();
   const { currentTheme, setTheme, colors } = useTheme();
   const { goBack, navigateTo } = useNavigation();
   const { currency, setCurrency } = useCurrency();
   const { authenticate, isAvailable, isEnrolled, checkBiometricAvailability } = useBiometric();
-  const [notificationTime, setNotificationTime] = useState('09:00');
-
   // Component mount olduğunda biometric availability'yi kontrol et
   useEffect(() => {
     checkBiometricAvailability();
@@ -54,21 +53,18 @@ const SettingsScreen: React.FC = () => {
     await setCurrency(currencyCode as Currency);
   };
 
+  const hasActiveReminderChannel = (channels: typeof paymentReminders.channels) =>
+    channels.myPayments || channels.upcomingPayments;
+
   const handlePaymentRemindersToggle = async (enabled: boolean) => {
-    await toggleReminders(enabled);
-    
-    // Bildirim servisini güncelle
-    const settings = {
-      enabled,
-      time: notificationTime,
-    };
-    
-    if (enabled) {
+    const updatedSettings = await toggleReminders(enabled);
+
+    if (enabled && hasActiveReminderChannel(updatedSettings.channels)) {
       // Bildirim izni iste
       const hasPermission = await notificationService.initialize();
       if (hasPermission) {
-        await notificationService.schedulePaymentReminders(settings);
-        console.log('✅ Bildirimler zamanlandı:', settings);
+        await notificationService.schedulePaymentReminders(updatedSettings);
+        console.log('✅ Bildirimler zamanlandı:', updatedSettings);
       } else {
         Alert.alert(
           'Bildirim İzni Gerekli',
@@ -99,21 +95,40 @@ const SettingsScreen: React.FC = () => {
 
   // Saat değiştiğinde bildirimleri güncelle
   const handleNotificationTimeChange = async (time: string) => {
-    setNotificationTime(time);
-    
-    // Eğer bildirimler açıksa, yeni saatle yeniden zamanla
-    if (paymentReminders.enabled) {
-      const settings = {
-        enabled: true,
-        time: time,
-      };
-      
+    const updatedSettings = await updateSettings({ time });
+
+    // Eğer bildirimler açıksa ve kanal seçiliyse, yeni saatle yeniden zamanla
+    if (updatedSettings.enabled && hasActiveReminderChannel(updatedSettings.channels)) {
       try {
-        await notificationService.schedulePaymentReminders(settings);
-        console.log('✅ Bildirim saati güncellendi:', settings);
+        await notificationService.schedulePaymentReminders(updatedSettings);
+        console.log('✅ Bildirim saati güncellendi:', updatedSettings);
       } catch (error) {
         console.error('❌ Bildirim saati güncellenirken hata:', error);
       }
+    }
+  };
+
+  const handleReminderChannelToggle = async (
+    channel: PaymentReminderChannel,
+    enabled: boolean,
+  ) => {
+    const updatedSettings = await updateSettings({
+      channels: {
+        ...paymentReminders.channels,
+        [channel]: enabled,
+      },
+    });
+
+    if (updatedSettings.enabled && hasActiveReminderChannel(updatedSettings.channels)) {
+      try {
+        await notificationService.schedulePaymentReminders(updatedSettings);
+        console.log('✅ Bildirim kanalı güncellendi:', updatedSettings);
+      } catch (error) {
+        console.error('❌ Bildirim kanalı güncellenirken hata:', error);
+      }
+    } else {
+      await notificationService.cancelAllScheduledNotifications();
+      console.log('❌ Bildirim kanalı devre dışı bırakıldı');
     }
   };
 
@@ -320,6 +335,63 @@ const SettingsScreen: React.FC = () => {
               />
             </View>
 
+            {/* Bildirim Kanalları */}
+            <View
+              variant="transparent"
+              style={[
+                styles.settingItem,
+                {
+                  borderTopWidth: 1,
+                  borderTopColor: colors.border,
+                  borderBottomWidth: paymentReminders.enabled ? 1 : 0,
+                  borderBottomColor: colors.border,
+                  paddingHorizontal: 16,
+                  paddingVertical: 12,
+                },
+              ]}
+            >
+              <View variant="transparent" style={styles.settingInfo}>
+                <Text variant="primary" size="medium">
+                  {t('screens.settings.notifications.my_payments_title')}
+                </Text>
+                <Text variant="secondary" size="small" style={styles.settingDescription}>
+                  {t('screens.settings.notifications.my_payments_message')}
+                </Text>
+              </View>
+              <Switch
+                value={paymentReminders.channels.myPayments}
+                onValueChange={(value) => handleReminderChannelToggle('myPayments', value)}
+                disabled={!paymentReminders.enabled}
+              />
+            </View>
+
+            <View
+              variant="transparent"
+              style={[
+                styles.settingItem,
+                {
+                  borderBottomWidth: paymentReminders.enabled ? 1 : 0,
+                  borderBottomColor: colors.border,
+                  paddingHorizontal: 16,
+                  paddingVertical: 12,
+                },
+              ]}
+            >
+              <View variant="transparent" style={styles.settingInfo}>
+                <Text variant="primary" size="medium">
+                  {t('screens.settings.notifications.upcoming_payments_title')}
+                </Text>
+                <Text variant="secondary" size="small" style={styles.settingDescription}>
+                  {t('screens.settings.notifications.upcoming_payments_message')}
+                </Text>
+              </View>
+              <Switch
+                value={paymentReminders.channels.upcomingPayments}
+                onValueChange={(value) => handleReminderChannelToggle('upcomingPayments', value)}
+                disabled={!paymentReminders.enabled}
+              />
+            </View>
+
             {/* Bildirim Saati */}
             {paymentReminders.enabled && (
               <View variant="transparent" style={[styles.settingItem, { paddingHorizontal: 16, paddingVertical: 12 }]}>
@@ -332,7 +404,7 @@ const SettingsScreen: React.FC = () => {
                   </Text>
                 </View>
                 <TimePicker
-                  value={notificationTime}
+                  value={paymentReminders.time}
                   onChange={handleNotificationTimeChange}
                   placeholder="Saat seçin"
                 />

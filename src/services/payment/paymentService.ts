@@ -149,6 +149,43 @@ class PaymentService {
     );
   }
 
+  async getPendingPayments(options?: {
+    type?: Extract<EntryType, 'expense' | 'income'>;
+    daysAhead?: number;
+    limit?: number;
+  }): Promise<Array<{ id: string; entry_id: string; title: string | null; due_date: string; amount: number; type: EntryType }>> {
+    const { type, daysAhead = 30, limit = 50 } = options ?? {};
+    const today = new Date();
+    const start = today.toISOString().slice(0, 10);
+    const where: string[] = ["p.status = 'pending'", 'p.due_date >= ?'];
+    const params: Array<string | number> = [start];
+
+    if (typeof daysAhead === 'number') {
+      const ahead = new Date(today);
+      ahead.setDate(today.getDate() + daysAhead);
+      const end = ahead.toISOString().slice(0, 10);
+      where.push('p.due_date <= ?');
+      params.push(end);
+    }
+
+    if (type) {
+      where.push('e.type = ?');
+      params.push(type);
+    }
+
+    params.push(limit);
+
+    return databaseService.getAll(
+      `SELECT p.id, p.entry_id, p.due_date, p.amount, e.title, e.type
+       FROM payments p
+       JOIN entries e ON e.id = p.entry_id
+       WHERE ${where.join(' AND ')}
+       ORDER BY p.due_date ASC
+       LIMIT ?`,
+      params,
+    );
+  }
+
   async getOverduePayments(type: 'expense' | 'income', limit = 10): Promise<Array<{ id: string; entry_id: string; title: string | null; due_date: string; amount: number }>> {
     const today = new Date().toISOString().slice(0, 10);
     return databaseService.getAll(

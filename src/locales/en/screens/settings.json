@@ -17,6 +17,10 @@
     "title": "Notifications",
     "payment_reminders": "Payment Reminders",
     "payment_reminders_message": "Receive notifications to remind you of payment dates",
+    "my_payments_title": "My payments",
+    "my_payments_message": "Get alerts for bills you still need to pay",
+    "upcoming_payments_title": "Upcoming payments",
+    "upcoming_payments_message": "Track expected incomes before they arrive",
     "push_notifications": "Push Notifications",
     "email_notifications": "Email Notifications",
     "reminder_notifications": "Reminder Notifications"
