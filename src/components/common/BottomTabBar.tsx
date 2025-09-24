@@ -23,52 +23,91 @@ const withAlpha = (hex: string, alpha: number) => {
 const BottomTabBar: React.FC<BottomTabBarProps> = ({ activeTab: propActiveTab }) => {
   const { t } = useLocale();
   const { currentScreen, navigateTo } = useNavigation();
-  const { colors } = useTheme();
+  const { colors, tokens } = useTheme();
 
   const activeTab = propActiveTab || currentScreen;
 
+  const containerStyle = useMemo<ViewStyle>(
+    () => ({
+      borderTopWidth: StyleSheet.hairlineWidth,
+      borderTopColor: colors.outline,
+      backgroundColor: colors.cardMuted,
+      paddingVertical: tokens.spacing.sm,
+      paddingHorizontal: tokens.spacing.lg,
+      ...tokens.shadows.level1,
+    }),
+    [colors.cardMuted, colors.outline, tokens.shadows.level1, tokens.spacing.lg, tokens.spacing.sm],
+  );
+
+  const tabRowStyle = useMemo<ViewStyle>(() => ({
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'stretch',
+    gap: tokens.spacing.sm,
+  }), [tokens.spacing.sm]);
+
+  const baseTabStyle = useMemo<ViewStyle>(() => ({
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: tokens.spacing.sm,
+    paddingHorizontal: tokens.spacing.xs,
+    borderRadius: tokens.radii.md,
+    gap: 4,
+  }), [tokens.radii.md, tokens.spacing.sm, tokens.spacing.xs]);
+
+  const iconBaseStyle = useMemo<TextStyle>(() => ({
+    fontSize: tokens.typography.sizes.lg,
+    marginBottom: 2,
+  }), [tokens.typography.sizes.lg]);
+
+  const labelBaseStyle = useMemo<TextStyle>(() => ({
+    fontSize: tokens.typography.sizes.xs + 1,
+    textAlign: 'center' as const,
+    fontFamily: tokens.typography.fontFamily,
+  }), [tokens.typography.fontFamily, tokens.typography.sizes.xs]);
+
+  const fabSize = useMemo(() => tokens.spacing.xxl + tokens.spacing.xl, [tokens.spacing.xl, tokens.spacing.xxl]);
+
   const getTabContainerStyle = (tabKey: string): ViewStyle => {
     const isActive = activeTab === tabKey;
+    const activeShadow: ViewStyle | undefined = isActive
+      ? {
+          shadowColor: colors.primary,
+          shadowOpacity: 0.12,
+          shadowRadius: 8,
+          shadowOffset: { width: 0, height: 3 },
+          elevation: 4,
+        }
+      : undefined;
+
     return {
-      ...styles.tab,
-      backgroundColor: isActive ? withAlpha(colors.primary, 0.12) : 'transparent',
-      borderWidth: isActive ? 1 : 0,
-      borderColor: isActive ? withAlpha(colors.primary, 0.24) : 'transparent',
+      ...baseTabStyle,
+      backgroundColor: isActive ? withAlpha(colors.primary, 0.18) : colors.card,
+      borderWidth: isActive ? 1 : StyleSheet.hairlineWidth,
+      borderColor: isActive ? withAlpha(colors.primary, 0.35) : colors.border,
+      transform: isActive ? [{ translateY: -2 }] : undefined,
+      ...(activeShadow ?? {}),
     };
   };
 
-  const getIconTextStyle = (tabKey: string): TextStyle => {
-    const isActive = activeTab === tabKey;
-    return {
-      ...styles.tabIcon,
-      color: isActive ? colors.primary : colors.textSecondary,
-    };
-  };
+  const getIconTextStyle = (tabKey: string): TextStyle => ({
+    ...iconBaseStyle,
+    color: activeTab === tabKey ? colors.primary : colors.textSecondary,
+  });
 
-  const getLabelTextStyle = (tabKey: string): TextStyle => {
-    const isActive = activeTab === tabKey;
-    return {
-      ...styles.tabLabel,
-      color: isActive ? colors.primary : colors.textSecondary,
-      fontWeight: isActive ? '700' : '400',
-    };
-  };
-
-  const containerStyle = useMemo<ViewStyle>(() => {
-    return {
-      ...styles.container,
-      backgroundColor: withAlpha(colors.card, 0.95), // hafif blur etkisi taklidi
-      borderTopColor: colors.border,
-      opacity:100,
-    };
-  }, [colors]);
+  const getLabelTextStyle = (tabKey: string): TextStyle => ({
+    ...labelBaseStyle,
+    color: activeTab === tabKey ? colors.primary : colors.textSecondary,
+    fontWeight: activeTab === tabKey ? '700' : '500',
+  });
 
   return (
     <View style={containerStyle}>
-      <View style={styles.tabRow}>
+      <View style={tabRowStyle}>
         <TouchableOpacity
           style={getTabContainerStyle('home')}
-          onPress={() => navigateTo('home')}  
+          onPress={() => navigateTo('home')}
         >
           <Text style={getIconTextStyle('home')}>🏠</Text>
           <Text style={getLabelTextStyle('home')}>
@@ -114,15 +153,16 @@ const BottomTabBar: React.FC<BottomTabBarProps> = ({ activeTab: propActiveTab })
         style={{
           position: 'absolute',
           alignSelf: 'center',
-          top: -28,
-          width: 56,
-          height: 56,
-          borderRadius: 28,
+          top: -fabSize / 2,
+          width: fabSize,
+          height: fabSize,
+          borderRadius: fabSize / 2,
           alignItems: 'center',
           justifyContent: 'center',
           backgroundColor: colors.primary,
           borderWidth: 2,
           borderColor: withAlpha(colors.primary, 0.32),
+          ...tokens.shadows.level2,
         }}
       >
         <Text style={{ color: colors.onPrimary, fontSize: 28, lineHeight: 28 }}>+</Text>
@@ -130,35 +170,5 @@ const BottomTabBar: React.FC<BottomTabBarProps> = ({ activeTab: propActiveTab })
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    borderTopWidth: 1,
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-  },
-  tabRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    alignItems: 'stretch',
-    gap: 8,
-  },
-  tab: {
-    flex: 1,
-    alignItems: 'center',
-    paddingVertical: 8,
-    paddingHorizontal: 4,
-    borderRadius: 10,
-    gap: 2,
-  },
-  tabIcon: {
-    fontSize: 20,
-    marginBottom: 2,
-  },
-  tabLabel: {
-    fontSize: 11,
-    textAlign: 'center',
-  },
-});
 
 export default BottomTabBar;
