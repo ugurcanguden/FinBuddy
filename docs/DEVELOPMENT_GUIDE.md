@@ -36,10 +36,11 @@ FinBuddy/
 │   │   ├── database/       # Veritabanı servisleri
 │   │   ├── locale/         # Çok dilli servis
 │   │   └── text/           # Text entity servisi
+│   ├── contexts/           # React context sağlayıcıları ve hook'ları
+│   │   └── NavigationContext.tsx # Navigasyon sağlayıcısı ve useNavigation hook'u
 │   ├── hooks/              # React hookları
 │   │   ├── useStorage.ts   # Storage hookları
 │   │   ├── useLocale.ts    # Çok dilli hook
-│   │   └── useNavigation.ts # Navigasyon hook
 │   ├── constants/          # Sabitler ve konfigürasyon
 │   │   ├── colors.ts       # Tema renkleri
 │   │   ├── storageKeys.ts  # Storage anahtarları
@@ -939,7 +940,7 @@ interface PageHeaderProps {
 #### useNavigation Hook
 ```typescript
 // Navigasyon hook kullanımı
-import { useNavigation } from '@/hooks';
+import { useNavigation } from '@/contexts';
 
 const MyComponent = () => {
   const { currentScreen, navigateTo, goBack, resetToHome } = useNavigation();
@@ -953,6 +954,8 @@ const MyComponent = () => {
   );
 };
 ```
+
+`useNavigation` hook'u `NavigationContext` üzerinden sağlanır ve `src/contexts/NavigationContext.tsx` dosyasında tanımlanmıştır. Yeni bileşenlerde navigasyon işlemleri için bu context'ten sağlanan hook kullanılmalıdır.
 
 #### AppNavigator Bileşeni
 ```typescript

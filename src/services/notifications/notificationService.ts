@@ -53,7 +53,7 @@ export class NotificationService {
       // Android için bildirim kanalı oluştur
       if (Platform.OS === 'android') {
         await Notifications.setNotificationChannelAsync('default', {
-          name: 'WordHang Reminders',
+          name: 'FinBuddy Reminders',
           importance: Notifications.AndroidImportance.MAX,
           vibrationPattern: [0, 250, 250, 250],
           lightColor: '#FF231F7C'
