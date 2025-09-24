@@ -31,7 +31,8 @@ const Layout: React.FC<LayoutProps> = ({
     () => ({
       borderBottomWidth: StyleSheet.hairlineWidth,
       borderBottomColor: colors.border,
-      paddingTop: insets.top,
+      //paddingTop: insets.top,
+      //paddingBottom: 8,
       backgroundColor: colors.card,
     }),
     [colors.border, colors.card, insets.top],
@@ -41,7 +42,8 @@ const Layout: React.FC<LayoutProps> = ({
     () => ({
       borderTopWidth: StyleSheet.hairlineWidth,
       borderTopColor: colors.border,
-      paddingBottom: insets.bottom,
+      //paddingTop: 12,
+      //paddingBottom: Math.max(insets.bottom, 12),
       backgroundColor: colors.card,
     }),
     [colors.border, colors.card, insets.bottom],
@@ -51,8 +53,8 @@ const Layout: React.FC<LayoutProps> = ({
     () => ({
       flex: 1,
       backgroundColor: colors.background,
-      paddingTop: showHeader ? 0 : insets.top,
-      paddingBottom: showFooter ? 0 : insets.bottom,
+      paddingTop: showHeader ? 0 : Math.max(insets.top, 12),
+      paddingBottom: showFooter ? 0 : Math.max(insets.bottom, 12),
     }),
     [colors.background, insets.bottom, insets.top, showFooter, showHeader],
   );

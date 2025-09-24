@@ -336,61 +336,63 @@ const SettingsScreen: React.FC = () => {
             </View>
 
             {/* Bildirim Kanalları */}
-            <View
-              variant="transparent"
-              style={[
-                styles.settingItem,
-                {
-                  borderTopWidth: 1,
-                  borderTopColor: colors.border,
-                  borderBottomWidth: paymentReminders.enabled ? 1 : 0,
-                  borderBottomColor: colors.border,
-                  paddingHorizontal: 16,
-                  paddingVertical: 12,
-                },
-              ]}
-            >
-              <View variant="transparent" style={styles.settingInfo}>
-                <Text variant="primary" size="medium">
-                  {t('screens.settings.notifications.my_payments_title')}
-                </Text>
-                <Text variant="secondary" size="small" style={styles.settingDescription}>
-                  {t('screens.settings.notifications.my_payments_message')}
-                </Text>
-              </View>
-              <Switch
-                value={paymentReminders.channels.myPayments}
-                onValueChange={(value) => handleReminderChannelToggle('myPayments', value)}
-                disabled={!paymentReminders.enabled}
-              />
-            </View>
+            {paymentReminders.enabled && (
+              <>
+                <View
+                  variant="transparent"
+                  style={[
+                    styles.settingItem,
+                    {
+                      borderTopWidth: 1,
+                      borderTopColor: colors.border,
+                      borderBottomWidth: 1,
+                      borderBottomColor: colors.border,
+                      paddingHorizontal: 16,
+                      paddingVertical: 12,
+                    },
+                  ]}
+                >
+                  <View variant="transparent" style={styles.settingInfo}>
+                    <Text variant="primary" size="medium">
+                      {t('screens.settings.notifications.my_payments_title')}
+                    </Text>
+                    <Text variant="secondary" size="small" style={styles.settingDescription}>
+                      {t('screens.settings.notifications.my_payments_message')}
+                    </Text>
+                  </View>
+                  <Switch
+                    value={paymentReminders.channels.myPayments}
+                    onValueChange={(value) => handleReminderChannelToggle('myPayments', value)}
+                  />
+                </View>
 
-            <View
-              variant="transparent"
-              style={[
-                styles.settingItem,
-                {
-                  borderBottomWidth: paymentReminders.enabled ? 1 : 0,
-                  borderBottomColor: colors.border,
-                  paddingHorizontal: 16,
-                  paddingVertical: 12,
-                },
-              ]}
-            >
-              <View variant="transparent" style={styles.settingInfo}>
-                <Text variant="primary" size="medium">
-                  {t('screens.settings.notifications.upcoming_payments_title')}
-                </Text>
-                <Text variant="secondary" size="small" style={styles.settingDescription}>
-                  {t('screens.settings.notifications.upcoming_payments_message')}
-                </Text>
-              </View>
-              <Switch
-                value={paymentReminders.channels.upcomingPayments}
-                onValueChange={(value) => handleReminderChannelToggle('upcomingPayments', value)}
-                disabled={!paymentReminders.enabled}
-              />
-            </View>
+                <View
+                  variant="transparent"
+                  style={[
+                    styles.settingItem,
+                    {
+                      borderBottomWidth: 1,
+                      borderBottomColor: colors.border,
+                      paddingHorizontal: 16,
+                      paddingVertical: 12,
+                    },
+                  ]}
+                >
+                  <View variant="transparent" style={styles.settingInfo}>
+                    <Text variant="primary" size="medium">
+                      {t('screens.settings.notifications.upcoming_payments_title')}
+                    </Text>
+                    <Text variant="secondary" size="small" style={styles.settingDescription}>
+                      {t('screens.settings.notifications.upcoming_payments_message')}
+                    </Text>
+                  </View>
+                  <Switch
+                    value={paymentReminders.channels.upcomingPayments}
+                    onValueChange={(value) => handleReminderChannelToggle('upcomingPayments', value)}
+                  />
+                </View>
+              </>
+            )}
 
             {/* Bildirim Saati */}
             {paymentReminders.enabled && (
@@ -411,61 +413,6 @@ const SettingsScreen: React.FC = () => {
               </View>
             )}
 
-            {/* Test Bildirimi */}
-            {paymentReminders.enabled && (
-              <View variant="transparent" style={[styles.settingItem, { paddingHorizontal: 16, paddingVertical: 12, borderTopWidth: 1, borderTopColor: colors.border }]}>
-                <View variant="transparent" style={styles.settingInfo}>
-                  <Text variant="primary" size="medium">
-                    Test Bildirimi
-                  </Text>
-                  <Text variant="secondary" size="small" style={styles.settingDescription}>
-                    Bildirim sisteminin çalışıp çalışmadığını test edin
-                  </Text>
-                </View>
-                <TouchableOpacity
-                  variant="transparent"
-                  style={[styles.testButton, { backgroundColor: colors.primary }] as any}
-                  onPress={async () => {
-                    try {
-                      console.log('🧪 Test bildirimi butonuna basıldı');
-                      
-                      // Önce mevcut bildirimleri kontrol et
-                      const scheduled = await notificationService.getScheduledNotifications();
-                      console.log('📋 Mevcut zamanlanan bildirimler:', scheduled.length);
-                      
-                      await notificationService.sendTestNotification();
-                      
-                      // Başarılı olduktan sonra tekrar kontrol et
-                      const newScheduled = await notificationService.getScheduledNotifications();
-                      console.log('📋 Yeni zamanlanan bildirimler:', newScheduled.length);
-                      
-                      Alert.alert(
-                        'Test Bildirimi', 
-                        `2 saniye içinde test bildirimi gelecek!\n\nZamanlanan bildirim sayısı: ${newScheduled.length}`,
-                        [
-                          { text: 'Tamam', style: 'default' },
-                          { 
-                            text: 'Bildirimleri Gör', 
-                            onPress: async () => {
-                              const allScheduled = await notificationService.getScheduledNotifications();
-                              console.log('📋 Tüm zamanlanan bildirimler:', allScheduled);
-                              Alert.alert('Zamanlanan Bildirimler', `Toplam ${allScheduled.length} bildirim zamanlandı`);
-                            }
-                          }
-                        ]
-                      );
-                    } catch (error) {
-                      console.error('❌ Test bildirimi hatası:', error);
-                      Alert.alert('Hata', 'Test bildirimi gönderilemedi: ' + String(error));
-                    }
-                  }}
-                >
-                  <Text variant="primary" size="small" weight="semibold" style={{ color: 'white' }}>
-                    Test Gönder
-                  </Text>
-                </TouchableOpacity>
-              </View>
-            )}
           </Card>
         </View>
 

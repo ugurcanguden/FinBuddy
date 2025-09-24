@@ -570,7 +570,7 @@ const HomeScreen: React.FC = () => {
                     },
                   ] as any}
                 >
-                  <Text style={{ color: active ? colors.onPrimary : colors.text }}>
+                  <Text style={{ color: active ? colors.onPrimary : colors.text ,textAlign:'center'}}>
                     {tab.label}
                   </Text>
                 </TouchableOpacity>
