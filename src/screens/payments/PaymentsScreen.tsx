@@ -1,8 +1,9 @@
-// Payments Screen - Kayıtlı ödemelerin listesi (entries)
-import React, { useCallback, useEffect, useState } from 'react';
+// Payments Screen - Modern ödemeler listesi
+import React, { useCallback, useEffect, useState, useMemo } from 'react';
 import { Alert, StyleSheet } from 'react-native';
-import { Layout, PageHeader, ScrollView, View, Text, TouchableOpacity } from '@/components';
-import { useNavigation, useTheme } from '@/contexts';
+import { Layout, PageHeader, ScrollView, View, Text, TouchableOpacity, Card, Button } from '@/components';
+import { StatCard, Badge } from '@/components/common';
+import { useNavigation } from '@/contexts';
 import { useLocale } from '@/hooks';
 import { paymentService } from '@/services';
 import type { Entry } from '@/types';
@@ -10,7 +11,6 @@ import type { Entry } from '@/types';
 const PaymentsScreen: React.FC = () => {
   const { goBack, navigateTo } = useNavigation();
   const { t } = useLocale();
-  const { colors } = useTheme();
   const [entries, setEntries] = useState<Entry[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -58,50 +58,332 @@ const PaymentsScreen: React.FC = () => {
     [loadEntries, t]
   );
 
+  // İstatistikler hesapla
+  const stats = useMemo(() => {
+    const totalAmount = entries.reduce((sum, entry) => sum + entry.amount, 0);
+    const installmentCount = entries.filter(e => e.schedule_type === 'installment').length;
+    const oneTimeCount = entries.filter(e => e.schedule_type === 'once').length;
+    const totalMonths = entries.reduce((sum, entry) => sum + (entry.months || 0), 0);
+    
+    return {
+      totalAmount,
+      installmentCount,
+      oneTimeCount,
+      totalMonths,
+    };
+  }, [entries]);
+
+  // Para formatı
+  const formatCurrency = useCallback((amount: number) => {
+    return new Intl.NumberFormat('tr-TR', {
+      style: 'currency',
+      currency: 'TRY',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }).format(amount);
+  }, []);
+
+  // Tarih formatı
+  const formatDate = useCallback((dateString: string) => {
+    return new Date(dateString).toLocaleDateString('tr-TR', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+    });
+  }, []);
+
+
   return (
     <Layout headerComponent={<PageHeader title={t('navigation.tabs.payments') || 'Ödemeler'} showBackButton={false} onBackPress={goBack} /> }>
-      <ScrollView style={styles.container}>
-        {loading ? (
-          <View style={styles.center}><Text variant="secondary">{t('common.messages.loading')}</Text></View>
-        ) : error ? (
-          <View style={styles.center}><Text variant="error">{error}</Text></View>
-        ) : entries.length === 0 ? (
-          <View style={styles.center}><Text variant="secondary">Henüz ödeme yok</Text></View>
-        ) : (
-          <View style={{ gap: 12 }}>
-            {entries.map((e) => (
-              <View
-                key={e.id}
-                variant="transparent"
-                style={{ borderWidth: 1, borderColor: colors.border, padding: 12, borderRadius: 12, gap: 8 }}
-              >
-                <TouchableOpacity
-                  variant="transparent"
-                  onPress={() => navigateTo('paymentDetails', { entryId: e.id })}
-                >
-                  <Text weight="semibold">{e.title || 'Ödeme'}</Text>
-                  <Text variant="secondary" size="small">{e.schedule_type === 'installment' ? `${e.months} taksit` : 'Tek seferlik'} • {e.amount} </Text>
-                  <Text variant="secondary" size="small">{t('screens.add_payment.start_date')}: {e.start_date}</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  variant="transparent"
-                  style={{ alignSelf: 'flex-end', paddingVertical: 6, paddingHorizontal: 12, borderRadius: 8, borderWidth: 1, borderColor: colors.danger }}
-                  onPress={() => confirmDelete(e.id)}
-                >
-                  <Text style={{ color: colors.danger }}>{t('common.buttons.delete')}</Text>
-                </TouchableOpacity>
-              </View>
-            ))}
+      <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
+        {/* İstatistikler */}
+        <View style={styles.section}>
+          <Text variant="primary" size="large" weight="bold" style={styles.sectionTitle}>
+            Ödeme İstatistikleri
+          </Text>
+          
+          <View style={styles.statsGrid}>
+            <StatCard
+              title="Toplam Tutar"
+              value={formatCurrency(stats.totalAmount)}
+              subtitle="tüm ödemeler"
+              icon="💸"
+              variant="danger"
+              animated={true}
+              style={styles.statCard}
+            />
+            
+            <StatCard
+              title="Taksitli"
+              value={stats.installmentCount.toString()}
+              subtitle="ödeme"
+              icon="📅"
+              variant="warning"
+              animated={true}
+              style={styles.statCard}
+            />
+            
+            <StatCard
+              title="Tek Seferlik"
+              value={stats.oneTimeCount.toString()}
+              subtitle="ödeme"
+              icon="💳"
+              variant="info"
+              animated={true}
+              style={styles.statCard}
+            />
+            
+            <StatCard
+              title="Toplam Taksit"
+              value={stats.totalMonths.toString()}
+              subtitle="ay"
+              icon="📊"
+              variant="primary"
+              animated={true}
+              style={styles.statCard}
+            />
           </View>
-        )}
+        </View>
+
+        {/* Hızlı Eylemler */}
+        <View style={styles.section}>
+          <Text variant="primary" size="large" weight="bold" style={styles.sectionTitle}>
+            Hızlı Eylemler
+          </Text>
+          
+          <View style={styles.actionButtons}>
+            <Button
+              variant="primary"
+              size="large"
+              onPress={() => navigateTo('addEntry', { type: 'expense' })}
+              icon="➕"
+              title="Yeni Ödeme Ekle"
+              style={styles.actionButton}
+            />
+          </View>
+        </View>
+
+        {/* Ödemeler Listesi */}
+        <View style={styles.section}>
+          <View style={styles.sectionHeader}>
+            <Text variant="primary" size="large" weight="bold" style={styles.sectionTitle}>
+              Ödemeler ({entries.length})
+            </Text>
+            
+            {entries.length > 0 && (
+              <Button
+                variant="outline"
+                size="small"
+                onPress={() => navigateTo('addPayment')}
+                title="Yeni Ekle"
+                style={styles.addButton}
+              />
+            )}
+          </View>
+
+          {loading ? (
+            <Card variant="default" style={styles.loadingCard}>
+              <Text variant="secondary" size="medium" style={styles.loadingText}>
+                {t('common.messages.loading')}
+              </Text>
+            </Card>
+          ) : error ? (
+            <Card variant="outlined" style={styles.errorCard}>
+              <Text variant="error" size="medium" style={styles.errorText}>
+                {error}
+              </Text>
+              <Button
+                variant="outline"
+                size="small"
+                onPress={loadEntries}
+                title="Tekrar Dene"
+                style={styles.retryButton}
+              />
+            </Card>
+          ) : entries.length === 0 ? (
+            <Card variant="outlined" style={styles.emptyCard}>
+              <Text variant="secondary" size="medium" style={styles.emptyText}>
+                Henüz ödeme yok
+              </Text>
+              <Button
+                variant="primary"
+                size="medium"
+                onPress={() => navigateTo('addPayment')}
+                title="İlk Ödemenizi Ekleyin"
+                style={styles.emptyButton}
+              />
+            </Card>
+          ) : (
+            <View style={styles.entriesList}>
+              {entries.map((entry) => (
+                <Card key={entry.id} variant="elevated" style={styles.entryCard}>
+                  <View style={styles.entryContainer}>
+                    <TouchableOpacity
+                      onPress={() => navigateTo('paymentDetails', { entryId: entry.id })}
+                      style={styles.entryContent}
+                    >
+                      <View style={styles.entryHeader}>
+                        <Text variant="primary" size="medium" weight="bold" style={styles.entryTitle}>
+                          {entry.title || 'Ödeme'}
+                        </Text>
+                        <Badge 
+                          variant={entry.schedule_type === 'installment' ? 'warning' : 'info'}
+                          size="small"
+                        >
+                          {entry.schedule_type === 'installment' ? 'Taksitli' : 'Tek Seferlik'}
+                        </Badge>
+                      </View>
+                      
+                      <View style={styles.entryDetails}>
+                        <Text variant="primary" size="large" weight="bold" style={styles.entryAmount}>
+                          {formatCurrency(entry.amount)}
+                        </Text>
+                        <Text variant="secondary" size="small" style={styles.entryDate}>
+                          {formatDate(entry.start_date)}
+                        </Text>
+                      </View>
+                      
+                      {entry.schedule_type === 'installment' && (
+                        <View style={styles.installmentInfo}>
+                          <Text variant="secondary" size="small">
+                            {entry.months} taksit • {entry.category_id}
+                          </Text>
+                        </View>
+                      )}
+                    </TouchableOpacity>
+                    
+                    <View style={styles.entryActions}>
+                      <TouchableOpacity
+                        style={styles.deleteButton}
+                        onPress={() => confirmDelete(entry.id)}
+                      >
+                        <Text variant="error" size="medium">🗑️</Text>
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+                </Card>
+              ))}
+            </View>
+          )}
+        </View>
       </ScrollView>
     </Layout>
   );
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 16 },
-  center: { alignItems: 'center', padding: 24 },
+  container: {
+    flex: 1,
+    padding: 16,
+  },
+  section: {
+    marginBottom: 32,
+  },
+  sectionTitle: {
+    marginBottom: 16,
+  },
+  sectionHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  statsGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+    gap: 12,
+  },
+  statCard: {
+    width: '48%',
+  },
+  actionButtons: {
+    flexDirection: 'row',
+    gap: 12,
+  },
+  actionButton: {
+    flex: 1,
+  },
+  addButton: {
+    alignSelf: 'flex-end',
+  },
+  loadingCard: {
+    padding: 24,
+    alignItems: 'center',
+  },
+  loadingText: {
+    textAlign: 'center',
+  },
+  errorCard: {
+    padding: 24,
+    alignItems: 'center',
+  },
+  errorText: {
+    textAlign: 'center',
+    marginBottom: 16,
+  },
+  retryButton: {
+    alignSelf: 'center',
+  },
+  emptyCard: {
+    padding: 32,
+    alignItems: 'center',
+  },
+  emptyText: {
+    textAlign: 'center',
+    marginBottom: 16,
+  },
+  emptyButton: {
+    alignSelf: 'center',
+  },
+  entriesList: {
+    gap: 12,
+  },
+  entryCard: {
+    padding: 16,
+  },
+  entryContainer: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    gap: 12,
+  },
+  entryContent: {
+    flex: 1,
+  },
+  entryHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    marginBottom: 12,
+  },
+  entryTitle: {
+    flex: 1,
+    marginRight: 12,
+  },
+  entryDetails: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  entryAmount: {
+    color: '#E74C3C',
+  },
+  entryDate: {
+    textAlign: 'right',
+  },
+  installmentInfo: {
+    marginTop: 4,
+  },
+  entryActions: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  deleteButton: {
+    padding: 8,
+    borderRadius: 8,
+    backgroundColor: 'rgba(231, 76, 60, 0.1)',
+  },
 });
 
 export default PaymentsScreen;

@@ -44,7 +44,7 @@ const AppNavigator: React.FC<AppNavigatorProps> = () => {
       case 'addPayment':
         return <AddPaymentScreen />;
       case 'addEntry':
-        return <AddEntryScreen />;
+        return <AddEntryScreen type={currentParams?.type} />;
       case 'editCategory':
         return <EditCategoryScreen categoryId={currentParams?.categoryId} />;
       case 'payments':

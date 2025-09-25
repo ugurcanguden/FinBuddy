@@ -1,7 +1,8 @@
-// Add Payment Screen - Yeni ödeme ekle
+// Add Payment Screen - Modern ödeme/gelir ekleme
 import React, { useEffect, useImperativeHandle, useMemo, useState, forwardRef, useCallback } from 'react';
 import { Alert, StyleSheet } from 'react-native';
-import { Layout, PageHeader, View, TextInput, Dropdown, DatePickerField, DatePickerFieldNative, KeyboardAwareScrollView, FormSection, Button } from '@/components';
+import { Layout, PageHeader, View, TextInput, Dropdown, DatePickerField, DatePickerFieldNative, KeyboardAwareScrollView, FormSection, Button, Text, Card } from '@/components';
+import { Badge } from '@/components/common';
 import { Platform } from 'react-native';
 import { useLocale } from '@/hooks';
 import { paymentService } from '@/services';
@@ -113,86 +114,123 @@ const AddPaymentScreen = forwardRef<AddPaymentScreenHandle, AddPaymentScreenProp
       [handleSave, isValid]
     );
 
+  const isIncome = entryType === 'income';
+  const typeText = isIncome ? 'Gelir' : 'Ödeme';
+  const typeIcon = isIncome ? '💰' : '💸';
+
   const formContent = (
     <View variant="transparent" style={[styles.formStack, embedded && styles.embeddedStack]}>
-      <FormSection
-        spacing="none"
-        title={t(`screens.${i18nKey}.payment_title`)}
-        description={t(`screens.${i18nKey}.payment_title_placeholder`)}
-      >
-        <TextInput
-          placeholder={t(`screens.${i18nKey}.payment_title_placeholder`)}
-          value={form.title}
-          onChangeText={(title) => setForm((s) => ({ ...s, title }))}
-          variant="outlined"
-          returnKeyType="next"
-        />
-      </FormSection>
+      {/* Modern Header Card */}
+      <Card variant="elevated" style={styles.headerCard}>
+        <View style={styles.headerContent}>
+          <Text style={styles.headerIcon}>{typeIcon}</Text>
+          <View style={styles.headerText}>
+            <Text variant="primary" size="large" weight="bold" style={styles.headerTitle}>
+              {isIncome ? 'Yeni Gelir Ekle' : 'Yeni Ödeme Ekle'}
+            </Text>
+            <Text variant="secondary" size="medium" style={styles.headerSubtitle}>
+              {isIncome ? 'Gelir bilgilerinizi girin' : 'Ödeme bilgilerinizi girin'}
+            </Text>
+          </View>
+          <Badge variant={isIncome ? 'success' : 'danger'} size="small">
+            {typeText}
+          </Badge>
+        </View>
+      </Card>
 
-      <FormSection
-        title={t(`screens.${i18nKey}.amount`)}
-        description={t(`screens.${i18nKey}.amount_placeholder`)}
-      >
-        <TextInput
-          placeholder={t(`screens.${i18nKey}.amount_placeholder`)}
-          keyboardType="numeric"
-          value={form.amount}
-          onChangeText={(amount) => setForm((s) => ({ ...s, amount }))}
-          variant="outlined"
-        />
-      </FormSection>
-
-      <FormSection
-        title={t(`screens.${i18nKey}.months`)}
-        description={t(`screens.${i18nKey}.months_placeholder`)}
-      >
-        <TextInput
-          placeholder={t(`screens.${i18nKey}.months_placeholder`)}
-          keyboardType="numeric"
-          value={form.months}
-          onChangeText={(months) => setForm((s) => ({ ...s, months }))}
-          variant="outlined"
-        />
-      </FormSection>
-
-      <FormSection
-        title={t(`screens.${i18nKey}.start_date`)}
-        description={t(`screens.${i18nKey}.start_date`)}
-      >
-        {Platform.OS === 'web' ? (
-          <DatePickerField
-            value={form.startDate}
-            onChange={(startDate) => setForm((s) => ({ ...s, startDate }))}
-            placeholder={t(`screens.${i18nKey}.start_date`)}
+      {/* Form Fields */}
+      <Card variant="outlined" style={styles.formCard}>
+        <FormSection
+          spacing="none"
+          title={t(`screens.${i18nKey}.payment_title`)}
+          description={t(`screens.${i18nKey}.payment_title_placeholder`)}
+        >
+          <TextInput
+            placeholder={t(`screens.${i18nKey}.payment_title_placeholder`)}
+            value={form.title}
+            onChangeText={(title) => setForm((s) => ({ ...s, title }))}
+            variant="outlined"
+            returnKeyType="next"
           />
-        ) : (
-          <DatePickerFieldNative
-            value={form.startDate}
-            onChange={(startDate) => setForm((s) => ({ ...s, startDate }))}
-            placeholder={t(`screens.${i18nKey}.start_date`)}
+        </FormSection>
+
+        <FormSection
+          title={t(`screens.${i18nKey}.amount`)}
+          description={t(`screens.${i18nKey}.amount_placeholder`)}
+        >
+          <TextInput
+            placeholder={t(`screens.${i18nKey}.amount_placeholder`)}
+            keyboardType="numeric"
+            value={form.amount}
+            onChangeText={(amount) => setForm((s) => ({ ...s, amount }))}
+            variant="outlined"
           />
-        )}
-      </FormSection>
+        </FormSection>
 
-      <FormSection
-        title={t(`screens.${i18nKey}.category`)}
-        description={t(`screens.${i18nKey}.category_placeholder`)}
-      >
-        <Dropdown
-          options={categoryOptions}
-          selectedValue={form.categoryId}
-          onSelect={(categoryId) => setForm((s) => ({ ...s, categoryId }))}
-          placeholder={t(`screens.${i18nKey}.category_placeholder`)}
-        />
-      </FormSection>
+        <FormSection
+          title={t(`screens.${i18nKey}.months`)}
+          description={t(`screens.${i18nKey}.months_placeholder`)}
+        >
+          <TextInput
+            placeholder={t(`screens.${i18nKey}.months_placeholder`)}
+            keyboardType="numeric"
+            value={form.months}
+            onChangeText={(months) => setForm((s) => ({ ...s, months }))}
+            variant="outlined"
+          />
+        </FormSection>
 
+        <FormSection
+          title={t(`screens.${i18nKey}.start_date`)}
+          description={t(`screens.${i18nKey}.start_date`)}
+        >
+          {Platform.OS === 'web' ? (
+            <DatePickerField
+              value={form.startDate}
+              onChange={(startDate) => setForm((s) => ({ ...s, startDate }))}
+              placeholder={t(`screens.${i18nKey}.start_date`)}
+            />
+          ) : (
+            <DatePickerFieldNative
+              value={form.startDate}
+              onChange={(startDate) => setForm((s) => ({ ...s, startDate }))}
+              placeholder={t(`screens.${i18nKey}.start_date`)}
+            />
+          )}
+        </FormSection>
+
+        <FormSection
+          title={t(`screens.${i18nKey}.category`)}
+          description={t(`screens.${i18nKey}.category_placeholder`)}
+        >
+          <Dropdown
+            options={categoryOptions}
+            selectedValue={form.categoryId}
+            onSelect={(categoryId) => setForm((s) => ({ ...s, categoryId }))}
+            placeholder={t(`screens.${i18nKey}.category_placeholder`)}
+          />
+        </FormSection>
+      </Card>
+
+      {/* Action Buttons */}
       {!embedded && (
-        <View variant="transparent" style={styles.actions}>
+        <View style={styles.actions}>
           <Button
-            title={t('common.buttons.save')}
+            variant="primary"
+            size="large"
             onPress={handleSave}
             disabled={!isValid}
             style={styles.fullWidthButton}
+            icon={isIncome ? '💰' : '💸'}
+            title={t('common.buttons.save')}
+          />
+          
+          <Button
+            variant="outline"
+            size="large"
+            onPress={goBack}
+            style={styles.fullWidthButton}
+            title="İptal"
           />
         </View>
       )}
@@ -221,7 +259,35 @@ const styles = StyleSheet.create({
   scrollContent: { padding: 20, paddingBottom: 40 },
   formStack: { gap: 20 },
   embeddedStack: { paddingTop: 12 },
-  actions: { marginTop: 12 },
+  headerCard: {
+    padding: 20,
+    marginBottom: 16,
+  },
+  headerContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 16,
+  },
+  headerIcon: {
+    fontSize: 32,
+    color: '#000',
+  },
+  headerText: {
+    flex: 1,
+  },
+  headerTitle: {
+    marginBottom: 4,
+  },
+  headerSubtitle: {
+    opacity: 0.8,
+  },
+  formCard: {
+    padding: 20,
+  },
+  actions: { 
+    marginTop: 20,
+    gap: 12,
+  },
   fullWidthButton: { width: '100%' },
 });
 

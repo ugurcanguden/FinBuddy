@@ -25,13 +25,28 @@ FinBuddy/
 │   │   │   ├── RadioButton.tsx # Radyo buton bileşeni
 │   │   │   ├── PageHeader.tsx  # Sayfa başlığı bileşeni
 │   │   │   ├── Layout.tsx      # Ana layout bileşeni
-│   │   │   └── BottomTabBar.tsx # Alt navigasyon bileşeni
+│   │   │   ├── BottomTabBar.tsx # Alt navigasyon bileşeni
+│   │   │   ├── ProgressBar.tsx # Animasyonlu ilerleme çubuğu
+│   │   │   ├── Badge.tsx       # Modern rozet bileşeni
+│   │   │   ├── StatCard.tsx    # İstatistik kartı bileşeni
+│   │   │   ├── WalletCard.tsx  # Cüzdan kartı bileşeni
+│   │   │   ├── BarChart.tsx    # Bar grafik bileşeni
+│   │   │   ├── QuickActions.tsx # Hızlı eylemler bileşeni
+│   │   │   ├── RecentTransactions.tsx # Son işlemler bileşeni
+│   │   │   └── WeeklySummary.tsx # Haftalık özet bileşeni
 │   │   ├── navigation/     # Navigasyon bileşenleri
 │   │   └── AppNavigator.tsx # Ana navigasyon bileşeni
 │   ├── screens/            # Ekran bileşenleri
 │   │   ├── HomeScreen.tsx  # Ana sayfa
 │   │   ├── SettingsScreen.tsx # Ayarlar sayfası
-│   │   └── CategoriesScreen.tsx # Kategoriler sayfası
+│   │   ├── CategoriesScreen.tsx # Kategoriler sayfası
+│   │   ├── ProfileScreen.tsx # Profil sayfası
+│   │   ├── PaymentsScreen.tsx # Ödemeler sayfası
+│   │   ├── IncomesScreen.tsx # Gelirler sayfası
+│   │   ├── AddPaymentScreen.tsx # Ödeme ekleme sayfası
+│   │   ├── AddEntryScreen.tsx # Ödeme/Gelir ekleme sayfası
+│   │   ├── ReportsHubScreen.tsx # Raporlar merkezi
+│   │   └── UIDemoScreen.tsx # UI bileşenleri demo sayfası
 │   ├── services/           # Servis katmanı
 │   │   ├── database/       # Veritabanı servisleri
 │   │   ├── locale/         # Çok dilli servis
@@ -657,6 +672,214 @@ const MyComponent = ({ theme }: { theme: ThemeMode }) => {
 };
 ```
 
+### 9. Modern UI Bileşenleri
+
+#### ProgressBar Bileşeni
+```typescript
+// ProgressBar kullanımı
+import { ProgressBar } from '@/components';
+
+const MyComponent = () => {
+  return (
+    <ProgressBar
+      progress={75}
+      variant="gradient" // default, success, warning, danger, gradient
+      size="medium" // small, medium, large
+      showLabel={true}
+      label="İlerleme: 75%"
+      animated={true}
+      pulse={false}
+    />
+  );
+};
+```
+
+#### Badge Bileşeni
+```typescript
+// Badge kullanımı
+import { Badge } from '@/components';
+
+const MyComponent = () => {
+  return (
+    <Badge
+      variant="primary" // default, primary, success, warning, danger, info, outline
+      size="medium" // small, medium, large
+      shape="rounded" // rounded, pill, square
+      animated={true}
+      pulse={false}
+    >
+      Yeni
+    </Badge>
+  );
+};
+```
+
+#### StatCard Bileşeni
+```typescript
+// StatCard kullanımı
+import { StatCard } from '@/components';
+
+const MyComponent = () => {
+  return (
+    <StatCard
+      title="Toplam Gelir"
+      value="₺15,420"
+      subtitle="Bu ay"
+      icon="💰"
+      trend="up" // up, down, neutral
+      trendValue="+12%"
+      variant="success" // default, primary, success, warning, danger, info
+      loading={false}
+      animated={true}
+    />
+  );
+};
+```
+
+#### WalletCard Bileşeni
+```typescript
+// WalletCard kullanımı
+import { WalletCard } from '@/components';
+
+const MyComponent = () => {
+  return (
+    <WalletCard
+      title="Ana Cüzdan"
+      balance={15420}
+      income={8500}
+      expense={3200}
+      currency="TRY"
+      animated={true}
+      loading={false}
+    />
+  );
+};
+```
+
+#### BarChart Bileşeni
+```typescript
+// BarChart kullanımı
+import { BarChart } from '@/components';
+
+const MyComponent = () => {
+  const chartData = [
+    { label: 'Ocak', value: 5000, color: '#4CAF50' },
+    { label: 'Şubat', value: 7500, color: '#2196F3' },
+    { label: 'Mart', value: 6200, color: '#FF9800' },
+  ];
+
+  return (
+    <BarChart
+      data={chartData}
+      height={200}
+      barWidth={40}
+      barSpacing={16}
+      animated={true}
+      showValues={true}
+      showLabels={true}
+      variant="gradient" // default, gradient, stacked
+      title="Aylık Gelirler"
+      subtitle="Son 3 ay"
+    />
+  );
+};
+```
+
+#### QuickActions Bileşeni
+```typescript
+// QuickActions kullanımı
+import { QuickActions } from '@/components';
+
+const MyComponent = () => {
+  const actions = [
+    {
+      title: 'Yeni Ödeme',
+      subtitle: 'Hızlı ekle',
+      icon: '💸',
+      onPress: () => console.log('Ödeme ekle'),
+      badge: 'Yeni'
+    },
+    {
+      title: 'Raporlar',
+      subtitle: 'Analiz',
+      icon: '📊',
+      onPress: () => console.log('Raporlar'),
+    },
+  ];
+
+  return (
+    <QuickActions
+      actions={actions}
+      columns={2}
+      animated={true}
+    />
+  );
+};
+```
+
+#### RecentTransactions Bileşeni
+```typescript
+// RecentTransactions kullanımı
+import { RecentTransactions } from '@/components';
+
+const MyComponent = () => {
+  const transactions = [
+    {
+      id: '1',
+      title: 'Market Alışverişi',
+      amount: -150.50,
+      type: 'expense' as const,
+      category: 'Gıda',
+      date: '2024-12-19',
+      status: 'completed' as const,
+    },
+    {
+      id: '2',
+      title: 'Maaş',
+      amount: 5000,
+      type: 'income' as const,
+      category: 'Gelir',
+      date: '2024-12-18',
+      status: 'completed' as const,
+    },
+  ];
+
+  return (
+    <RecentTransactions
+      transactions={transactions}
+      maxItems={5}
+      showStatus={true}
+      animated={true}
+      onTransactionPress={(transaction) => console.log(transaction)}
+      onViewAllPress={() => console.log('Tümünü gör')}
+    />
+  );
+};
+```
+
+#### WeeklySummary Bileşeni
+```typescript
+// WeeklySummary kullanımı
+import { WeeklySummary } from '@/components';
+
+const MyComponent = () => {
+  const weeklyData = [
+    { day: 'Pzt', income: 1000, expense: 500, net: 500 },
+    { day: 'Sal', income: 0, expense: 300, net: -300 },
+    { day: 'Çar', income: 2000, expense: 800, net: 1200 },
+    // ... diğer günler
+  ];
+
+  return (
+    <WeeklySummary
+      data={weeklyData}
+      animated={true}
+      showProgress={true}
+    />
+  );
+};
+```
+
 #### Layout Bileşeni
 ```typescript
 // Layout kullanımı
@@ -985,10 +1208,13 @@ const App = () => {
 ### 6. Tema Yönetimi
 
 #### Tema Modları
-Projede 3 farklı tema modu bulunmaktadır:
+Projede 6 farklı tema modu bulunmaktadır:
 - **Light Mode**: Açık tema (beyaz arka plan)
 - **Dark Mode**: Koyu tema (siyah arka plan)
 - **Colorful Mode**: Renkli tema (gradient arka plan)
+- **Ocean Mode**: Okyanus teması (mavi tonları)
+- **Sunset Mode**: Gün batımı teması (turuncu-pembe tonları)
+- **Forest Mode**: Orman teması (yeşil tonları)
 
 #### Renk Paletleri
 ```typescript
@@ -1553,4 +1779,31 @@ Detaylar için `docs/ARCHITECTURE.md`.
 
 ## SSS
 - Expo mu RN CLI mı? Mevcut projeye göre tercih edin; her ikisi için komutlar yukarıda.
-- Tasarım sistemi? `theme/` altında renk ve spacing token’ları kullanın; inline renk tanımlamayın.
+- Tasarım sistemi? `theme/` altında renk ve spacing token'ları kullanın; inline renk tanımlamayın.
+
+---
+
+**Son Güncelleme**: 2024-12-19
+**Durum**: Aktif geliştirme - Modern UI bileşenleri ve görsel iyileştirmeler tamamlandı
+
+## 🎨 **Son Güncellemeler** (2024-12-19):
+
+### ✅ **Modern UI Bileşenleri Eklendi**:
+- ProgressBar, Badge, StatCard, WalletCard
+- BarChart, QuickActions, RecentTransactions, WeeklySummary
+- 15+ yeni modern UI bileşeni
+
+### ✅ **Tema Sistemi Genişletildi**:
+- 6 tema modu: Light, Dark, Colorful, Ocean, Sunset, Forest
+- Gelişmiş renk paletleri ve gradient'lar
+
+### ✅ **Ekran Modernizasyonu**:
+- Profil, Raporlar, Ayarlar sayfaları
+- Ödemeler ve Gelirler sayfaları
+- AddPayment ve AddEntry form ekranları
+
+### ✅ **UX İyileştirmeleri**:
+- BottomTabBar güncellemeleri
+- Hızlı eylemler basitleştirildi
+- Tab geçişleri düzeltildi
+- Layout çakışmaları çözüldü

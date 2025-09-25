@@ -116,12 +116,22 @@ const BottomTabBar: React.FC<BottomTabBarProps> = ({ activeTab: propActiveTab })
         </TouchableOpacity>
 
         <TouchableOpacity
-          style={getTabContainerStyle('paymentsHub')}
-          onPress={() => navigateTo('paymentsHub')}  
+          style={getTabContainerStyle('payments')}
+          onPress={() => navigateTo('payments')}  
         >
-          <Text style={getIconTextStyle('paymentsHub')}>💳</Text>
-          <Text style={getLabelTextStyle('paymentsHub')}>
-            {t('navigation.tabs.payments_incomes')}
+          <Text style={getIconTextStyle('payments')}>💸</Text>
+          <Text style={getLabelTextStyle('payments')}>
+            Ödemeler
+          </Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={getTabContainerStyle('incomes')}
+          onPress={() => navigateTo('incomes')}  
+        >
+          <Text style={getIconTextStyle('incomes')}>💰</Text>
+          <Text style={getLabelTextStyle('incomes')}>
+            Gelirler
           </Text>
         </TouchableOpacity>
 
@@ -136,12 +146,12 @@ const BottomTabBar: React.FC<BottomTabBarProps> = ({ activeTab: propActiveTab })
         </TouchableOpacity>
 
         <TouchableOpacity
-          style={getTabContainerStyle('profile')}
-          onPress={() => navigateTo('profile')}  
+          style={getTabContainerStyle('settings')}
+          onPress={() => navigateTo('settings')}  
         >
-          <Text style={getIconTextStyle('profile')}>👤</Text>
-          <Text style={getLabelTextStyle('profile')}>
-            {t('navigation.tabs.profile') || 'Profil'}
+          <Text style={getIconTextStyle('settings')}>⚙️</Text>
+          <Text style={getLabelTextStyle('settings')}>
+            {t('navigation.tabs.settings') || 'Ayarlar'}
           </Text>
         </TouchableOpacity>
       </View>
@@ -149,11 +159,11 @@ const BottomTabBar: React.FC<BottomTabBarProps> = ({ activeTab: propActiveTab })
       {/* Floating central action */}
       <TouchableOpacity
         variant="primary"
-        onPress={() => navigateTo('addEntry')}
+        onPress={() => navigateTo('addEntry', { type: 'expense' })}
         style={{
           position: 'absolute',
           alignSelf: 'center',
-          top: -fabSize / 2,
+          top: -fabSize / 2 - 8, // Biraz daha yukarı taşıdık
           width: fabSize,
           height: fabSize,
           borderRadius: fabSize / 2,

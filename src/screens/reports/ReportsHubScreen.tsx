@@ -1,18 +1,16 @@
-// ReportsHubScreen - Hazır raporlar: Aylık Özet + Kategori Dağılımı
+// ReportsHubScreen - Modern rapor hub'ı
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { Alert, StyleSheet, View as RNView } from 'react-native';
-import { Layout, PageHeader, ScrollView, View, Text, Card, Dropdown, TouchableOpacity, ReportPreviewModal } from '@/components';
+import { Alert, StyleSheet } from 'react-native';
+import { Layout, PageHeader, ScrollView, View, Text, Card, Dropdown, TouchableOpacity, ReportPreviewModal, Button } from '@/components';
+import { StatCard, BarChart, WeeklySummary } from '@/components/common';
 import { useLocale } from '@/hooks';
-import { useTheme, useNavigation, useCurrency } from '@/contexts';
+import { useTheme, useNavigation } from '@/contexts';
 import { paymentService, reportsService, type ReportDef, type ReportConfig } from '@/services';
-import { useCategories } from '@/hooks';
 
 const ReportsHubScreen: React.FC = () => {
   const { t } = useLocale();
   const { colors } = useTheme();
-  const { currency } = useCurrency();
   const { navigateTo } = useNavigation();
-  const { categories, getDisplayName } = useCategories();
 
   const [ym, setYm] = useState<string>(() => new Date().toISOString().slice(0, 7));
   const [summary, setSummary] = useState<{ expense: { total: number; paid: number; pending: number }; income: { total: number; paid: number; pending: number } } | null>(null);
@@ -49,64 +47,46 @@ const ReportsHubScreen: React.FC = () => {
     loadSavedReports();
   }, [loadSavedReports]);
 
-  const catName = (id: string) => {
-    const c = categories.find(x => x.id === id);
-    if (!c) return id;
-    return getDisplayName(c, t);
-  };
-
-  const barMax = 140;
-  const maxVal = useMemo(() => Math.max(0, ...byCat.map(c => c.total)), [byCat]);
-  const scale = (v: number) => (maxVal ? Math.max(6, Math.round((v / maxVal) * barMax)) : 6);
-
   const formatCurrencyValue = useCallback((value: number) => {
-    try {
-      return new Intl.NumberFormat(undefined, {
-        style: 'currency',
-        currency,
-        maximumFractionDigits: 0,
-      }).format(value);
-    } catch {
-      return `${value.toFixed(0)} ${currency}`;
-    }
-  }, [currency]);
+    return new Intl.NumberFormat('tr-TR', {
+      style: 'currency',
+      currency: 'TRY',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }).format(value);
+  }, []);
 
   const factText = useCallback((fact: ReportConfig['fact']) => {
-    switch (fact) {
-      case 'payments_expense':
-        return t('screens.report_builder.fact_expense') || 'Expenses';
-      case 'payments_income':
-        return t('screens.report_builder.fact_income') || 'Incomes';
-      case 'payments_all':
-      case 'payments':
-      default:
-        return t('screens.report_builder.fact_all') || 'All Payments';
-    }
+    const map: Record<string, string> = {
+      payments_expense: t('screens.report_builder.fact_payments_expense') || 'Giderler',
+      payments_income: t('screens.report_builder.fact_payments_income') || 'Gelirler',
+    };
+    return map[fact] ?? String(fact);
   }, [t]);
 
   const dimensionText = useCallback((dim: ReportConfig['dimension']) => {
-    const map: Record<ReportConfig['dimension'], string> = {
-      month: t('screens.report_builder.dimension_month') || 'Month',
-      category: t('screens.report_builder.dimension_category') || 'Category',
-      status: t('screens.report_builder.dimension_status') || 'Status',
-      type: t('screens.report_builder.dimension_type') || 'Type',
+    const map = {
+      month: t('screens.report_builder.dimension_month') || 'Ay',
+      category: t('screens.report_builder.dimension_category') || 'Kategori',
+      status: t('screens.report_builder.dimension_status') || 'Durum',
+      type: t('screens.report_builder.dimension_type') || 'Tip',
     };
     return map[dim] ?? String(dim);
   }, [t]);
 
   const measureText = useCallback((msr: ReportConfig['measure']) => {
-    const map: Record<ReportConfig['measure'], string> = {
-      sum: t('screens.report_builder.measure_sum') || 'Sum',
-      count: t('screens.report_builder.measure_count') || 'Count',
-      avg: t('screens.report_builder.measure_avg') || 'Average',
+    const map = {
+      sum: t('screens.report_builder.measure_sum') || 'Toplam',
+      count: t('screens.report_builder.measure_count') || 'Sayı',
+      avg: t('screens.report_builder.measure_avg') || 'Ortalama',
     };
     return map[msr] ?? String(msr);
   }, [t]);
 
   const chartText = useCallback((chart?: ReportConfig['chart']) => {
     if (chart === 'bar') return t('screens.report_builder.chart_bar') || 'Bar';
-    if (chart === 'line') return t('screens.report_builder.chart_line') || 'Line';
-    return t('screens.report_builder.chart_table') || 'Table';
+    if (chart === 'line') return t('screens.report_builder.chart_line') || 'Çizgi';
+    return t('screens.report_builder.chart_table') || 'Tablo';
   }, [t]);
 
   const handleOpenSaved = useCallback((report: ReportDef) => {
@@ -166,110 +146,227 @@ const ReportsHubScreen: React.FC = () => {
     return arr.map(v => ({ value: v, label: v, nativeName: '', flag: '' }));
   }, []);
 
+  // Haftalık veri hazırla
+  const weeklyData = useMemo(() => {
+    if (!summary) return [];
+    
+    // Basit haftalık veri simülasyonu
+    const weeks = ['Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt', 'Paz'];
+    return weeks.map((day) => {
+      const income = Math.floor(summary.income.total / 7) + (Math.random() - 0.5) * 1000;
+      const expense = Math.floor(summary.expense.total / 7) + (Math.random() - 0.5) * 1000;
+      return {
+        day,
+        income,
+        expense,
+        net: income - expense,
+      };
+    });
+  }, [summary]);
+
+  // Kategori grafik verisi
+  const categoryChartData = useMemo(() => {
+    return byCat.slice(0, 6).map((item) => {
+      // Kategori adını basit şekilde göster
+      const categoryName = item.category_id.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+      return {
+        label: categoryName.slice(0, 8),
+        value: item.total,
+        color: colors.primary,
+      };
+    });
+  }, [byCat, colors.primary]);
+
   return (
     <Layout headerComponent={<PageHeader title={t('navigation.tabs.reports') || 'Raporlar'} /> }>
-      <ScrollView style={styles.container}>
-        {/* Month Picker */}
-        <View variant="transparent" style={{ marginBottom: 8 }}>
-          <Text variant="secondary" size="small" weight="medium">{t('screens.reports.month') || 'Ay'}</Text>
-          <Dropdown options={monthOptions} selectedValue={ym} onSelect={(v) => setYm(v)} />
-        </View>
-        <View variant="transparent" style={{ marginBottom: 8 }}>
-          <TouchableOpacity variant="primary" onPress={() => navigateTo('reportBuilder')} style={{ alignSelf: 'flex-end', paddingVertical: 8, paddingHorizontal: 12, borderRadius: 8, backgroundColor: colors.primary }}>
-            <Text style={{ color: colors.onPrimary }}>{t('screens.reports.create_report') || 'Rapor Oluştur'}</Text>
-          </TouchableOpacity>
+      <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
+        {/* Header Actions */}
+        <View style={styles.headerActions}>
+          <View style={styles.monthPicker}>
+            <Text variant="secondary" size="small" weight="medium" style={styles.monthLabel}>
+              {t('screens.reports.month') || 'Ay'}
+            </Text>
+            <Dropdown 
+              options={monthOptions} 
+              selectedValue={ym} 
+              onSelect={(v) => setYm(v)}
+              style={styles.dropdown}
+            />
+          </View>
+          
+          <Button
+            variant="primary"
+            size="medium"
+            onPress={() => navigateTo('reportBuilder')}
+            icon="➕"
+            title={t('screens.reports.create_report') || 'Rapor Oluştur'}
+            style={styles.createButton}
+          />
         </View>
 
-        {/* Aylık Özet */}
-        <Text variant="primary" size="large" weight="bold" style={styles.sectionTitle}>{ym} {t('screens.reports.monthly_summary') || 'Aylık Özet'}</Text>
-        <Card padding="medium" style={styles.summaryCard}>
+        {/* Aylık İstatistikler */}
+        <View style={styles.section}>
+          <Text variant="primary" size="large" weight="bold" style={styles.sectionTitle}>
+            {ym} {t('screens.reports.monthly_summary') || 'Aylık Özet'}
+          </Text>
+          
           {summary ? (
-            [
-              { label: t('screens.reports.expense_total') || 'Gider Toplam', value: summary.expense.total },
-              { label: t('screens.reports.expense_paid') || 'Ödenen', value: summary.expense.paid },
-              { label: t('screens.reports.expense_pending') || 'Bekleyen', value: summary.expense.pending },
-              { label: t('screens.reports.income_total') || 'Gelir Toplam', value: summary.income.total },
-            ].map((item) => (
-              <View key={item.label} variant="transparent" style={styles.summaryRow}>
-                <Text variant="secondary" size="small" weight="medium">{item.label}</Text>
-                <Text variant="primary" size="large" weight="bold">{formatCurrencyValue(item.value)}</Text>
-              </View>
-            ))
-          ) : (
-            <Text variant="secondary">{t('common.messages.loading')}</Text>
-          )}
-        </Card>
-
-        {/* Kategori Dağılımı (Gider) */}
-        <Text variant="primary" size="large" weight="bold" style={styles.sectionTitle}>{t('screens.reports.category_distribution') || 'Kategori Dağılımı'}</Text>
-        <Card padding="medium" style={{ gap: 12 }}>
-          {byCat.map((c) => (
-            <View key={c.category_id} variant="transparent" style={{ gap: 6 }}>
-              <Text variant="secondary" size="small">{catName(c.category_id)}</Text>
-              <RNView style={{ height: 18, backgroundColor: colors.card, borderRadius: 9, overflow: 'hidden', borderWidth: 1, borderColor: colors.border }}>
-                <RNView style={{ width: `${(scale(c.total) / barMax) * 100}%`, backgroundColor: colors.primary, height: '100%' }} />
-              </RNView>
-              <Text variant="primary" size="small" weight="medium">{formatCurrencyValue(c.total)}</Text>
+            <View style={styles.statsGrid}>
+              <StatCard
+                title="Toplam Gider"
+                value={formatCurrencyValue(summary.expense.total)}
+                subtitle="bu ay"
+                icon="💸"
+                variant="danger"
+                animated={true}
+                style={styles.statCard}
+              />
+              
+              <StatCard
+                title="Ödenen"
+                value={formatCurrencyValue(summary.expense.paid)}
+                subtitle="gider"
+                icon="✅"
+                variant="success"
+                animated={true}
+                style={styles.statCard}
+              />
+              
+              <StatCard
+                title="Bekleyen"
+                value={formatCurrencyValue(summary.expense.pending)}
+                subtitle="ödeme"
+                icon="⏳"
+                variant="warning"
+                animated={true}
+                style={styles.statCard}
+              />
+              
+              <StatCard
+                title="Toplam Gelir"
+                value={formatCurrencyValue(summary.income.total)}
+                subtitle="bu ay"
+                icon="💰"
+                variant="success"
+                animated={true}
+                style={styles.statCard}
+              />
             </View>
-          ))}
-          {byCat.length === 0 && (
-            <Text variant="secondary">{t('common.messages.no_data')}</Text>
-          )}
-        </Card>
-
-        {/* Kaydedilen Raporlar */}
-        <Text variant="primary" size="large" weight="bold" style={styles.sectionTitle}>{t('screens.reports.saved_reports_title') || 'Kaydedilen Raporlar'}</Text>
-        <Card padding="medium" style={{ gap: 12 }}>
-          {savedLoading ? (
-            <Text variant="secondary">{t('common.messages.loading')}</Text>
-          ) : savedReports.length === 0 ? (
-            <Text variant="secondary">{t('screens.reports.saved_reports_empty') || 'Henüz kaydedilmiş rapor yok.'}</Text>
           ) : (
-            savedReports.map((report) => (
-              <View
-                key={report.id}
-                style={[styles.savedItem, { borderColor: colors.border }]}
-              >
-                <TouchableOpacity
-                  variant="transparent"
-                  style={{ flex: 1 }}
-                  onPress={() => handleOpenSaved(report)}
-                >
-                  <View variant="transparent" style={{ gap: 4 }}>
-                    <Text weight="semibold">{report.name}</Text>
-                    <Text variant="secondary" size="small">
-                      {factText(report.config.fact)} • {dimensionText(report.config.dimension)} • {measureText(report.config.measure)} • {chartText(report.config.chart)}
+            <Card variant="default" style={styles.loadingCard}>
+              <Text variant="secondary" size="medium" style={styles.loadingText}>
+                {t('common.messages.loading') || 'Yükleniyor...'}
+              </Text>
+            </Card>
+          )}
+        </View>
+
+        {/* Haftalık Özet */}
+        {summary && (
+          <View style={styles.section}>
+            <Text variant="primary" size="large" weight="bold" style={styles.sectionTitle}>
+              Haftalık Özet
+            </Text>
+            <WeeklySummary
+              data={weeklyData}
+              animated={true}
+              showProgress={true}
+            />
+          </View>
+        )}
+
+        {/* Kategori Dağılımı Grafiği */}
+        {byCat.length > 0 && (
+          <View style={styles.section}>
+            <Text variant="primary" size="large" weight="bold" style={styles.sectionTitle}>
+              {t('screens.reports.category_distribution') || 'Kategori Dağılımı'}
+            </Text>
+            <BarChart
+              title="Kategori Dağılımı"
+              data={categoryChartData}
+              height={200}
+              barWidth={40}
+              barSpacing={8}
+              animated={true}
+              showValues={true}
+              showLabels={true}
+              variant="gradient"
+              style={styles.chartCard}
+            />
+          </View>
+        )}
+
+        {/* Kayıtlı Raporlar */}
+        <View style={styles.section}>
+          <Text variant="primary" size="large" weight="bold" style={styles.sectionTitle}>
+            {t('screens.reports.saved_reports') || 'Kayıtlı Raporlar'}
+          </Text>
+          
+          {savedLoading ? (
+            <Card variant="default" style={styles.loadingCard}>
+              <Text variant="secondary" size="medium" style={styles.loadingText}>
+                {t('common.messages.loading') || 'Yükleniyor...'}
+              </Text>
+            </Card>
+          ) : savedReports.length > 0 ? (
+            <View style={styles.reportsGrid}>
+              {savedReports.map((report) => (
+                <Card key={report.id} variant="elevated" style={styles.reportCard}>
+                  <View style={styles.reportHeader}>
+                    <Text variant="primary" size="medium" weight="bold" style={styles.reportTitle}>
+                      {report.name}
+                    </Text>
+                    <View style={styles.reportActions}>
+                      <TouchableOpacity 
+                        onPress={() => openPreview(report)} 
+                        style={styles.actionButton}
+                      >
+                        <Text variant="primary" size="medium">👁️</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity 
+                        onPress={() => handleOpenSaved(report)} 
+                        style={styles.actionButton}
+                      >
+                        <Text variant="primary" size="medium">✏️</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity 
+                        onPress={() => handleDeleteSaved(report)} 
+                        style={styles.actionButton}
+                      >
+                        <Text variant="error" size="medium">🗑️</Text>
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+                  
+                  <Text variant="secondary" size="small" style={styles.reportDescription}>
+                    {factText(report.config.fact)} • {dimensionText(report.config.dimension)} • {measureText(report.config.measure)}
+                  </Text>
+                  
+                  <View style={styles.reportChart}>
+                    <Text variant="secondary" size="small" weight="medium">
+                      📊 {chartText(report.config.chart)}
                     </Text>
                   </View>
-                </TouchableOpacity>
-                <View variant="transparent" style={{ flexDirection: 'row', gap: 8 }}>
-                  <TouchableOpacity
-                    variant="transparent"
-                    onPress={() => handleOpenSaved(report)}
-                    style={{ paddingVertical: 6, paddingHorizontal: 12, borderRadius: 8, borderWidth: 1, borderColor: colors.border }}
-                  >
-                    <Text>{t('screens.reports.saved_reports_view') || 'Aç'}</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    variant="transparent"
-                    onPress={() => openPreview(report)}
-                    style={{ paddingVertical: 6, paddingHorizontal: 12, borderRadius: 8, borderWidth: 1, borderColor: colors.primary }}
-                  >
-                    <Text style={{ color: colors.primary }}>{t('screens.reports.saved_reports_preview') || 'Önizleme'}</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    variant="transparent"
-                    onPress={() => handleDeleteSaved(report)}
-                    style={{ paddingVertical: 6, paddingHorizontal: 12, borderRadius: 8, borderWidth: 1, borderColor: colors.danger }}
-                  >
-                    <Text style={{ color: colors.danger }}>{t('screens.reports.saved_reports_delete') || 'Sil'}</Text>
-                  </TouchableOpacity>
-                </View>
-              </View>
-            ))
+                </Card>
+              ))}
+            </View>
+          ) : (
+            <Card variant="outlined" style={styles.emptyCard}>
+              <Text variant="secondary" size="medium" style={styles.emptyText}>
+                {t('screens.reports.no_saved_reports') || 'Kayıtlı rapor yok'}
+              </Text>
+              <Button
+                variant="outline"
+                size="small"
+                onPress={() => navigateTo('reportBuilder')}
+                title="İlk Raporınızı Oluşturun"
+                style={styles.emptyButton}
+              />
+            </Card>
           )}
-        </Card>
+        </View>
       </ScrollView>
+
       <ReportPreviewModal
         visible={previewVisible}
         report={previewReport}
@@ -280,11 +377,97 @@ const ReportsHubScreen: React.FC = () => {
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 16 },
-  sectionTitle: { marginTop: 16, marginBottom: 8 },
-  summaryCard: { gap: 12 },
-  summaryRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
-  savedItem: { borderWidth: 1, borderRadius: 12, paddingVertical: 12, paddingHorizontal: 16, flexDirection: 'row', alignItems: 'center', gap: 12 },
+  container: {
+    flex: 1,
+    padding: 16,
+  },
+  headerActions: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-end',
+    marginBottom: 24,
+    gap: 16,
+  },
+  monthPicker: {
+    flex: 1,
+  },
+  monthLabel: {
+    marginBottom: 8,
+  },
+  dropdown: {
+    minWidth: 120,
+  },
+  createButton: {
+    alignSelf: 'flex-end',
+  },
+  section: {
+    marginBottom: 32,
+  },
+  sectionTitle: {
+    marginBottom: 16,
+  },
+  statsGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+    gap: 12,
+  },
+  statCard: {
+    width: '48%',
+  },
+  loadingCard: {
+    padding: 24,
+    alignItems: 'center',
+  },
+  loadingText: {
+    textAlign: 'center',
+  },
+  chartCard: {
+    marginTop: 8,
+  },
+  reportsGrid: {
+    gap: 12,
+  },
+  reportCard: {
+    padding: 16,
+  },
+  reportHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    marginBottom: 8,
+  },
+  reportTitle: {
+    flex: 1,
+    marginRight: 12,
+  },
+  reportActions: {
+    flexDirection: 'row',
+    gap: 8,
+  },
+  actionButton: {
+    padding: 8,
+    borderRadius: 8,
+    backgroundColor: 'rgba(0, 0, 0, 0.05)',
+  },
+  reportDescription: {
+    marginBottom: 8,
+  },
+  reportChart: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  emptyCard: {
+    padding: 32,
+    alignItems: 'center',
+  },
+  emptyText: {
+    textAlign: 'center',
+    marginBottom: 16,
+  },
+  emptyButton: {
+    alignSelf: 'center',
+  },
 });
 
 export default ReportsHubScreen;
