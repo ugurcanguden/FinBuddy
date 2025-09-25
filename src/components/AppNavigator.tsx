@@ -4,6 +4,7 @@ import { useNavigation } from '@/contexts';
 import {
   HomeScreen,
   SettingsScreen,
+  ProfileScreen,
   CategoriesScreen,
   AddCategoryScreen,
   EditCategoryScreen,
@@ -15,6 +16,7 @@ import {
   IncomesScreen,
   ReportsHubScreen,
   ReportBuilderScreen,
+  UIDemoScreen,
 } from '@/screens';
 import { SafeArea } from './common';
 
@@ -33,6 +35,8 @@ const AppNavigator: React.FC<AppNavigatorProps> = () => {
         return <HomeScreen />;
       case 'settings':
         return <SettingsScreen />;
+      case 'profile':
+        return <ProfileScreen />;
       case 'categories':
         return <CategoriesScreen />;
       case 'addCategory':
@@ -59,6 +63,8 @@ const AppNavigator: React.FC<AppNavigatorProps> = () => {
         return <ReportBuilderScreen />;
       case 'incomes':
         return <IncomesScreen/>;
+      case 'uiDemo':
+        return <UIDemoScreen />;
       default:
         return <HomeScreen />;
     }

@@ -1,0 +1,27 @@
+---
+description: State management, hooks, and architectural practices for FinBuddy.
+alwaysApply: false
+---
+## Providers & Context
+- Preserve the provider nesting in `App.tsx` (`ThemeProvider` → `CurrencyProvider` → `NavigationProvider`); add new global providers inside this stack.
+- Create additional global state under `src/contexts/` following the patterns in `ThemeContext` or `NavigationContext`, and export via `src/contexts/index.tsx`.
+- Keep context values plain and serialisable; expose helper methods (e.g. `navigateTo`, `setCurrency`) and leave side-effects to services or hooks.
+- Access shared state through the exported hooks (`useTheme`, `useCurrency`, `useNavigation`) so safeguards like navigation history remain intact.
+
+## Hooks
+- Export every hook from `src/hooks/index.tsx` and name files with the `use*` camelCase convention.
+- Extend existing hooks (`useCategories`, `usePaymentReminders`, `useBiometric`, `useStorage`) before creating new service consumers.
+- Model hook state with `{data, loading, error}` to match patterns already used in `useCategories` and provide predictable UI states.
+- Memoise callbacks and derived values with `useCallback`/`useMemo` so expensive computations don't re-run unnecessarily.
+
+## Persistence & Locale
+- Persist settings through `storageService` or the `useStorage` helper; never interact with `AsyncStorage` directly from UI components.
+- Add new keys to `STORAGE_KEYS` before storing data, and update related hooks to consume them.
+- Introduce translations through `localeService` by updating the dynamic imports and JSON files in `src/locales/<lang>/`.
+- Decide whether new user preferences belong in `ThemeProvider`, `CurrencyProvider`, or a new context before scattering state across screens.
+
+## Architectural Boundaries
+- Keep business logic and data access inside services under `src/services/`; components and hooks should consume those APIs instead of embedding SQL or storage calls.
+- Align with `docs/ARCHITECTURE.md` and `docs/DEVELOPMENT_GUIDE.md`, reflecting actual patterns (there is no Redux/Zustand store today).
+- Update `src/types/index.tsx` when you evolve domain models so services, hooks, and UI share a single contract.
+- Honour the configured `@/` aliases by exposing barrel exports and avoiding deep relative import chains.

@@ -1,0 +1,27 @@
+---
+description: Testing strategy and Vitest usage guidelines.
+alwaysApply: false
+---
+## Tooling
+- Vitest runs with `jsdom` and `tsconfigPaths()` (see `vitest.config.ts`); keep new path aliases aligned with that setup.
+- Global cleanup lives in `vitest.setup.ts` via `@testing-library/react`; extend that file for additional shared setup.
+- Tests compile under the strict TypeScript config—supply generics and avoid `any` to keep parity with production code.
+- Coverage reports ship as `text` and `lcov`; ensure new suites respect that output.
+
+## Writing Tests
+- Place specs under `__tests__` directories or name them `*.test.ts(x)` so Vitest discovers them automatically.
+- Use Testing Library helpers (`renderHook`, `waitFor`, `act`) for hooks/components as shown in `usePaymentReminders.test.tsx`.
+- Assert on observable behaviour (returned state, rendered text) instead of internal implementation details.
+- Control time-sensitive logic by seeding explicit dates or stubbing timers to avoid flakiness.
+
+## Mocking & Isolation
+- Mock services with `vi.mock('@/services', () => ({ … }))` or mock individual modules to isolate the unit under test.
+- Reset mocks in `beforeEach` using `vi.resetAllMocks()` so state does not leak between tests.
+- Spy on globals (`console.error`, timers) when assertions require them, and restore the spies after the test run.
+- Resolve or reject mocked promises explicitly to cover success and failure branches, particularly for storage/database operations.
+
+## Running Tests
+- Execute `yarn test` locally; add flags like `--run` or `--watch=false` to mimic CI.
+- Pair test runs with `yarn type-check` when adding new modules so types and specs evolve together.
+- Document any new setup requirements in `docs/TESTING_SETUP.md` and ensure they work in sandboxed environments.
+- Keep the suite fast—defer slow integration scenarios until we wire up automation support.

@@ -1,0 +1,35 @@
+---
+description: SQLite initialization, migrations, and data access rules.
+globs:
+  - "src/services/database/**/*"
+  - "src/constants/scripts/**/*"
+  - "src/services/category/**/*"
+  - "src/services/payment/**/*"
+  - "src/services/reports/**/*"
+  - "src/services/text/**/*"
+alwaysApply: false
+---
+
+## Initialization
+- Always open the database with `databaseService.initialize()` and immediately run `migrationService.migrateToLatest()` before issuing queries.
+- Call `categoryService.initialize()` after migrations so default categories seed correctly; keep the routine idempotent.
+- Insert additional boot steps into the initialization chain in `App.tsx` rather than scattering them across screens.
+- Use `migrationService.resetAppData()` for destructive maintenance flows instead of dropping tables manually.
+
+## Schema & Scripts
+- Keep all SQL in `src/constants/scripts/**` (`CATEGORY_SCRIPTS`, `PAYMENT_SCRIPTS`, `DATABASE_SCRIPTS`, `TEXT_SCRIPTS`) and import the constants inside services.
+- Bump `CURRENT_SCHEMA_VERSION` in `migrationService.ts` and add a guarded `migrateToV#` whenever you modify the schema.
+- Preserve soft-delete (`is_active`) and timestamp conventions across new tables and updates.
+- Update seed data blocks like `INSERT_DEFAULT_CATEGORIES` when you change default icons or translation keys.
+
+## Writing Queries
+- Use `databaseService.query`, `getAll`, `getFirst`, and `transaction` helpers instead of calling `expo-sqlite` APIs directly.
+- Wrap multi-statement operations in `databaseService.transaction(async () => …)` so failures roll back cleanly.
+- Bind parameters through `?` placeholders to avoid injection and keep queries cache-friendly.
+- Follow the existing ID patterns (`cat_`, `rep_`, `text_`, etc.) for new rows to maintain consistency and uniqueness.
+
+## Data Integrity
+- Respect protections baked into services: default categories are read-only, and payment operations must update both `entries` and `payments` tables consistently.
+- Serialise structured fields (e.g. report configs) with `JSON.stringify`/`JSON.parse` just like `reportsService` does.
+- Retain filters such as `WHERE is_active = 1` when changing queries so inactive rows stay hidden.
+- Keep related services (`paymentService`, `notificationService`) in sync when schema changes alter downstream behaviour.

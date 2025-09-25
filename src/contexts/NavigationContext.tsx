@@ -4,6 +4,7 @@ import React, { createContext, useContext, useState, useCallback, ReactNode } fr
 export type ScreenType =
   | 'home'
   | 'settings'
+  | 'profile'
   | 'categories'
   | 'addCategory'
   | 'editCategory'
@@ -16,7 +17,8 @@ export type ScreenType =
   | 'reportBuilder'
   | 'transactions'
   | 'accounts'
-  | 'reports';
+  | 'reports'
+  | 'uiDemo';
 
 interface NavigationContextType {
   currentScreen: ScreenType;

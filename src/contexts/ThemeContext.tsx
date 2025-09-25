@@ -11,7 +11,7 @@ import { Platform } from 'react-native';
 import { storageService } from '@/services';
 
 // 1) Tema modu tipi
-export type ThemeMode = 'light' | 'dark' | 'colorful';
+export type ThemeMode = 'light' | 'dark' | 'colorful' | 'ocean' | 'sunset' | 'forest';
 
 // Küçük renk yardımcıları
 type RGB = { r: number; g: number; b: number };
@@ -314,6 +314,105 @@ export const themes: Record<ThemeMode, ThemeDefinition> = {
       },
     }
   ),
+  ocean: createThemeDefinition(
+    'ocean',
+    {
+      primary: '#0891B2',
+      background: '#F0F9FF',
+      backgroundMuted: '#E0F2FE',
+      card: '#FFFFFF',
+      cardMuted: '#F8FAFC',
+      border: '#BAE6FD',
+      outline: '#7DD3FC',
+      text: '#0C4A6E',
+      textSecondary: '#0369A1',
+      textMuted: '#0284C7',
+      success: '#059669',
+      danger: '#DC2626',
+      warning: '#D97706',
+      info: '#0891B2',
+      accent: '#7C3AED',
+      onPrimary: '#F0F9FF',
+      overlay: 'rgba(12, 74, 110, 0.15)',
+      positiveSurface: '#ECFDF5',
+      negativeSurface: '#FEF2F2',
+    },
+    {
+      shadows: createShadows('rgba(12, 74, 110, 0.15)'),
+      gradients: {
+        primary: ['#0891B2', '#22D3EE'],
+        accent: ['#7C3AED', '#C084FC'],
+        success: ['#047857', '#10B981'],
+        danger: ['#B91C1C', '#EF4444'],
+      },
+    }
+  ),
+  sunset: createThemeDefinition(
+    'sunset',
+    {
+      primary: '#F97316',
+      background: '#FFF7ED',
+      backgroundMuted: '#FFEDD5',
+      card: '#FFFFFF',
+      cardMuted: '#FEF3C7',
+      border: '#FED7AA',
+      outline: '#FDBA74',
+      text: '#9A3412',
+      textSecondary: '#C2410C',
+      textMuted: '#EA580C',
+      success: '#16A34A',
+      danger: '#DC2626',
+      warning: '#F59E0B',
+      info: '#0EA5E9',
+      accent: '#8B5CF6',
+      onPrimary: '#FFF7ED',
+      overlay: 'rgba(154, 52, 18, 0.12)',
+      positiveSurface: '#ECFDF5',
+      negativeSurface: '#FEF2F2',
+    },
+    {
+      shadows: createShadows('rgba(154, 52, 18, 0.12)'),
+      gradients: {
+        primary: ['#F97316', '#FB923C'],
+        accent: ['#8B5CF6', '#C084FC'],
+        success: ['#15803D', '#22C55E'],
+        danger: ['#B91C1C', '#EF4444'],
+      },
+    }
+  ),
+  forest: createThemeDefinition(
+    'forest',
+    {
+      primary: '#059669',
+      background: '#F0FDF4',
+      backgroundMuted: '#DCFCE7',
+      card: '#FFFFFF',
+      cardMuted: '#F9FAFB',
+      border: '#BBF7D0',
+      outline: '#86EFAC',
+      text: '#14532D',
+      textSecondary: '#166534',
+      textMuted: '#16A34A',
+      success: '#059669',
+      danger: '#DC2626',
+      warning: '#D97706',
+      info: '#0EA5E9',
+      accent: '#7C3AED',
+      onPrimary: '#F0FDF4',
+      overlay: 'rgba(20, 83, 45, 0.12)',
+      positiveSurface: '#ECFDF5',
+      negativeSurface: '#FEF2F2',
+    },
+    {
+      shadows: createShadows('rgba(20, 83, 45, 0.12)'),
+      gradients: {
+        primary: ['#059669', '#10B981'],
+        accent: ['#7C3AED', '#C084FC'],
+        success: ['#047857', '#22C55E'],
+        danger: ['#B91C1C', '#EF4444'],
+      },
+    }
+  ),
 };
 
 // 4) Context tipi
@@ -339,7 +438,7 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
     try {
       setIsLoading(true);
       const savedTheme = await storageService.get<ThemeMode>('theme_mode');
-      if (savedTheme && ['light', 'dark', 'colorful'].includes(savedTheme)) {
+      if (savedTheme && ['light', 'dark', 'colorful', 'ocean', 'sunset', 'forest'].includes(savedTheme)) {
         setCurrentTheme(savedTheme);
       }
     } finally {

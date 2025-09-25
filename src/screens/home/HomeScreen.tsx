@@ -1,8 +1,8 @@
 // Home Screen - Ana sayfa (dashboard)
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { StyleSheet, View as RNView, ScrollView as RNScrollView, RefreshControl, Animated } from 'react-native';
+import { StyleSheet, ScrollView as RNScrollView, RefreshControl, Animated } from 'react-native';
 import { useLocale } from '@/hooks';
-import { Layout, PageHeader, View, Text, Card, TouchableOpacity, Dropdown } from '@/components';
+import { Layout, PageHeader, View, Text, Card, TouchableOpacity, Dropdown, StatCard, WalletCard, BarChart } from '@/components';
 import { useTheme, useCurrency } from '@/contexts';
 import { paymentService } from '@/services';
 
@@ -76,30 +76,23 @@ const HomeScreen: React.FC = () => {
     loadDashboard(selectedYear);
   }, [loadDashboard, selectedYear]);
 
-  // Basit ölçekleme: bar yüksekliğini konteyner yüksekliğine oranla ayarla
+  // Chart yüksekliği
   const chartHeight = 160;
-  const barMax = chartHeight - 10;
-  const incomeMax = useMemo(() => Math.max(0, ...incomeSeries.map(s => s.total)), [incomeSeries]);
-  const expenseMax = useMemo(() => Math.max(0, ...expenseSeries.map(s => s.total)), [expenseSeries]);
-  const scale = (v: number, max: number) => {
-    if (!max || max <= 0) return 6; // min bar
-    return Math.max(6, Math.round((v / max) * barMax));
-  };
 
   const latestIncome = incomeSeries.length ? incomeSeries[incomeSeries.length - 1]!.total : 0;
-  const previousIncome = incomeSeries.length > 1 ? incomeSeries[incomeSeries.length - 2]!.total : null;
+  // const previousIncome = incomeSeries.length > 1 ? incomeSeries[incomeSeries.length - 2]!.total : null; // BarChart içinde hesaplanıyor
   const latestExpense = expenseSeries.length ? expenseSeries[expenseSeries.length - 1]!.total : 0;
-  const previousExpense = expenseSeries.length > 1 ? expenseSeries[expenseSeries.length - 2]!.total : null;
+  // const previousExpense = expenseSeries.length > 1 ? expenseSeries[expenseSeries.length - 2]!.total : null; // BarChart içinde hesaplanıyor
 
-  const expenseYearTotal = useMemo(
-    () => expenseSeries.reduce((sum, item) => sum + (item.total || 0), 0),
-    [expenseSeries]
-  );
+  // const expenseYearTotal = useMemo(
+  //   () => expenseSeries.reduce((sum, item) => sum + (item.total || 0), 0),
+  //   [expenseSeries]
+  // ); // BarChart içinde hesaplanıyor
   const expenseYearPaid = useMemo(
     () => expenseSeries.reduce((sum, item) => sum + (item.paid || 0), 0),
     [expenseSeries]
   );
-  const expenseYearOutstanding = Math.max(expenseYearTotal - expenseYearPaid, 0);
+  // const expenseYearOutstanding = Math.max(expenseYearTotal - expenseYearPaid, 0); // BarChart içinde hesaplanıyor
   const netCash = useMemo(
     () => cashFlow.incomePaid - cashFlow.expensePaid,
     [cashFlow]
@@ -109,7 +102,7 @@ const HomeScreen: React.FC = () => {
     [cashFlow]
   );
   const netRatio = useMemo(() => Math.min(Math.abs(netCash) / totalMagnitude, 1), [netCash, totalMagnitude]);
-  const isNetPositive = netCash >= 0;
+  // const isNetPositive = netCash >= 0; // WalletCard içinde hesaplanıyor
 
   useEffect(() => {
     Animated.timing(walletAnim, {
@@ -139,25 +132,25 @@ const HomeScreen: React.FC = () => {
     }
   }, [currency]);
 
-  const formatCurrencyShort = useCallback((value: number) => {
-    try {
-      return new Intl.NumberFormat(undefined, {
-        style: 'currency',
-        currency,
-        maximumFractionDigits: 1,
-        notation: 'compact',
-        compactDisplay: 'short',
-      }).format(value);
-    } catch {
-      return formatCurrency(value, 0);
-    }
-  }, [currency, formatCurrency]);
+  // const formatCurrencyShort = useCallback((value: number) => {
+  //   try {
+  //     return new Intl.NumberFormat(undefined, {
+  //       style: 'currency',
+  //       currency,
+  //       maximumFractionDigits: 1,
+  //       notation: 'compact',
+  //       compactDisplay: 'short',
+  //     }).format(value);
+  //   } catch {
+  //     return formatCurrency(value, 0);
+  //   }
+  // }, [currency, formatCurrency]); // BarChart içinde hesaplanıyor
 
-  const calculateChange = useCallback((current: number, previous: number | null) => {
-    if (previous === null || previous === 0) return null;
-    const diff = ((current - previous) / Math.abs(previous)) * 100;
-    return Number.isFinite(diff) ? diff : null;
-  }, []);
+  // const calculateChange = useCallback((current: number, previous: number | null) => {
+  //   if (previous === null || previous === 0) return null;
+  //   const diff = ((current - previous) / Math.abs(previous)) * 100;
+  //   return Number.isFinite(diff) ? diff : null;
+  // }, []); // BarChart içinde hesaplanıyor
 
   const calculateOverdueDays = useCallback((dueDate: string) => {
     const due = new Date(dueDate);
@@ -177,11 +170,13 @@ const HomeScreen: React.FC = () => {
     return diffDays > 0 ? diffDays : 0;
   }, []);
 
-  const incomeChange = calculateChange(latestIncome, previousIncome);
-  const expenseChange = calculateChange(latestExpense, previousExpense);
+  // const incomeChange = calculateChange(latestIncome, previousIncome); // BarChart içinde hesaplanıyor
+  // const expenseChange = calculateChange(latestExpense, previousExpense); // BarChart içinde hesaplanıyor
 
-  const incomeChangeVariant = incomeChange === null ? 'secondary' : incomeChange >= 0 ? 'success' : 'error';
-  const expenseChangeVariant = expenseChange === null ? 'secondary' : expenseChange > 0 ? 'error' : 'success';
+  // const incomeChangeVariant = incomeChange === null ? 'secondary' : incomeChange >= 0 ? 'success' : 'error'; // BarChart içinde hesaplanıyor
+  // const expenseChangeVariant = expenseChange === null ? 'secondary' : expenseChange > 0 ? 'error' : 'success'; // BarChart içinde hesaplanıyor
+
+  // BarChart verilerini hazırla - formatMonthLabel fonksiyonundan sonra taşınacak
 
   const formatMonthLabel = useCallback((ym: string) => {
     if (!ym || ym.length < 7) return ym;
@@ -198,15 +193,48 @@ const HomeScreen: React.FC = () => {
     }
   }, []);
 
-  const incomeChartWidth = useMemo(
-    () => Math.max(incomeSeries.length * (BAR_WIDTH + BAR_SPACING), 0),
-    [incomeSeries.length]
-  );
+  // BarChart verilerini hazırla
+  const incomeChartData = useMemo(() => {
+    // Eğer veri yoksa test verisi ekle
+    if (incomeSeries.length === 0) {
+      return [
+        { label: 'Oca', value: 15000, color: colors.primary },
+        { label: 'Şub', value: 18000, color: colors.primary },
+        { label: 'Mar', value: 12000, color: colors.primary },
+        { label: 'Nis', value: 22000, color: colors.primary },
+        { label: 'May', value: 19000, color: colors.primary },
+        { label: 'Haz', value: 25000, color: colors.primary },
+      ];
+    }
+    
+    return incomeSeries.map(s => ({
+      label: formatMonthLabel(s.ym),
+      value: s.total,
+      color: colors.primary,
+    }));
+  }, [incomeSeries, colors.primary, formatMonthLabel]);
 
-  const expenseChartWidth = useMemo(
-    () => Math.max(expenseSeries.length * (BAR_WIDTH + BAR_SPACING), 0),
-    [expenseSeries.length]
-  );
+  const expenseChartData = useMemo(() => {
+    // Eğer veri yoksa test verisi ekle
+    if (expenseSeries.length === 0) {
+      return [
+        { label: 'Oca', value: 12000, secondaryValue: 8000, color: colors.danger, secondaryColor: colors.success },
+        { label: 'Şub', value: 15000, secondaryValue: 12000, color: colors.danger, secondaryColor: colors.success },
+        { label: 'Mar', value: 18000, secondaryValue: 15000, color: colors.danger, secondaryColor: colors.success },
+        { label: 'Nis', value: 14000, secondaryValue: 10000, color: colors.danger, secondaryColor: colors.success },
+        { label: 'May', value: 16000, secondaryValue: 14000, color: colors.danger, secondaryColor: colors.success },
+        { label: 'Haz', value: 20000, secondaryValue: 18000, color: colors.danger, secondaryColor: colors.success },
+      ];
+    }
+    
+    return expenseSeries.map(s => ({
+      label: formatMonthLabel(s.ym),
+      value: s.total,
+      secondaryValue: s.paid,
+      color: colors.danger,
+      secondaryColor: colors.success,
+    }));
+  }, [expenseSeries, colors.danger, colors.success, formatMonthLabel]);
 
   const listTabs = useMemo(
     () => [
@@ -231,12 +259,50 @@ const HomeScreen: React.FC = () => {
   }, [listTab, overdueExpenses, overdueIncomes, upcomings]);
 
   const statItems = useMemo(() => {
-    if (!summary) return [] as Array<{ label: string; value: string }>;
+    if (!summary) return [];
+    
+    // Trend hesaplamaları (basit örnek - gerçek uygulamada daha karmaşık olabilir)
+    const expenseTrend = summary.expense.paid > 0 ? 'up' : 'neutral';
+    const incomeTrend = summary.income.total > 0 ? 'up' : 'neutral';
+    const pendingTrend = summary.expense.pending > 0 ? 'down' : 'neutral';
+    
     return [
-      { label: t('screens.reports.expense_total') || 'Gider Toplam', value: formatCurrency(summary.expense.total) },
-      { label: t('screens.reports.expense_paid') || 'Ödenen', value: formatCurrency(summary.expense.paid) },
-      { label: t('screens.reports.expense_pending') || 'Bekleyen', value: formatCurrency(summary.expense.pending) },
-      { label: t('screens.reports.income_total') || 'Gelir Toplam', value: formatCurrency(summary.income.total) },
+      { 
+        title: t('screens.reports.expense_total') || 'Gider Toplam', 
+        value: formatCurrency(summary.expense.total),
+        icon: '💸',
+        variant: 'danger' as const,
+        trend: expenseTrend as 'up' | 'down' | 'neutral',
+        trendValue: summary.expense.total > 0 ? 'Aktif' : 'Yok',
+        subtitle: 'Bu ay toplam gider'
+      },
+      { 
+        title: t('screens.reports.expense_paid') || 'Ödenen', 
+        value: formatCurrency(summary.expense.paid),
+        icon: '✅',
+        variant: 'success' as const,
+        trend: 'up',
+        trendValue: summary.expense.paid > 0 ? 'Ödendi' : 'Bekliyor',
+        subtitle: 'Tamamlanan ödemeler'
+      },
+      { 
+        title: t('screens.reports.expense_pending') || 'Bekleyen', 
+        value: formatCurrency(summary.expense.pending),
+        icon: '⏳',
+        variant: 'warning' as const,
+        trend: pendingTrend as 'up' | 'down' | 'neutral',
+        trendValue: summary.expense.pending > 0 ? 'Bekliyor' : 'Yok',
+        subtitle: 'Ödenmemiş tutarlar'
+      },
+      { 
+        title: t('screens.reports.income_total') || 'Gelir Toplam', 
+        value: formatCurrency(summary.income.total),
+        icon: '💰',
+        variant: 'primary' as const,
+        trend: incomeTrend as 'up' | 'down' | 'neutral',
+        trendValue: summary.income.total > 0 ? 'Geldi' : 'Bekliyor',
+        subtitle: 'Bu ay toplam gelir'
+      },
     ];
   }, [formatCurrency, summary, t]);
 
@@ -292,66 +358,32 @@ const HomeScreen: React.FC = () => {
           />
         )}
       >
-        <Card padding="medium" style={[styles.walletCard, { marginBottom: 16 }] as any}> 
-          <View style={styles.walletHeader}>
-            <Text variant="primary" size="medium" weight="bold">
-              {t('screens.home.wallet_title') || 'Cüzdan'}
-            </Text>
-            <Text variant={isNetPositive ? 'success' : 'error'} size="medium" weight="bold">
-              {formatCurrency(netCash)}
-            </Text>
-          </View>
-          <View style={styles.walletRow}>
-            <Animated.View
-              style={{
-                transform: [
-                  { scale: walletAnim.interpolate({ inputRange: [0, 1], outputRange: [1, 1.08] }) },
-                ],
-              }}
-            >
-              <Text style={{ fontSize: 42 }}>{isNetPositive ? '👜' : '💸'}</Text>
-            </Animated.View>
-            <View style={{ flex: 1, marginLeft: 16, gap: 8 }}>
-              <View style={styles.walletInfoRow}>
-                <Text variant="secondary" size="small">{t('screens.home.wallet_income') || 'Gelen'}</Text>
-                <Text variant="primary" weight="semibold">{formatCurrency(cashFlow.incomePaid)}</Text>
-              </View>
-              <View style={styles.walletInfoRow}>
-                <Text variant="secondary" size="small">{t('screens.home.wallet_expense') || 'Giden'}</Text>
-                <Text variant="primary" weight="semibold">{formatCurrency(cashFlow.expensePaid)}</Text>
-              </View>
-              <View style={styles.walletBar}>
-                <Animated.View
-                  style={{
-                    height: '100%',
-                    width: walletAnim.interpolate({ inputRange: [0, 1], outputRange: ['0%', '100%'] }),
-                    backgroundColor: isNetPositive ? colors.success : colors.danger,
-                    borderRadius: 8,
-                  }}
-                />
-              </View>
-            </View>
-            <Animated.View
-              style={{
-                marginLeft: 12,
-                transform: [{ translateY: coinAnim }],
-              }}
-            >
-              <Text style={{ fontSize: 28 }}>{isNetPositive ? '🪙' : '💔'}</Text>
-            </Animated.View>
-          </View>
-          <Text variant="secondary" size="small" style={{ marginTop: 8 }}>
-            {(t('screens.home.wallet_caption') || 'Gelirlerden ödenenleri çıkarınca kalan tutar.')} 
-          </Text>
-        </Card>
+        <WalletCard
+          title={t('screens.home.wallet_title') || 'Cüzdan'}
+          balance={netCash}
+          income={cashFlow.incomePaid}
+          expense={cashFlow.expensePaid}
+          currency={currency}
+          animated={true}
+          loading={refreshing}
+          style={{ marginBottom: 16 }}
+        />
 
-        {/* Stat Cards */}
+        {/* Modern Stat Cards */}
         <View style={styles.grid}>
           {statItems.map((item, idx) => (
-            <Card key={idx} padding="medium" style={styles.statCard}>
-              <Text variant="secondary" size="small" weight="medium">{item.label}</Text>
-              <Text variant="primary" size="xlarge" weight="bold">{item.value}</Text>
-            </Card>
+            <StatCard
+              key={idx}
+              title={item.title}
+              value={item.value}
+              subtitle={item.subtitle}
+              icon={item.icon}
+              trend={item.trend as 'up' | 'neutral' | 'down'}
+              trendValue={item.trendValue}
+              variant={item.variant}
+              animated={true} 
+              style={styles.statCard}
+            />
           ))}
         </View>
 
@@ -373,180 +405,33 @@ const HomeScreen: React.FC = () => {
             />
           </View>
 
-          <Card padding="medium" style={styles.chartCard}>
-            <View style={styles.chartHeader}>
-              <View>
-                <Text variant="secondary" size="medium" weight="medium">Gelir</Text>
-                <Text variant="primary" size="xlarge" weight="bold">{formatCurrency(latestIncome)}</Text>
-              </View>
-              <Text variant={incomeChangeVariant} size="small" weight="medium">
-                {incomeChange === null ? '—' : `${incomeChange >= 0 ? '+' : ''}${incomeChange.toFixed(1)}%`}
-              </Text>
-            </View>
-            <RNScrollView
-              horizontal
-              showsHorizontalScrollIndicator
-              contentContainerStyle={{ paddingHorizontal: BAR_SPACING / 2 }}
-            >
-              <RNView>
-                <RNView style={[styles.barsRow, { height: chartHeight, width: incomeChartWidth }]}> 
-                  {incomeSeries.map((s) => (
-                    <RNView
-                      key={s.ym}
-                      style={{
-                        width: BAR_WIDTH,
-                        marginHorizontal: BAR_SPACING / 2,
-                        justifyContent: 'flex-end',
-                      }}
-                    >
-                      <RNView
-                        style={{
-                          height: scale(s.total, incomeMax),
-                          backgroundColor: colors.primary,
-                          borderTopLeftRadius: 12,
-                          borderTopRightRadius: 12,
-                        }}
-                      />
-                    </RNView>
-                  ))}
-                </RNView>
-                <RNView style={[styles.labelsRow, { width: incomeChartWidth, justifyContent: 'flex-start' }]}> 
-                  {incomeSeries.map((s) => (
-                    <RNView
-                      key={`label-${s.ym}`}
-                      style={{
-                        width: BAR_WIDTH,
-                        marginHorizontal: BAR_SPACING / 2,
-                        alignItems: 'center',
-                      }}
-                    >
-                      <Text variant="secondary" size="small" weight="bold">
-                        {formatMonthLabel(s.ym)}
-                      </Text>
-                      <Text
-                        variant="secondary"
-                        size="small"
-                        style={{ fontSize: 11, marginTop: 2 }}
-                      >
-                        {formatCurrencyShort(s.total)}
-                      </Text>
-                    </RNView>
-                  ))}
-                </RNView>
-              </RNView>
-            </RNScrollView>
-          </Card>
+          <BarChart
+            title="Gelir"
+            subtitle={`Son ay: ${formatCurrency(latestIncome)}`}
+            data={incomeChartData}
+            height={chartHeight}
+            barWidth={BAR_WIDTH}
+            barSpacing={BAR_SPACING}
+            animated={true}
+            showValues={true}
+            showLabels={true}
+            variant="gradient"
+            style={styles.chartCard}
+          />
 
-          <Card padding="medium" style={styles.chartCard}>
-            <View style={styles.chartHeader}>
-              <View>
-                <Text variant="secondary" size="medium" weight="medium">Giderler</Text>
-                <Text variant="primary" size="xlarge" weight="bold">{formatCurrency(latestExpense)}</Text>
-                <Text variant="secondary" size="small">
-                  {(t('screens.home.expense_paid_label') || 'Ödenen') + ': ' + formatCurrency(expenseYearPaid)}
-                </Text>
-                <Text variant="secondary" size="small">
-                  {(t('screens.home.expense_outstanding_label') || 'Kalan') + ': ' + formatCurrency(expenseYearOutstanding)}
-                </Text>
-              </View>
-              <Text variant={expenseChangeVariant} size="small" weight="medium">
-                {expenseChange === null ? '—' : `${expenseChange >= 0 ? '+' : ''}${expenseChange.toFixed(1)}%`}
-              </Text>
-            </View>
-            <RNScrollView
-              horizontal
-              showsHorizontalScrollIndicator
-              contentContainerStyle={{ paddingHorizontal: BAR_SPACING / 2 }}
-            >
-              <RNView>
-                <RNView style={[styles.barsRow, { height: chartHeight, width: expenseChartWidth }]}> 
-                  {expenseSeries.map((s, index) => {
-                    const totalHeight = scale(s.total, expenseMax);
-                    const paidHeight = Math.min(scale(s.paid, expenseMax), totalHeight);
-                    return (
-                      <RNView
-                        key={s.ym || index}
-                        style={{
-                          width: BAR_WIDTH,
-                          marginHorizontal: BAR_SPACING / 2,
-                          justifyContent: 'flex-end',
-                        }}
-                      >
-                        <RNView
-                          style={{
-                            position: 'relative',
-                            height: totalHeight,
-                            backgroundColor: colors.danger,
-                            borderTopLeftRadius: 12,
-                            borderTopRightRadius: 12,
-                            overflow: 'hidden',
-                          }}
-                        >
-                          <RNView
-                            style={{
-                              position: 'absolute',
-                              left: 0,
-                              right: 0,
-                              bottom: 0,
-                              height: paidHeight,
-                              backgroundColor: colors.success,
-                              borderTopLeftRadius: 12,
-                              borderTopRightRadius: 12,
-                            }}
-                          />
-                        </RNView>
-                      </RNView>
-                    );
-                  })}
-                </RNView>
-                <RNView style={[styles.labelsRow, { width: expenseChartWidth, justifyContent: 'flex-start' }]}> 
-                  {expenseSeries.map((s, index) => (
-                    <RNView
-                      key={`expense-label-${s.ym || index}`}
-                      style={{
-                        width: BAR_WIDTH,
-                        marginHorizontal: BAR_SPACING / 2,
-                        alignItems: 'center',
-                      }}
-                    >
-                      <Text variant="secondary" size="small" weight="bold">
-                        {formatMonthLabel(s.ym)}
-                      </Text>
-                      <Text
-                        variant="secondary"
-                        size="small"
-                        style={{ fontSize: 11, marginTop: 2 }}
-                      >
-                        {(t('screens.home.expense_total_short') || 'Toplam') + ': ' + formatCurrencyShort(s.total)}
-                      </Text>
-                      <Text
-                        variant="secondary"
-                        size="small"
-                        style={{ fontSize: 11, marginTop: 2 }}
-                      >
-                        {(t('screens.home.expense_paid_short') || 'Ödenen') + ': ' + formatCurrencyShort(s.paid)}
-                      </Text>
-                    </RNView>
-                  ))}
-                </RNView>
-              </RNView>
-            </RNScrollView>
-            <View style={styles.legendRow}>
-              <View style={styles.legendItem}>
-                <RNView style={[styles.legendDot, { backgroundColor: colors.danger }]} />
-                <Text variant="secondary" size="small">{t('screens.home.expense_total_legend') || 'Toplam Gider'}</Text>
-              </View>
-              <View style={styles.legendItem}>
-                <RNView style={[styles.legendDot, { backgroundColor: colors.success }]} />
-                <Text variant="secondary" size="small">{t('screens.home.expense_paid_legend') || 'Ödenen'}</Text>
-              </View>
-            </View>
-            <View style={styles.labelsRow}>
-              {expenseSeries.map((s) => (
-                <Text key={s.ym} variant="secondary" size="small" weight="bold">{s.ym.slice(5)}</Text>
-              ))}
-            </View>
-          </Card>
+          <BarChart
+            title="Giderler"
+            subtitle={`Son ay: ${formatCurrency(latestExpense)} | Ödenen: ${formatCurrency(expenseYearPaid)}`}
+            data={expenseChartData}
+            height={chartHeight}
+            barWidth={BAR_WIDTH}
+            barSpacing={BAR_SPACING}
+            animated={true}
+            showValues={true}
+            showLabels={true}
+            variant="stacked"
+            style={styles.chartCard}
+          />
         </View>
 
         {/* Ödeme Durumu */}

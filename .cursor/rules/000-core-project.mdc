@@ -1,0 +1,22 @@
+---
+alwaysApply: true
+---
+## Tech Stack
+- Build on Expo 54 with React 19.1 and React Native 0.81; stick to Expo-managed APIs and update `app.json` if native capabilities change.
+- Use TypeScript with the strict flags already enabled in `tsconfig.json`; do not loosen compiler options or introduce `any` without review.
+- Manage dependencies with Yarn (`yarn.lock` is canonical) and document any new scripts you add to `package.json`.
+
+## Project Layout
+- Keep new source under `src/`, following existing folders (`components/`, `screens/`, `contexts/`, `hooks/`, `services/`, `constants/`, `utils/`, `locales/`, `types/`).
+- Respect the barrel exports in each `index.tsx`; register new modules there so aliases like `@/components` continue to resolve.
+- Store shared assets in `assets/` and mirror behavioural changes in the documentation under `docs/`.
+
+## Application Shell
+- `App.tsx` initializes SQLite (`databaseService.initialize` + `migrationService.migrateToLatest`), seeds categories, registers notifications, and gates onboarding with `storageService`; extend that sequence rather than duplicating it.
+- Preserve provider order `<ThemeProvider><CurrencyProvider><NavigationProvider>`; insert new global providers inside this stack without breaking initialization.
+- The Expo entry lives in `index.js` via `registerRootComponent`; keep that wiring intact unless you reconfigure the runtime.
+
+## Cross-cutting Practices
+- Pull theme tokens with `useTheme()` and translations through `useLocale().t`; add new strings to `src/locales/**`.
+- Persist data through services (`storageService`, `useStorage`, `usePaymentReminders`) instead of calling `AsyncStorage` directly in UI code.
+- Keep the workflow docs (`docs/DEVELOPMENT_GUIDE.md`, `docs/CODING_STANDARDS.md`, `docs/PR_CHECKLIST.md`) in sync with any process or naming changes.

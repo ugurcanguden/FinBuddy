@@ -1,6 +1,7 @@
 // Screens - Ana Export Dosyası
 export { default as HomeScreen } from './home/HomeScreen';
 export { default as SettingsScreen } from './settings/SettingsScreen';
+export { default as ProfileScreen } from './profile/ProfileScreen';
 
 export { default as CategoriesScreen } from './CategoriesScreen';
 export { default as AddCategoryScreen } from './AddCategoryScreen';
@@ -15,3 +16,6 @@ export { default as IncomesScreen } from './payments/IncomesScreen';
 
 export { default as ReportBuilderScreen } from './reports/ReportBuilderScreen';
 export { default as ReportsHubScreen } from './reports/ReportsHubScreen';
+
+// Demo Screens
+export { default as UIDemoScreen } from './UIDemoScreen';

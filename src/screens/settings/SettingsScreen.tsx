@@ -308,6 +308,69 @@ const SettingsScreen: React.FC = () => {
                     {t('screens.settings.general.theme_colorful')}
                   </Text>
                 </TouchableOpacity>
+
+                {/* Okyanus Tema */}
+                <TouchableOpacity 
+                  variant="transparent"
+                  style={styles.themeOption}
+                  onPress={() => handleThemeSelect('ocean')}
+                >
+                  <View variant="transparent" style={[styles.themePreview, getThemePreviewStyle('ocean')] as any}>
+                    <View variant="transparent" style={styles.themePreviewContent}>
+                      <View variant="transparent" style={[styles.themePreviewLine, { backgroundColor: themes.ocean.colors.border }] as any} />
+                      <View variant="transparent" style={[styles.themePreviewCard, { backgroundColor: themes.ocean.colors.card }] as any} />
+                      <View variant="transparent" style={styles.themePreviewBottom}>
+                        <View variant="transparent" style={[styles.themePreviewDot, { backgroundColor: themes.ocean.colors.primary }] as any} />
+                        <View variant="transparent" style={[styles.themePreviewLine, { backgroundColor: themes.ocean.colors.textSecondary }] as any} />
+                      </View>
+                    </View>
+                  </View>
+                  <Text variant={currentTheme === 'ocean' ? 'primary' : 'secondary'} size="small" align="center">
+                    Okyanus
+                  </Text>
+                </TouchableOpacity>
+
+                {/* Gün Batımı Tema */}
+                <TouchableOpacity 
+                  variant="transparent"
+                  style={styles.themeOption}
+                  onPress={() => handleThemeSelect('sunset')}
+                >
+                  <View variant="transparent" style={[styles.themePreview, getThemePreviewStyle('sunset')] as any}>
+                    <View variant="transparent" style={styles.themePreviewContent}>
+                      <View variant="transparent" style={[styles.themePreviewLine, { backgroundColor: themes.sunset.colors.border }] as any} />
+                      <View variant="transparent" style={[styles.themePreviewCard, { backgroundColor: themes.sunset.colors.card }] as any} />
+                      <View variant="transparent" style={styles.themePreviewBottom}>
+                        <View variant="transparent" style={[styles.themePreviewDot, { backgroundColor: themes.sunset.colors.primary }] as any} />
+                        <View variant="transparent" style={[styles.themePreviewLine, { backgroundColor: themes.sunset.colors.textSecondary }] as any} />
+                      </View>
+                    </View>
+                  </View>
+                  <Text variant={currentTheme === 'sunset' ? 'primary' : 'secondary'} size="small" align="center">
+                    Gün Batımı
+                  </Text>
+                </TouchableOpacity>
+
+                {/* Orman Tema */}
+                <TouchableOpacity 
+                  variant="transparent"
+                  style={styles.themeOption}
+                  onPress={() => handleThemeSelect('forest')}
+                >
+                  <View variant="transparent" style={[styles.themePreview, getThemePreviewStyle('forest')] as any}>
+                    <View variant="transparent" style={styles.themePreviewContent}>
+                      <View variant="transparent" style={[styles.themePreviewLine, { backgroundColor: themes.forest.colors.border }] as any} />
+                      <View variant="transparent" style={[styles.themePreviewCard, { backgroundColor: themes.forest.colors.card }] as any} />
+                      <View variant="transparent" style={styles.themePreviewBottom}>
+                        <View variant="transparent" style={[styles.themePreviewDot, { backgroundColor: themes.forest.colors.primary }] as any} />
+                        <View variant="transparent" style={[styles.themePreviewLine, { backgroundColor: themes.forest.colors.textSecondary }] as any} />
+                      </View>
+                    </View>
+                  </View>
+                  <Text variant={currentTheme === 'forest' ? 'primary' : 'secondary'} size="small" align="center">
+                    Orman
+                  </Text>
+                </TouchableOpacity>
               </View>
             </View>
           </Card>
@@ -452,6 +515,60 @@ const SettingsScreen: React.FC = () => {
               <Text style={[styles.dangerButtonText, { color: colors.danger }] as any}>
                 {t('screens.settings.data.reset_button')}
               </Text>
+            </TouchableOpacity>
+          </Card>
+        </View>
+
+        {/* Profil Bölümü */}
+        <View style={styles.section}>
+          <Text variant="primary" size="large" weight="bold" style={styles.sectionTitle}>
+            👤 Profil
+          </Text>
+          
+          <Card variant="default" padding="none" style={styles.card}>
+            <TouchableOpacity 
+              variant="transparent"
+              style={[styles.settingItem, { borderBottomWidth: 0 }]}
+              onPress={() => navigateTo('profile')}
+            >
+              <View variant="transparent" style={styles.settingInfo}>
+                <Text variant="primary" size="medium">
+                  Profil Sayfası
+                </Text>
+                <Text variant="secondary" size="small">
+                  Profil bilgilerinizi görüntüleyin ve düzenleyin
+                </Text>
+              </View>
+              <View variant="transparent" style={styles.settingAction}>
+                <Text variant="secondary" size="medium">👤</Text>
+              </View>
+            </TouchableOpacity>
+          </Card>
+        </View>
+
+        {/* Geliştirici Bölümü */}
+        <View style={styles.section}>
+          <Text variant="primary" size="large" weight="bold" style={styles.sectionTitle}>
+            🛠️ Geliştirici
+          </Text>
+          
+          <Card variant="default" padding="none" style={styles.card}>
+            <TouchableOpacity 
+              variant="transparent"
+              style={[styles.settingItem, { borderBottomWidth: 0 }]}
+              onPress={() => navigateTo('uiDemo')}
+            >
+              <View variant="transparent" style={styles.settingInfo}>
+                <Text variant="primary" size="medium">
+                  UI Bileşenleri Demo
+                </Text>
+                <Text variant="secondary" size="small">
+                  Yeni UI bileşenlerini test edin
+                </Text>
+              </View>
+              <View variant="transparent" style={styles.settingAction}>
+                <Text variant="secondary" size="medium">🎨</Text>
+              </View>
             </TouchableOpacity>
           </Card>
         </View>
@@ -624,6 +741,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 6,
+  },
+  settingAction: {
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
 

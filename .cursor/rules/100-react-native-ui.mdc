@@ -1,0 +1,27 @@
+---
+description: UI conventions for FinBuddy screens and components.
+alwaysApply: false
+---
+## Screen Composition
+- Wrap new screens in `Layout` from `@/components` (optionally providing `PageHeader` and letting `BottomTabBar` render) to keep safe-area handling consistent.
+- Export every screen via `src/screens/index.tsx` and name files in PascalCase (`ReportBuilderScreen.tsx`, `PaymentsHubScreen.tsx`).
+- Fetch copy with `useLocale().t` and define keys under `src/locales/<lang>/`; avoid hard-coded strings in components.
+- Prefer theme-aware primitives (`View`, `Text`, `Card`) from `@/components/common` over raw React Native elements.
+
+## Theming & Styling
+- Pull colors, spacing, and typography from `useTheme()` tokens; only use literal hex values where we explicitly allow palettes (e.g. `CategoryForm`).
+- Compose layouts with `Container`, `FormSection`, `SafeArea`, and `KeyboardAwareScrollView` instead of building bespoke wrappers.
+- Reuse component props like `Button` variants or `TextInput` variants before introducing new custom styles.
+- Keep emoji/icons in sync with translations—if `BottomTabBar` changes, update `navigation.json` copy accordingly.
+
+## Forms & Inputs
+- Use `KeyboardAwareScrollView` and themed `TextInput` components for editable flows, mirroring the structure in `CategoryForm`.
+- Validate user input locally before calling services, surfacing feedback via alerts or `Text` variants (`warning`, `error`).
+- Prefer existing selectors (`IconDropdown`, `Dropdown`, `RadioButton`, `TimePicker`) and extend them rather than duplicating logic.
+- Default data such as payment reminder settings should come from hooks (`usePaymentReminders`) so UX stays aligned.
+
+## Navigation
+- Extend the `ScreenType` union in `NavigationContext.tsx` whenever you add a route and handle the new case in `AppNavigator`.
+- Drive navigation through `useNavigation().navigateTo`, `goBack`, and `resetToHome`; do not mutate `screenHistory` manually.
+- Update the buttons in `BottomTabBar` if you change the primary destinations or the central FAB action.
+- Keep onboarding logic inside `App.tsx`; other flows should rely on `NavigationProvider` for routing.

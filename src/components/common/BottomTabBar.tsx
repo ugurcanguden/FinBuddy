@@ -136,12 +136,12 @@ const BottomTabBar: React.FC<BottomTabBarProps> = ({ activeTab: propActiveTab })
         </TouchableOpacity>
 
         <TouchableOpacity
-          style={getTabContainerStyle('settings')}
-          onPress={() => navigateTo('settings')}  
+          style={getTabContainerStyle('profile')}
+          onPress={() => navigateTo('profile')}  
         >
-          <Text style={getIconTextStyle('settings')}>⚙️</Text>
-          <Text style={getLabelTextStyle('settings')}>
-            {t('navigation.tabs.settings')}
+          <Text style={getIconTextStyle('profile')}>👤</Text>
+          <Text style={getLabelTextStyle('profile')}>
+            {t('navigation.tabs.profile') || 'Profil'}
           </Text>
         </TouchableOpacity>
       </View>

@@ -1,0 +1,19 @@
+---
+alwaysApply: true
+---
+## Local Commands
+- Use `yarn start` (or `yarn android` / `yarn ios` / `yarn web`) to run Expo; keep these scripts working cross-platform.
+- Run `yarn type-check` (`tsc --noEmit`) before pushing to catch strict TypeScript regressions early.
+- Enforce linting with `yarn lint` and auto-fix via `yarn lint:fix`; add rule tweaks instead of disabling ESLint inline.
+- Execute the suite with `yarn test`; add `--run` or `--watch=false` when emulating CI.
+- Build and ship through the existing EAS scripts (`yarn build:android`, `yarn build:ios`, `yarn update:*`) and document deviations in `docs/DEVELOPMENT_GUIDE.md`.
+
+## Pull Request Expectations
+- Walk through `.github/pull_request_template.md` and `docs/PR_CHECKLIST.md`; cover what/why/how plus manual test notes in every PR.
+- Keep repository docs (`docs/CODING_STANDARDS.md`, `docs/DEVELOPMENT_GUIDE.md`, etc.) aligned with behavioural changes.
+- Use Conventional Commit prefixes (`feat`, `fix`, `chore`, `docs`, `test`, …) so release logs stay meaningful.
+
+## Automation Notes
+- We do not run GitHub Actions today; treat the local commands above as required gates before merging.
+- Changes that touch Expo configuration must update both `app.json` and `eas.json` so cloud builds keep working.
+- When adding a new script or tool, ensure it runs in the sandboxed environment and document the steps for other contributors.
