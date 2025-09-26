@@ -14,13 +14,29 @@ const PaymentsScreen: React.FC = () => {
   const [entries, setEntries] = useState<Entry[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [entryStatuses, setEntryStatuses] = useState<Record<string, 'pending' | 'paid'>>({});
 
   const loadEntries = useCallback(async () => {
     try {
       setLoading(true);
-      const data = await paymentService.getEntries();
+      // Sadece gider entries'lerini getir
+      const data = await paymentService.getEntries('expense');
       setEntries(data);
       setError(null);
+      
+      // Her entry için durumu kontrol et
+      const statuses: Record<string, 'pending' | 'paid'> = {};
+      for (const entry of data) {
+        try {
+          const payments = await paymentService.getPaymentsByEntry(entry.id);
+          const hasPendingPayments = payments.some(p => p.status === 'pending');
+          statuses[entry.id] = hasPendingPayments ? 'pending' : 'paid';
+        } catch (error) {
+          console.error(`Error checking status for entry ${entry.id}:`, error);
+          statuses[entry.id] = 'pending';
+        }
+      }
+      setEntryStatuses(statuses);
     } catch (e) {
       setError(String((e as Error).message || ''));
     } finally {
@@ -57,6 +73,31 @@ const PaymentsScreen: React.FC = () => {
     },
     [loadEntries, t]
   );
+
+  const handlePaymentAction = useCallback(async (entryId: string) => {
+    try {
+      // Entry'nin tüm pending ödemelerini paid olarak işaretle
+      const payments = await paymentService.getPaymentsByEntry(entryId);
+      const pendingPayments = payments.filter(p => p.status === 'pending');
+      
+      for (const payment of pendingPayments) {
+        await paymentService.updatePaymentStatus(payment.id, 'paid');
+      }
+      
+      await loadEntries();
+      
+      Alert.alert(
+        t('screens.payments.payment_success') || 'Başarılı',
+        t('screens.payments.payment_marked_success') || 'Ödeme başarıyla işaretlendi!'
+      );
+    } catch (error) {
+      console.error('Payment action failed:', error);
+      Alert.alert(
+        t('screens.payments.payment_error') || 'Hata', 
+        t('screens.payments.payment_error_message') || 'İşlem sırasında bir hata oluştu.'
+      );
+    }
+  }, [loadEntries, t]);
 
   // İstatistikler hesapla
   const stats = useMemo(() => {
@@ -99,14 +140,14 @@ const PaymentsScreen: React.FC = () => {
         {/* İstatistikler */}
         <View style={styles.section}>
           <Text variant="primary" size="large" weight="bold" style={styles.sectionTitle}>
-            Ödeme İstatistikleri
+            {t('screens.payments.payment_statistics') || 'Ödeme İstatistikleri'}
           </Text>
           
           <View style={styles.statsGrid}>
             <StatCard
-              title="Toplam Tutar"
+              title={t('screens.payments.total_amount') || 'Toplam Tutar'}
               value={formatCurrency(stats.totalAmount)}
-              subtitle="tüm ödemeler"
+              subtitle={t('screens.payments.total_payments_subtitle') || 'tüm ödemeler'}
               icon="💸"
               variant="danger"
               animated={true}
@@ -114,9 +155,9 @@ const PaymentsScreen: React.FC = () => {
             />
             
             <StatCard
-              title="Taksitli"
+              title={t('screens.payments.installment') || 'Taksitli'}
               value={stats.installmentCount.toString()}
-              subtitle="ödeme"
+              subtitle={t('screens.payments.installment_subtitle') || 'ödeme'}
               icon="📅"
               variant="warning"
               animated={true}
@@ -124,9 +165,9 @@ const PaymentsScreen: React.FC = () => {
             />
             
             <StatCard
-              title="Tek Seferlik"
+              title={t('screens.payments.one_time') || 'Tek Seferlik'}
               value={stats.oneTimeCount.toString()}
-              subtitle="ödeme"
+              subtitle={t('screens.payments.one_time_subtitle') || 'ödeme'}
               icon="💳"
               variant="info"
               animated={true}
@@ -134,9 +175,9 @@ const PaymentsScreen: React.FC = () => {
             />
             
             <StatCard
-              title="Toplam Taksit"
+              title={t('screens.payments.total_installments') || 'Toplam Taksit'}
               value={stats.totalMonths.toString()}
-              subtitle="ay"
+              subtitle={t('screens.payments.total_installments_subtitle') || 'ay'}
               icon="📊"
               variant="primary"
               animated={true}
@@ -148,7 +189,7 @@ const PaymentsScreen: React.FC = () => {
         {/* Hızlı Eylemler */}
         <View style={styles.section}>
           <Text variant="primary" size="large" weight="bold" style={styles.sectionTitle}>
-            Hızlı Eylemler
+            {t('screens.payments.quick_actions') || 'Hızlı Eylemler'}
           </Text>
           
           <View style={styles.actionButtons}>
@@ -157,7 +198,7 @@ const PaymentsScreen: React.FC = () => {
               size="large"
               onPress={() => navigateTo('addEntry', { type: 'expense' })}
               icon="➕"
-              title="Yeni Ödeme Ekle"
+              title={t('screens.payments.add_payment') || 'Yeni Ödeme Ekle'}
               style={styles.actionButton}
             />
           </View>
@@ -167,7 +208,7 @@ const PaymentsScreen: React.FC = () => {
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
             <Text variant="primary" size="large" weight="bold" style={styles.sectionTitle}>
-              Ödemeler ({entries.length})
+              {t('screens.payments.payments_list') || 'Ödemeler'} ({entries.length})
             </Text>
             
             {entries.length > 0 && (
@@ -175,7 +216,7 @@ const PaymentsScreen: React.FC = () => {
                 variant="outline"
                 size="small"
                 onPress={() => navigateTo('addPayment')}
-                title="Yeni Ekle"
+                title={t('screens.payments.add_payment_button') || 'Yeni Ekle'}
                 style={styles.addButton}
               />
             )}
@@ -196,20 +237,20 @@ const PaymentsScreen: React.FC = () => {
                 variant="outline"
                 size="small"
                 onPress={loadEntries}
-                title="Tekrar Dene"
+                title={t('screens.payments.try_again') || 'Tekrar Dene'}
                 style={styles.retryButton}
               />
             </Card>
           ) : entries.length === 0 ? (
             <Card variant="outlined" style={styles.emptyCard}>
               <Text variant="secondary" size="medium" style={styles.emptyText}>
-                Henüz ödeme yok
+                {t('screens.payments.first_payment_message') || 'Henüz ödeme yok'}
               </Text>
               <Button
                 variant="primary"
                 size="medium"
                 onPress={() => navigateTo('addPayment')}
-                title="İlk Ödemenizi Ekleyin"
+                title={t('screens.payments.first_payment') || 'İlk Ödemenizi Ekleyin'}
                 style={styles.emptyButton}
               />
             </Card>
@@ -224,13 +265,16 @@ const PaymentsScreen: React.FC = () => {
                     >
                       <View style={styles.entryHeader}>
                         <Text variant="primary" size="medium" weight="bold" style={styles.entryTitle}>
-                          {entry.title || 'Ödeme'}
+                          {entry.title || (t('screens.payments.payment') || 'Ödeme')}
                         </Text>
                         <Badge 
                           variant={entry.schedule_type === 'installment' ? 'warning' : 'info'}
                           size="small"
                         >
-                          {entry.schedule_type === 'installment' ? 'Taksitli' : 'Tek Seferlik'}
+                          {entry.schedule_type === 'installment' 
+                            ? (t('screens.payments.installment') || 'Taksitli') 
+                            : (t('screens.payments.one_time') || 'Tek Seferlik')
+                          }
                         </Badge>
                       </View>
                       
@@ -246,13 +290,30 @@ const PaymentsScreen: React.FC = () => {
                       {entry.schedule_type === 'installment' && (
                         <View style={styles.installmentInfo}>
                           <Text variant="secondary" size="small">
-                            {entry.months} taksit • {entry.category_id}
+                            {entry.months} {t('screens.payments.installment') || 'taksit'} • {entry.category_id}
                           </Text>
                         </View>
                       )}
                     </TouchableOpacity>
                     
                     <View style={styles.entryActions}>
+                      <TouchableOpacity
+                        style={[
+                          styles.payButton,
+                          entryStatuses[entry.id] === 'paid' && styles.paidButton
+                        ]}
+                        onPress={() => handlePaymentAction(entry.id)}
+                      >
+                        <Text style={[
+                          styles.payButtonText,
+                          entryStatuses[entry.id] === 'paid' && styles.paidButtonText
+                        ]}>
+                          {entryStatuses[entry.id] === 'paid' 
+                            ? (t('screens.payments.paid_button') || 'Ödendi')
+                            : (t('screens.payments.pay_button') || 'Öde')
+                          }
+                        </Text>
+                      </TouchableOpacity>
                       <TouchableOpacity
                         style={styles.deleteButton}
                         onPress={() => confirmDelete(entry.id)}
@@ -378,7 +439,29 @@ const styles = StyleSheet.create({
   entryActions: {
     alignItems: 'center',
     justifyContent: 'center',
+    gap: 8,
   },
+  payButton: {
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 16,
+    backgroundColor: '#27AE60',
+    minWidth: 50,
+    alignItems: 'center',
+  },
+      payButtonText: {
+        color: 'white',
+        fontSize: 12,
+        fontWeight: '600',
+      },
+      paidButton: {
+        backgroundColor: '#95A5A6', // Gri renk
+      },
+      paidButtonText: {
+        color: 'white',
+        fontSize: 12,
+        fontWeight: '600',
+      },
   deleteButton: {
     padding: 8,
     borderRadius: 8,

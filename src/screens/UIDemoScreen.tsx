@@ -16,7 +16,7 @@ const UIDemoScreen: React.FC = () => {
 
   return (
     <Layout
-      headerComponent={<PageHeader title="UI Bileşenleri Demo" />}
+      headerComponent={<PageHeader title={t('screens.ui_demo.title') || 'UI Bileşenleri Demo'} />}
     >
       <RNScrollView style={styles.container}>
         {/* Button Bileşenleri */}
@@ -46,14 +46,14 @@ const UIDemoScreen: React.FC = () => {
               onPress={handleLoadingTest}
             />
             <Button 
-              title="🎉 Icon Left" 
+              title={t('screens.ui_demo.icon_left') || '🎉 Icon Left'} 
               variant="success" 
               icon="🎉"
               iconPosition="left"
               onPress={() => {}}
             />
             <Button 
-              title="Icon Right ➡️" 
+              title={t('screens.ui_demo.icon_right') || 'Icon Right ➡️'} 
               variant="outline" 
               icon="➡️"
               iconPosition="right"
@@ -111,7 +111,7 @@ const UIDemoScreen: React.FC = () => {
 
           <View style={styles.buttonGroup}>
             <Button 
-              title="Artır" 
+              title={t('screens.ui_demo.increase') || 'Artır'} 
               variant="outline" 
               size="small"
               onPress={() => setProgress(Math.min(100, progress + 10))}
@@ -142,7 +142,7 @@ const UIDemoScreen: React.FC = () => {
               Pozitif Bakiye
             </Text>
             <WalletCard
-              title="Ana Cüzdan"
+              title={t('screens.ui_demo.main_wallet') || 'Ana Cüzdan'}
               balance={15420}
               income={25000}
               expense={9580}
@@ -156,7 +156,7 @@ const UIDemoScreen: React.FC = () => {
               Negatif Bakiye
             </Text>
             <WalletCard
-              title="Kredi Kartı"
+              title={t('screens.ui_demo.credit_card') || 'Kredi Kartı'}
               balance={-2500}
               income={0}
               expense={2500}
@@ -170,7 +170,7 @@ const UIDemoScreen: React.FC = () => {
               Loading Durumu
             </Text>
             <WalletCard
-              title="Yükleniyor..."
+              title={t('screens.ui_demo.loading') || 'Yükleniyor...'}
               balance={0}
               income={0}
               expense={0}
@@ -190,7 +190,7 @@ const UIDemoScreen: React.FC = () => {
               Basit Bar Chart
             </Text>
             <BarChart
-              title="Aylık Gelir"
+              title={t('screens.ui_demo.monthly_income') || 'Aylık Gelir'}
               subtitle="Son 6 ay"
               data={[
                 { label: 'Oca', value: 15000, color: colors.primary },
@@ -211,8 +211,8 @@ const UIDemoScreen: React.FC = () => {
               Stacked Bar Chart
             </Text>
             <BarChart
-              title="Aylık Giderler"
-              subtitle="Toplam vs Ödenen"
+              title={t('screens.ui_demo.monthly_expenses') || 'Aylık Giderler'}
+              subtitle={t('screens.ui_demo.total_vs_paid') || 'Toplam vs Ödenen'}
               data={[
                 { label: 'Oca', value: 12000, secondaryValue: 8000, color: colors.danger, secondaryColor: colors.success },
                 { label: 'Şub', value: 15000, secondaryValue: 12000, color: colors.danger, secondaryColor: colors.success },
@@ -232,7 +232,7 @@ const UIDemoScreen: React.FC = () => {
               Renkli Bar Chart
             </Text>
             <BarChart
-              title="Kategori Bazlı Harcamalar"
+              title={t('screens.ui_demo.category_expenses') || 'Kategori Bazlı Harcamalar'}
               subtitle="Bu ay"
               data={[
                 { label: 'Yemek', value: 2500, color: colors.success },
@@ -403,16 +403,16 @@ const UIDemoScreen: React.FC = () => {
                 variant="danger"
               />
               <StatCard
-                title="Bekleyen Ödemeler"
+                title={t('screens.ui_demo.pending_payments') || 'Bekleyen Ödemeler'}
                 value="₺2,340"
-                subtitle="Ödenmemiş"
+                subtitle={t('screens.ui_demo.unpaid') || 'Ödenmemiş'}
                 icon="⏳"
                 trend="neutral"
                 trendValue="3 adet"
                 variant="warning"
               />
               <StatCard
-                title="Net Kazanç"
+                title={t('screens.ui_demo.net_income') || 'Net Kazanç'}
                 value="₺6,670"
                 subtitle="Bu ay"
                 icon="📈"
@@ -429,7 +429,7 @@ const UIDemoScreen: React.FC = () => {
             </Text>
             <View style={styles.statGrid}>
               <StatCard
-                title="Yükleniyor..."
+                title={t('screens.ui_demo.loading') || 'Yükleniyor...'}
                 value="0"
                 loading={true}
                 variant="default"
@@ -574,7 +574,7 @@ const UIDemoScreen: React.FC = () => {
             </Text>
             <ProgressBar progress={progress} variant="default" showLabel />
             <View style={styles.exampleActions}>
-              <Button title="İptal" variant="ghost" size="small" onPress={() => {}} />
+              <Button title={t('screens.ui_demo.cancel') || 'İptal'} variant="ghost" size="small" onPress={() => {}} />
             </View>
           </Card>
         </Card>

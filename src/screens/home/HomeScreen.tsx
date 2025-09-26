@@ -1,6 +1,6 @@
 // Home Screen - Ana sayfa (dashboard)
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { StyleSheet, ScrollView as RNScrollView, RefreshControl, Animated } from 'react-native';
+import { StyleSheet, ScrollView as RNScrollView, RefreshControl, Animated, Alert } from 'react-native';
 import { useLocale } from '@/hooks';
 import { Layout, PageHeader, View, Text, Card, TouchableOpacity, Dropdown, StatCard, WalletCard, BarChart } from '@/components';
 import { useTheme, useCurrency } from '@/contexts';
@@ -17,10 +17,10 @@ const HomeScreen: React.FC = () => {
   const [summary, setSummary] = useState<{ expense: { total: number; paid: number; pending: number }; income: { total: number; paid: number; pending: number } } | null>(null);
   const [incomeSeries, setIncomeSeries] = useState<Array<{ ym: string; total: number }>>([]);
   const [expenseSeries, setExpenseSeries] = useState<Array<{ ym: string; total: number; paid: number }>>([]);
-  const [upcomings, setUpcomings] = useState<Array<{ id: string; entry_id: string; title: string | null; due_date: string; amount: number }>>([]);
-  const [overdueExpenses, setOverdueExpenses] = useState<Array<{ id: string; entry_id: string; title: string | null; due_date: string; amount: number }>>([]);
-  const [overdueIncomes, setOverdueIncomes] = useState<Array<{ id: string; entry_id: string; title: string | null; due_date: string; amount: number }>>([]);
-  const [listTab, setListTab] = useState<'upcoming' | 'overdue_expense' | 'overdue_income'>('upcoming');
+  const [upcomings, setUpcomings] = useState<Array<{ id: string; entry_id: string; title: string | null; due_date: string; amount: number; type: string }>>([]);
+  const [overdueExpenses, setOverdueExpenses] = useState<Array<{ id: string; entry_id: string; title: string | null; due_date: string; amount: number; type: string }>>([]);
+  const [overdueIncomes, setOverdueIncomes] = useState<Array<{ id: string; entry_id: string; title: string | null; due_date: string; amount: number; type: string }>>([]);
+  const [listTab, setListTab] = useState<'upcoming_expense' | 'upcoming_income' | 'overdue_expense' | 'overdue_income'>('upcoming_expense');
   const [availableYears, setAvailableYears] = useState<string[]>([]);
   const [selectedYear, setSelectedYear] = useState<string>(() => new Date().getFullYear().toString());
   const [cashFlow, setCashFlow] = useState<{ incomePaid: number; expensePaid: number }>({ incomePaid: 0, expensePaid: 0 });
@@ -40,6 +40,8 @@ const HomeScreen: React.FC = () => {
         paymentService.getOverduePayments('income', 10),
         paymentService.getYearlyCashFlow(year),
       ]);
+      
+      
       setSummary(sum);
       setIncomeSeries(inc);
       setExpenseSeries(expenseBreakdown);
@@ -51,6 +53,29 @@ const HomeScreen: React.FC = () => {
       if (showSpinner) setRefreshing(false);
     }
   }, []);
+
+  const handlePaymentAction = useCallback(async (paymentId: string, type: 'expense' | 'income') => {
+    try {
+      const status = type === 'expense' ? 'paid' : 'received';
+      await paymentService.updatePaymentStatus(paymentId, status);
+      
+      // Dashboard'ı yenile
+      await loadDashboard(selectedYear);
+      
+      Alert.alert(
+        t('screens.home.action_success') || 'Başarılı',
+        type === 'expense' 
+          ? (t('screens.home.payment_success') || 'Ödeme başarıyla işaretlendi!')
+          : (t('screens.home.income_success') || 'Gelir başarıyla işaretlendi!')
+      );
+    } catch (error) {
+      console.error('Payment action failed:', error);
+      Alert.alert(
+        t('screens.home.action_error') || 'Hata', 
+        t('screens.home.action_error_message') || 'İşlem sırasında bir hata oluştu.'
+      );
+    }
+  }, [loadDashboard, selectedYear]);
 
   useEffect(() => {
     (async () => {
@@ -238,7 +263,8 @@ const HomeScreen: React.FC = () => {
 
   const listTabs = useMemo(
     () => [
-      { key: 'upcoming' as const, label: t('screens.home.upcoming_tab') || 'Yaklaşan Ödemeler' },
+      { key: 'upcoming_expense' as const, label: t('screens.home.upcoming_expenses') || 'Yaklaşan Giderler' },
+      { key: 'upcoming_income' as const, label: t('screens.home.upcoming_incomes') || 'Yaklaşan Gelirler' },
       { key: 'overdue_expense' as const, label: t('screens.home.overdue_expenses') || 'Ödemesi Geçenler' },
       { key: 'overdue_income' as const, label: t('screens.home.overdue_incomes') || 'Tahsilatı Gecikenler' },
     ],
@@ -247,8 +273,12 @@ const HomeScreen: React.FC = () => {
 
   const listItems = useMemo(() => {
     switch (listTab) {
-      case 'upcoming':
-        return upcomings;
+      case 'upcoming_expense':
+        // Sadece gider ödemelerini göster
+        return upcomings.filter(item => item.type === 'expense');
+      case 'upcoming_income':
+        // Sadece gelir ödemelerini göster
+        return upcomings.filter(item => item.type === 'income');
       case 'overdue_expense':
         return overdueExpenses;
       case 'overdue_income':
@@ -308,12 +338,20 @@ const HomeScreen: React.FC = () => {
 
   const listMeta = useMemo(() => {
     switch (listTab) {
-      case 'upcoming':
+      case 'upcoming_expense':
         return {
-          icon: '💳',
-          color: colors.primary,
-          emptyText: t('screens.home.no_upcoming_payments') || t('common.messages.no_data') || 'Kayıt bulunamadı.',
-          fallbackTitle: t('screens.home.payment') || t('common.labels.payment') || 'Ödeme',
+          icon: '💸',
+          color: colors.danger,
+          emptyText: t('screens.home.no_upcoming_expenses') || 'Yaklaşan gider bulunmuyor.',
+          fallbackTitle: t('screens.home.expense') || 'Gider',
+          secondaryLabel: t('screens.home.due_date_label') || 'Son Tarih',
+        };
+      case 'upcoming_income':
+        return {
+          icon: '💰',
+          color: colors.success,
+          emptyText: t('screens.home.no_upcoming_incomes') || 'Yaklaşan gelir bulunmuyor.',
+          fallbackTitle: t('screens.home.income') || 'Gelir',
           secondaryLabel: t('screens.home.due_date_label') || 'Son Tarih',
         };
       case 'overdue_expense':
@@ -341,7 +379,7 @@ const HomeScreen: React.FC = () => {
           secondaryLabel: t('screens.home.due_date_label') || 'Son Tarih',
         };
     }
-  }, [colors.danger, colors.primary, listTab, t]);
+  }, [colors.danger, colors.primary, colors.success, listTab, t]);
 
   return (
     <Layout
@@ -390,7 +428,7 @@ const HomeScreen: React.FC = () => {
         {/* Gelir ve Giderler */}
         <View style={styles.section}>
           <Text variant="primary" size="large" weight="bold" style={styles.sectionTitle}>
-            Gelir ve Giderler
+            {t('screens.home.income_and_expenses') || 'Gelir ve Giderler'}
           </Text>
           <View variant="transparent" style={styles.yearRow}>
             <Text variant="secondary" size="small" weight="medium">
@@ -406,8 +444,8 @@ const HomeScreen: React.FC = () => {
           </View>
 
           <BarChart
-            title="Gelir"
-            subtitle={`Son ay: ${formatCurrency(latestIncome)}`}
+            title={t('screens.home.income_chart_title') || 'Gelir'}
+            subtitle={`${t('screens.home.last_month') || 'Son ay'}: ${formatCurrency(latestIncome)}`}
             data={incomeChartData}
             height={chartHeight}
             barWidth={BAR_WIDTH}
@@ -420,8 +458,8 @@ const HomeScreen: React.FC = () => {
           />
 
           <BarChart
-            title="Giderler"
-            subtitle={`Son ay: ${formatCurrency(latestExpense)} | Ödenen: ${formatCurrency(expenseYearPaid)}`}
+            title={t('screens.home.expenses_chart_title') || 'Giderler'}
+            subtitle={`${t('screens.home.last_month') || 'Son ay'}: ${formatCurrency(latestExpense)} | ${t('screens.home.paid') || 'Ödenen'}: ${formatCurrency(expenseYearPaid)}`}
             data={expenseChartData}
             height={chartHeight}
             barWidth={BAR_WIDTH}
@@ -471,7 +509,7 @@ const HomeScreen: React.FC = () => {
               listItems.map((item) => {
                 const overdueDays = calculateOverdueDays(item.due_date);
                 const remainingDays = calculateDaysUntil(item.due_date);
-                const extraInfo = listTab === 'upcoming'
+                const extraInfo = (listTab === 'upcoming_expense' || listTab === 'upcoming_income')
                   ? (typeof remainingDays === 'number' && remainingDays > 0
                       ? `${t('screens.home.remaining_days') || 'Kalan'}: ${remainingDays} ${t('common.time.days') || 'gün'}`
                       : null)
@@ -500,7 +538,27 @@ const HomeScreen: React.FC = () => {
                           <Text variant="secondary" size="small">{extraInfo}</Text>
                         )}
                       </View>
-                      <Text variant="primary" weight="semibold">{formatCurrency(item.amount)}</Text>
+                      <View style={{ alignItems: 'flex-end', gap: 8 }}>
+                        <Text variant="primary" weight="semibold">{formatCurrency(item.amount)}</Text>
+                        <TouchableOpacity
+                          style={{
+                            backgroundColor: listMeta.color,
+                            paddingHorizontal: 12,
+                            paddingVertical: 6,
+                            borderRadius: 16,
+                            minWidth: 60,
+                            alignItems: 'center',
+                          }}
+                          onPress={() => handlePaymentAction(item.id, item.type as 'expense' | 'income')}
+                        >
+                          <Text style={{ color: 'white', fontSize: 12, fontWeight: '600' }}>
+                            {item.type === 'expense' 
+                              ? (t('screens.home.pay_button') || 'Öde')
+                              : (t('screens.home.receive_button') || 'Al')
+                            }
+                          </Text>
+                        </TouchableOpacity>
+                      </View>
                     </View>
                   </Card>
                 );

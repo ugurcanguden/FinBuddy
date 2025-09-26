@@ -1,0 +1,17 @@
+{
+  "title": "UI Components Demo",
+  "icon_left": "🎉 Icon Left",
+  "icon_right": "Icon Right ➡️",
+  "increase": "Increase",
+  "main_wallet": "Main Wallet",
+  "credit_card": "Credit Card",
+  "loading": "Loading...",
+  "monthly_income": "Monthly Income",
+  "monthly_expenses": "Monthly Expenses",
+  "total_vs_paid": "Total vs Paid",
+  "category_expenses": "Category-based Expenses",
+  "pending_payments": "Pending Payments",
+  "unpaid": "Unpaid",
+  "net_income": "Net Income",
+  "cancel": "Cancel"
+}

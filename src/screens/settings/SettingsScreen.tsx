@@ -206,7 +206,7 @@ const SettingsScreen: React.FC = () => {
             <StatCard
               title="Versiyon"
               value="1.0.0"
-              subtitle="güncel"
+              subtitle={t('screens.settings.current') || 'güncel'}
               icon="📱"
               variant="info"
               animated={true}
@@ -226,7 +226,7 @@ const SettingsScreen: React.FC = () => {
             <StatCard
               title="Dil"
               value={currentLanguage.toUpperCase()}
-              subtitle="seçili"
+              subtitle={t('screens.settings.selected') || 'seçili'}
               icon="🌍"
               variant="success"
               animated={true}
@@ -236,7 +236,7 @@ const SettingsScreen: React.FC = () => {
             <StatCard
               title="Para Birimi"
               value={currency}
-              subtitle="varsayılan"
+              subtitle={t('screens.settings.default') || 'varsayılan'}
               icon="💰"
               variant="warning"
               animated={true}
@@ -443,7 +443,7 @@ const SettingsScreen: React.FC = () => {
                 <TimePicker
                   value={paymentReminders.time}
                   onChange={handleNotificationTimeChange}
-                  placeholder="Saat seçin"
+                  placeholder={t('screens.settings.select_time') || 'Saat seçin'}
                 />
               </View>
             )}

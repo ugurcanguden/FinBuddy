@@ -5,7 +5,7 @@ import { Layout, PageHeader, ScrollView, View, Text, TouchableOpacity } from '@/
 import { useNavigation, useTheme } from '@/contexts';
 import { useLocale } from '@/hooks';
 import { paymentService } from '@/services';
-import type { Payment } from '@/types';
+import type { Payment, Entry } from '@/types';
 
 interface Props { entryId?: string }
 
@@ -17,6 +17,7 @@ const PaymentDetailsScreen: React.FC<Props> = ({ entryId }) => {
   const { t } = useLocale();
   const id = entryId || currentParams?.entryId;
   const [payments, setPayments] = useState<Payment[]>([]);
+  const [entry, setEntry] = useState<Entry | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<'pending' | 'completed'>('pending');
@@ -25,8 +26,12 @@ const PaymentDetailsScreen: React.FC<Props> = ({ entryId }) => {
     if (!id) return;
     try {
       setLoading(true);
-      const data = await paymentService.getPaymentsByEntry(id);
-      setPayments(data);
+      const [paymentsData, entryData] = await Promise.all([
+        paymentService.getPaymentsByEntry(id),
+        paymentService.getEntryById(id)
+      ]);
+      setPayments(paymentsData);
+      setEntry(entryData);
       setError(null);
     } catch (e) {
       setError(String((e as Error).message || ''));
@@ -39,7 +44,10 @@ const PaymentDetailsScreen: React.FC<Props> = ({ entryId }) => {
 
   const togglePaid = async (paymentId: string, currentStatus: Payment['status']) => {
     try {
-      const next = currentStatus === 'pending' ? 'paid' : 'pending';
+      const isIncome = entry?.type === 'income';
+      const next = currentStatus === 'pending' 
+        ? (isIncome ? 'received' : 'paid') 
+        : 'pending';
       await paymentService.updatePaymentStatus(paymentId, next);
       await load();
     } catch (e) {
@@ -72,6 +80,24 @@ const PaymentDetailsScreen: React.FC<Props> = ({ entryId }) => {
   };
 
   const isCompleted = (status: Payment['status']) => status === 'paid' || status === 'received';
+  
+  // Entry tipine göre başlık ve buton metinleri
+  const isIncome = entry?.type === 'income';
+  const pageTitle = isIncome 
+    ? (t('screens.incomes.title') || 'Gelir Detayları')
+    : (t('screens.payments.title') || 'Ödeme Detayları');
+  
+  const getButtonText = (completed: boolean) => {
+    if (isIncome) {
+      return completed 
+        ? (t('screens.incomes.received_button') || 'Alındı')
+        : (t('screens.incomes.receive_button') || 'Al');
+    } else {
+      return completed 
+        ? (t('screens.payments.paid_button') || 'Ödendi')
+        : (t('screens.payments.pay_button') || 'Öde');
+    }
+  };
 
   const filteredPayments = useMemo(() => {
     return payments.filter((payment) =>
@@ -84,7 +110,7 @@ const PaymentDetailsScreen: React.FC<Props> = ({ entryId }) => {
     : t('screens.payments_hub.empty_pending') || 'Bekleyen kayıt bulunmuyor';
 
   return (
-    <Layout headerComponent={<PageHeader title={t('navigation.tabs.payments')} showBackButton onBackPress={goBack} /> }>
+    <Layout headerComponent={<PageHeader title={pageTitle} showBackButton onBackPress={goBack} /> }>
       <ScrollView style={styles.container}>
         <View variant="transparent" style={styles.tabContainer}>
           {(['pending', 'completed'] as const).map((tabKey) => {
@@ -125,7 +151,7 @@ const PaymentDetailsScreen: React.FC<Props> = ({ entryId }) => {
                   onPress={() => togglePaid(p.id, p.status)}
                 >
                   <Text style={{ color: completed ? colors.text : colors.onPrimary }}>
-                    {completed ? (t('screens.payments_hub.paid') || 'Ödendi') : (t('screens.payments_hub.pay') || 'Öde')}
+                    {getButtonText(completed)}
                   </Text>
                 </TouchableOpacity>
               </View>

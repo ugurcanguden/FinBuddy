@@ -55,5 +55,9 @@
     "edit_profile_message": "Profile editing will be added soon",
     "security": "Security",
     "logout": "Logout"
-  }
+  },
+  "current": "current",
+  "selected": "selected",
+  "default": "default",
+  "select_time": "Select time"
 }

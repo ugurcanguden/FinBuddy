@@ -55,5 +55,9 @@
     "edit_profile_message": "Profil düzenleme özelliği yakında eklenecek",
     "security": "Güvenlik",
     "logout": "Çıkış Yap"
-  }
+  },
+  "current": "güncel",
+  "selected": "seçili",
+  "default": "varsayılan",
+  "select_time": "Saat seçin"
 }

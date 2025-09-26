@@ -29,7 +29,7 @@ export interface CreateEntryInput {
 class PaymentService {
   private async sumBy(type: 'expense' | 'income', status?: 'paid' | 'pending' | 'any', ym?: string): Promise<number> {
     const params: any[] = [];
-    let where = `e.type = ?`;
+    let where = `e.type = ? AND e.is_active = 1 AND p.is_active = 1`;
     params.push(type);
     if (status && status !== 'any') {
       if (status === 'paid') {
@@ -76,7 +76,7 @@ class PaymentService {
   ): Promise<Array<{ ym: string; total: number }>> {
     const { year, limit = 12 } = options ?? {};
     const today = new Date().toISOString().slice(0, 10);
-    const where: string[] = ['e.type = ?'];
+    const where: string[] = ['e.type = ?', 'e.is_active = 1', 'p.is_active = 1'];
     const params: any[] = [type];
     if (year) {
       where.push('substr(p.due_date,1,4) = ?');
@@ -102,7 +102,7 @@ class PaymentService {
   async getMonthlyExpenseBreakdown(options?: { year?: string; limit?: number }): Promise<Array<{ ym: string; total: number; paid: number }>> {
     const { year, limit = 12 } = options ?? {};
     const today = new Date().toISOString().slice(0, 10);
-    const where: string[] = [`e.type = 'expense'`];
+    const where: string[] = [`e.type = 'expense'`, 'e.is_active = 1', 'p.is_active = 1'];
     const params: any[] = [];
     if (year) {
       where.push('substr(p.due_date,1,4) = ?');
@@ -132,17 +132,18 @@ class PaymentService {
     }));
   }
 
-  async getUpcomingPayments(limit = 5, daysAhead = 30): Promise<Array<{ id: string; entry_id: string; title: string | null; due_date: string; amount: number }>> {
+  async getUpcomingPayments(limit = 5, daysAhead = 30): Promise<Array<{ id: string; entry_id: string; title: string | null; due_date: string; amount: number; type: string }>> {
     const today = new Date();
     const ahead = new Date();
     ahead.setDate(today.getDate() + daysAhead);
     const start = today.toISOString().slice(0, 10);
     const end = ahead.toISOString().slice(0, 10);
+    
     return databaseService.getAll(
-      `SELECT p.id, p.entry_id, p.due_date, p.amount, e.title
+      `SELECT p.id, p.entry_id, p.due_date, p.amount, e.title, e.type
        FROM payments p
        JOIN entries e ON e.id = p.entry_id
-       WHERE p.status = 'pending' AND p.due_date BETWEEN ? AND ?
+       WHERE p.status = 'pending' AND p.due_date BETWEEN ? AND ? AND e.is_active = 1 AND p.is_active = 1
        ORDER BY p.due_date ASC
        LIMIT ?`,
       [start, end, limit]
@@ -157,7 +158,7 @@ class PaymentService {
     const { type, daysAhead = 30, limit = 50 } = options ?? {};
     const today = new Date();
     const start = today.toISOString().slice(0, 10);
-    const where: string[] = ["p.status = 'pending'", 'p.due_date >= ?'];
+    const where: string[] = ["p.status = 'pending'", 'p.due_date >= ?', 'e.is_active = 1', 'p.is_active = 1'];
     const params: Array<string | number> = [start];
 
     if (typeof daysAhead === 'number') {
@@ -186,15 +187,17 @@ class PaymentService {
     );
   }
 
-  async getOverduePayments(type: 'expense' | 'income', limit = 10): Promise<Array<{ id: string; entry_id: string; title: string | null; due_date: string; amount: number }>> {
+  async getOverduePayments(type: 'expense' | 'income', limit = 10): Promise<Array<{ id: string; entry_id: string; title: string | null; due_date: string; amount: number; type: string }>> {
     const today = new Date().toISOString().slice(0, 10);
     return databaseService.getAll(
-      `SELECT p.id, p.entry_id, p.due_date, p.amount, e.title
+      `SELECT p.id, p.entry_id, p.due_date, p.amount, e.title, e.type
        FROM payments p
         JOIN entries e ON e.id = p.entry_id
        WHERE e.type = ?
          AND p.status = 'pending'
          AND p.due_date < ?
+         AND e.is_active = 1
+         AND p.is_active = 1
        ORDER BY p.due_date ASC
        LIMIT ?`,
       [type, today, limit]
@@ -205,7 +208,10 @@ class PaymentService {
     const rows = await databaseService.getAll<{ year: string | null }>(
       `SELECT DISTINCT substr(p.due_date,1,4) AS year
        FROM payments p
+       JOIN entries e ON e.id = p.entry_id
        WHERE p.due_date IS NOT NULL
+         AND e.is_active = 1
+         AND p.is_active = 1
        ORDER BY year DESC`
     );
     return rows
@@ -214,7 +220,7 @@ class PaymentService {
   }
 
   async getTotalsByCategory(params?: { ym?: string; type?: 'expense' | 'income' }): Promise<Array<{ category_id: string; total: number }>> {
-    const where: string[] = ['e.id = p.entry_id'];
+    const where: string[] = ['e.id = p.entry_id', 'e.is_active = 1', 'p.is_active = 1'];
     const bind: any[] = [];
     if (params?.type) {
       where.push('e.type = ?');
@@ -251,7 +257,7 @@ class PaymentService {
     };
     const dimExpr = dimMap[params.dimension];
     const meaExpr = meaMap[params.measure];
-    const where: string[] = ['e.id = p.entry_id'];
+    const where: string[] = ['e.id = p.entry_id', 'e.is_active = 1', 'p.is_active = 1'];
     const bind: any[] = [];
     const factType: EntryType | undefined =
       params.fact === 'payments_expense'
@@ -285,6 +291,13 @@ class PaymentService {
     }
     return databaseService.getAll<any>(
       `SELECT * FROM entries WHERE is_active = 1 ORDER BY created_at DESC`
+    );
+  }
+
+  async getEntryById(entryId: string): Promise<any> {
+    return databaseService.getFirst<any>(
+      `SELECT * FROM entries WHERE id = ? AND is_active = 1`,
+      [entryId]
     );
   }
 
@@ -336,7 +349,7 @@ class PaymentService {
         [
           entryId,
           input.categoryId,
-          input.type || 'expense',
+          input.type ?? 'expense',
           input.title,
           total,
           months,
@@ -373,7 +386,7 @@ class PaymentService {
          COALESCE(SUM(CASE WHEN e.type = 'expense' AND p.status IN ('paid','received') THEN p.amount ELSE 0 END), 0) AS expense_paid
        FROM payments p
        JOIN entries e ON e.id = p.entry_id
-       WHERE substr(p.due_date,1,4) = ?`,
+       WHERE substr(p.due_date,1,4) = ? AND e.is_active = 1 AND p.is_active = 1`,
       [year]
     );
     return {

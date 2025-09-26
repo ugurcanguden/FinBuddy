@@ -236,7 +236,7 @@ const AddPaymentScreen = forwardRef<AddPaymentScreenHandle, AddPaymentScreenProp
             size="large"
             onPress={goBack}
             style={styles.fullWidthButton}
-            title="İptal"
+            title={t('common.actions.cancel') || 'İptal'}
           />
         </View>
       )}

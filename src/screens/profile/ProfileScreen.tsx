@@ -115,7 +115,7 @@ const ProfileScreen: React.FC = () => {
               size="small"
               onPress={handleEditProfile}
               style={styles.editButton}
-              title="Profili Düzenle"
+              title={t('screens.profile.edit_profile') || 'Profili Düzenle'}
             />
           </Card>
 
@@ -127,9 +127,9 @@ const ProfileScreen: React.FC = () => {
             
             <View style={styles.statsGrid}>
               <StatCard
-                title="Toplam Ödeme"
+                title={t('screens.profile.total_payments') || 'Toplam Ödeme'}
                 value={profileStats.totalPayments.toString()}
-                subtitle="işlem"
+                subtitle={t('screens.profile.total_payments_subtitle') || 'işlem'}
                 icon="📊"
                 variant="primary"
                 animated={true}
@@ -139,7 +139,7 @@ const ProfileScreen: React.FC = () => {
               <StatCard
                 title="Toplam Gelir"
                 value={formatCurrency(profileStats.totalIncome)}
-                subtitle="bu yıl"
+                subtitle={t('screens.profile.this_year') || 'bu yıl'}
                 icon="💰"
                 variant="success"
                 animated={true}
@@ -149,7 +149,7 @@ const ProfileScreen: React.FC = () => {
               <StatCard
                 title="Toplam Gider"
                 value={formatCurrency(profileStats.totalExpense)}
-                subtitle="bu yıl"
+                subtitle={t('screens.profile.this_year') || 'bu yıl'}
                 icon="💸"
                 variant="danger"
                 animated={true}
@@ -229,7 +229,7 @@ const ProfileScreen: React.FC = () => {
                 style={styles.quickActionButton}
                 icon="➕"
                 fullWidth
-                title="Yeni Ödeme Ekle"
+                title={t('screens.profile.add_payment') || 'Yeni Ödeme Ekle'}
               />
               
               <View style={styles.quickActionsRow}>

@@ -1,0 +1,17 @@
+{
+  "title": "Demo Componenti UI",
+  "icon_left": "🎉 Icona Sinistra",
+  "icon_right": "Icona Destra ➡️",
+  "increase": "Aumenta",
+  "main_wallet": "Portafoglio Principale",
+  "credit_card": "Carta di Credito",
+  "loading": "Caricamento...",
+  "monthly_income": "Entrate Mensili",
+  "monthly_expenses": "Spese Mensili",
+  "total_vs_paid": "Totale vs Pagato",
+  "category_expenses": "Spese per Categoria",
+  "pending_payments": "Pagamenti in Sospeso",
+  "unpaid": "Non Pagato",
+  "net_income": "Reddito Netto",
+  "cancel": "Annulla"
+}

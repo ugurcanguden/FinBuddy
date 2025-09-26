@@ -1,0 +1,17 @@
+{
+  "title": "UI Bileşenleri Demo",
+  "icon_left": "🎉 Icon Left",
+  "icon_right": "Icon Right ➡️",
+  "increase": "Artır",
+  "main_wallet": "Ana Cüzdan",
+  "credit_card": "Kredi Kartı",
+  "loading": "Yükleniyor...",
+  "monthly_income": "Aylık Gelir",
+  "monthly_expenses": "Aylık Giderler",
+  "total_vs_paid": "Toplam vs Ödenen",
+  "category_expenses": "Kategori Bazlı Harcamalar",
+  "pending_payments": "Bekleyen Ödemeler",
+  "unpaid": "Ödenmemiş",
+  "net_income": "Net Kazanç",
+  "cancel": "İptal"
+}

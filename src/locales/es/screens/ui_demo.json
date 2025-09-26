@@ -1,0 +1,17 @@
+{
+  "title": "Demo de Componentes UI",
+  "icon_left": "🎉 Icono Izquierda",
+  "icon_right": "Icono Derecha ➡️",
+  "increase": "Aumentar",
+  "main_wallet": "Cartera Principal",
+  "credit_card": "Tarjeta de Crédito",
+  "loading": "Cargando...",
+  "monthly_income": "Ingresos Mensuales",
+  "monthly_expenses": "Gastos Mensuales",
+  "total_vs_paid": "Total vs Pagado",
+  "category_expenses": "Gastos por Categoría",
+  "pending_payments": "Pagos Pendientes",
+  "unpaid": "No Pagado",
+  "net_income": "Ingreso Neto",
+  "cancel": "Cancelar"
+}

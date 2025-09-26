@@ -223,9 +223,9 @@ const ReportsHubScreen: React.FC = () => {
               />
               
               <StatCard
-                title="Ödenen"
+                title={t('screens.reports_hub.paid') || 'Ödenen'}
                 value={formatCurrencyValue(summary.expense.paid)}
-                subtitle="gider"
+                subtitle={t('screens.reports_hub.paid_subtitle') || 'gider'}
                 icon="✅"
                 variant="success"
                 animated={true}
@@ -235,7 +235,7 @@ const ReportsHubScreen: React.FC = () => {
               <StatCard
                 title="Bekleyen"
                 value={formatCurrencyValue(summary.expense.pending)}
-                subtitle="ödeme"
+                subtitle={t('screens.reports_hub.paid_subtitle') || 'ödeme'}
                 icon="⏳"
                 variant="warning"
                 animated={true}
@@ -282,7 +282,7 @@ const ReportsHubScreen: React.FC = () => {
               {t('screens.reports.category_distribution') || 'Kategori Dağılımı'}
             </Text>
             <BarChart
-              title="Kategori Dağılımı"
+              title={t('screens.reports_hub.category_distribution') || 'Kategori Dağılımı'}
               data={categoryChartData}
               height={200}
               barWidth={40}
@@ -359,7 +359,7 @@ const ReportsHubScreen: React.FC = () => {
                 variant="outline"
                 size="small"
                 onPress={() => navigateTo('reportBuilder')}
-                title="İlk Raporınızı Oluşturun"
+                title={t('screens.reports_hub.first_report') || 'İlk Raporınızı Oluşturun'}
                 style={styles.emptyButton}
               />
             </Card>

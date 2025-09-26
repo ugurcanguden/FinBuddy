@@ -1,0 +1,17 @@
+{
+  "title": "UI-Komponenten Demo",
+  "icon_left": "🎉 Icon Links",
+  "icon_right": "Icon Rechts ➡️",
+  "increase": "Erhöhen",
+  "main_wallet": "Hauptbrieftasche",
+  "credit_card": "Kreditkarte",
+  "loading": "Wird geladen...",
+  "monthly_income": "Monatliches Einkommen",
+  "monthly_expenses": "Monatliche Ausgaben",
+  "total_vs_paid": "Gesamt vs Bezahlt",
+  "category_expenses": "Kategoriebasierte Ausgaben",
+  "pending_payments": "Ausstehende Zahlungen",
+  "unpaid": "Unbezahlt",
+  "net_income": "Nettoeinkommen",
+  "cancel": "Abbrechen"
+}
