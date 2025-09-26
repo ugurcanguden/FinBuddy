@@ -38,6 +38,7 @@ export interface Category {
   custom_name?: string;
   icon: string;
   color: string;
+  type: 'expense' | 'income' | 'receivable';
   is_default: boolean;
   is_active: boolean;
   created_at: string;
@@ -49,6 +50,7 @@ export interface CreateCategoryData {
   custom_name?: string;
   icon: string;
   color: string;
+  type: 'expense' | 'income' | 'receivable';
 }
 
 export interface UpdateCategoryData {
@@ -56,14 +58,16 @@ export interface UpdateCategoryData {
   custom_name?: string;
   icon?: string;
   color?: string;
+  type?: 'expense' | 'income' | 'receivable';
 }
 
 // Kategori form tipleri
 export interface CategoryFormData {
   name: string;
-  custom_name : string;
+  custom_name: string;
   icon: string;
   color: string;
+  type: 'expense' | 'income' | 'receivable';
 }
 
 // Entry/Payment tipleri

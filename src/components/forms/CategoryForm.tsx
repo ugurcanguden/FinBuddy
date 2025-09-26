@@ -11,7 +11,8 @@ import {
   IconDropdown,
   KeyboardAwareScrollView,
   FormSection,
-  Button
+  Button,
+  RadioButton
 } from '@/components';
 import { Category, CategoryFormData } from '@/types';
 
@@ -34,7 +35,8 @@ const CategoryForm: React.FC<CategoryFormProps> = ({
     custom_name: '',
     name: '',
     icon: 'home',
-    color: colors.primary
+    color: colors.primary,
+    type: 'expense'
   });
   const [loading, setLoading] = useState(false);
 
@@ -45,14 +47,16 @@ const CategoryForm: React.FC<CategoryFormProps> = ({
         custom_name: category.custom_name || '',
         name: category.name_key || '',
         icon: category.icon,
-        color: category.color
+        color: category.color,
+        type: category.type
       });
     } else {
       setFormData({
         custom_name: '',
         name: '',
         icon: 'home',
-        color: colors.primary
+        color: colors.primary,
+        type: 'expense'
       });
     }
   }, [category]);
@@ -66,30 +70,40 @@ const CategoryForm: React.FC<CategoryFormProps> = ({
     { value: 'directions_bus', emoji: '🚌', name: t('screens.categories.icons.transport') },
     { value: 'favorite', emoji: '❤️', name: t('screens.categories.icons.health') },
     { value: 'movie', emoji: '🎬', name: t('screens.categories.icons.entertainment') },
-    { value: 'apps', emoji: '📱', name: t('screens.categories.icons.other') },
     { value: 'shopping_cart', emoji: '🛒', name: t('screens.categories.icons.shopping') },
-    { value: 'sports', emoji: '⚽', name: t('screens.categories.icons.sports') },
+    { value: 'apps', emoji: '📱', name: t('screens.categories.icons.other') },
     { value: 'work', emoji: '💼', name: t('screens.categories.icons.work') },
+    { value: 'laptop', emoji: '💻', name: t('screens.categories.icons.laptop') },
+    { value: 'trending_up', emoji: '📈', name: t('screens.categories.icons.trending_up') },
+    { value: 'card_giftcard', emoji: '🎁', name: t('screens.categories.icons.card_giftcard') },
+    { value: 'home_work', emoji: '🏢', name: t('screens.categories.icons.home_work') },
+    { value: 'business', emoji: '🏢', name: t('screens.categories.icons.business') },
+    { value: 'attach_money', emoji: '💰', name: t('screens.categories.icons.attach_money') },
+    { value: 'sports', emoji: '⚽', name: t('screens.categories.icons.sports') },
     { value: 'travel', emoji: '✈️', name: t('screens.categories.icons.travel') },
   ];
 
   // Renk seçenekleri
   const colorOptions = useMemo(
     () => [
-      colors.primary,
-      colors.accent,
-      colors.success,
-      colors.warning,
-      colors.info,
-      colors.danger,
-      '#2ecc71',
-      '#8e44ad',
-      '#16a085',
-      '#f1c40f',
-      '#1abc9c',
-      '#ff6b6b',
+      '#E74C3C', // Kırmızı
+      '#C0392B', // Koyu kırmızı
+      '#8E44AD', // Mor
+      '#E67E22', // Turuncu
+      '#3498DB', // Mavi
+      '#E91E63', // Pembe
+      '#9B59B6', // Açık mor
+      '#F39C12', // Sarı
+      '#95A5A6', // Gri
+      '#27AE60', // Yeşil
+      '#2ECC71', // Açık yeşil
+      '#16A085', // Teal
+      '#1ABC9C', // Turkuaz
+      '#58D68D', // Açık yeşil
+      '#48C9B0', // Mavi-yeşil
+      '#7DCEA0', // Pastel yeşil
     ],
-    [colors]
+    []
   );
 
   const handleSave = async () => {
@@ -121,10 +135,12 @@ const CategoryForm: React.FC<CategoryFormProps> = ({
   };
 
   return (
+    <View variant="transparent" style={styles.container}>
       <KeyboardAwareScrollView
         variant="transparent"
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.formContainer}
+        contentContainerStyle={styles.scrollContent}
+        style={styles.scrollView}
       >
         <View variant="transparent" style={styles.sectionStack}>
           <FormSection
@@ -150,6 +166,20 @@ const CategoryForm: React.FC<CategoryFormProps> = ({
                 </Text>
               </View>
             </View>
+          </FormSection>
+
+          <FormSection
+            title="Kategori Tipi"
+            description="Bu kategori gider mi, gelir mi?"
+          >
+            <RadioButton
+              options={[
+                { value: 'expense', label: 'Gider', description: 'Harcama kategorisi' },
+                { value: 'income', label: 'Gelir', description: 'Gelir kategorisi' }
+              ]}
+              selectedValue={formData.type}
+              onSelect={(value) => setFormData({ ...formData, type: value as 'expense' | 'income' })}
+            />
           </FormSection>
 
           <FormSection
@@ -229,25 +259,26 @@ const CategoryForm: React.FC<CategoryFormProps> = ({
             </View>
           </FormSection>
         </View>
-
-        <View variant="transparent" style={styles.actionBar}>
-          <View variant="transparent" style={styles.actionRow}>
-            <Button
-              title={t('common.buttons.cancel')}
-              variant="secondary"
-              onPress={onCancel}
-              style={{ flex: 1 }}
-            />
-            <Button
-              title={loading ? t('common.buttons.loading') : t('common.buttons.save')}
-              onPress={handleSave}
-              disabled={loading || !isValid}
-              style={{ flex: 1 }}
-            />
-          </View>
-        </View>
       </KeyboardAwareScrollView>
 
+      {/* Sabit buton alanı */}
+      <View variant="transparent" style={[styles.actionBar, { backgroundColor: colors.background }]}>
+        <View variant="transparent" style={styles.actionRow}>
+          <Button
+            title={t('common.buttons.cancel')}
+            variant="secondary"
+            onPress={onCancel}
+            style={styles.actionButton}
+          />
+          <Button
+            title={loading ? t('common.buttons.loading') : t('common.buttons.save')}
+            onPress={handleSave}
+            disabled={loading || !isValid}
+            style={styles.actionButton}
+          />
+        </View>
+      </View>
+    </View>
   );
 };
 
@@ -255,10 +286,16 @@ const CategoryForm: React.FC<CategoryFormProps> = ({
 export default CategoryForm;
 
 const styles = StyleSheet.create({
-  formContainer: {
+  container: {
+    flex: 1,
+  },
+  scrollView: {
+    flex: 1,
+  },
+  scrollContent: {
     flexGrow: 1,
     padding: 20,
-    paddingBottom: 32,
+    paddingBottom: 100, // Buton alanı için boşluk
   },
   sectionStack: {
     flex: 1,
@@ -312,10 +349,34 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   actionBar: {
-    marginTop: 24,
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+    paddingBottom: 34, // Safe area için
+    borderTopWidth: 1,
+    borderTopColor: 'rgba(0,0,0,0.1)',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: -2,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 5,
+    alignItems: 'center', // Butonları ortalayalım
   },
   actionRow: {
     flexDirection: 'row',
     gap: 12,
+    maxWidth: 400, // Maksimum genişlik sınırı
+    width: '100%',
+    justifyContent: 'center', // İçerideki butonları ortalayalım
+  },
+  actionButton: {
+    flex: 1,
+    minWidth: 120, // Minimum buton genişliği
   },
 });

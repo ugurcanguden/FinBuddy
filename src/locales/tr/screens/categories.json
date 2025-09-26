@@ -46,10 +46,16 @@
     "transport": "Ulaşım",
     "health": "Sağlık",
     "entertainment": "Eğlence",
-    "other": "Diğer",
     "shopping": "Alışveriş",
-    "sports": "Spor",
+    "other": "Diğer",
     "work": "İş",
+    "laptop": "Laptop",
+    "trending_up": "Yükseliş",
+    "card_giftcard": "Hediye Kartı",
+    "home_work": "Ofis",
+    "business": "İş",
+    "attach_money": "Para",
+    "sports": "Spor",
     "travel": "Seyahat"
   },
   "default": {
@@ -60,7 +66,15 @@
     "transport": "Ulaşım",
     "health": "Sağlık",
     "entertainment": "Eğlence",
-    "other": "Diğer"
+    "shopping": "Alışveriş",
+    "other": "Diğer",
+    "salary": "Maaş",
+    "freelance": "Freelance",
+    "investment": "Yrratırım",
+    "bonus": "Prim",
+    "rental": "Kira Geliri",
+    "business": "İş",
+    "other_income": "Diğer Gelir"
   },
   "add_category": {
     "title": "Yeni Kategori",

@@ -1335,6 +1335,137 @@ interface UpdateTextData {
 }
 ```
 
+### 8. Kategori Yönetimi
+
+#### Kategori Tipleri
+FinBuddy'de kategoriler iki tipte ayrılmıştır:
+- **Gider Kategorileri** (`type: 'expense'`): Harcama kategorileri
+- **Gelir Kategorileri** (`type: 'income'`): Gelir kategorileri
+
+Her kategori sadece bir tipte kullanılabilir ve UI'da entry type'a göre filtrelenir.
+
+#### Kategori Servisi
+```typescript
+// Kategori servisi kullanımı
+import { categoryService } from '@/services';
+
+// Tüm kategorileri getir
+const allCategories = await categoryService.getAll();
+
+// Tip göre kategorileri getir
+const expenseCategories = await categoryService.getByType('expense');
+const incomeCategories = await categoryService.getByType('income');
+
+// Kategori oluştur
+const newCategory = await categoryService.create({
+  custom_name: 'Yeni Kategori',
+  icon: 'home',
+  color: '#FF6B6B',
+  type: 'expense'
+});
+
+// Kategori güncelle
+await categoryService.update(categoryId, {
+  custom_name: 'Güncellenmiş Kategori',
+  type: 'income'
+});
+
+// Kategori sil
+await categoryService.delete(categoryId);
+```
+
+#### Kategori Hook'u
+```typescript
+// useCategories hook kullanımı
+import { useCategories } from '@/hooks';
+
+const MyComponent = () => {
+  const { 
+    categories, 
+    loading, 
+    error,
+    getCategoriesByType,
+    createCategory,
+    updateCategory,
+    deleteCategory 
+  } = useCategories();
+
+  // Tip göre kategorileri getir
+  const expenseCategories = await getCategoriesByType('expense');
+  const incomeCategories = await getCategoriesByType('income');
+
+  // Kategori oluştur
+  const handleCreateCategory = async () => {
+    try {
+      await createCategory({
+        custom_name: 'Yeni Kategori',
+        icon: 'home',
+        color: '#FF6B6B',
+        type: 'expense'
+      });
+    } catch (error) {
+      console.error('Kategori oluşturma hatası:', error);
+    }
+  };
+};
+```
+
+#### Kategori Filtreleme
+```typescript
+// AddPaymentScreen'de kategori filtreleme
+const categoryOptions = useMemo(
+  () =>
+    categories
+      .filter((c) => c.is_active && c.type === entryType)
+      .map((c) => ({ 
+        value: c.id, 
+        label: getDisplayName(c, t), 
+        nativeName: '', 
+        flag: getIconEmoji(c.icon) 
+      })),
+  [categories, getDisplayName, t, entryType]
+);
+```
+
+#### Varsayılan Kategoriler
+```typescript
+// Gider kategorileri
+const expenseCategories = [
+  { name_key: 'screens.categories.default.rent', icon: 'home', type: 'expense' },
+  { name_key: 'screens.categories.default.bills', icon: 'receipt_long', type: 'expense' },
+  { name_key: 'screens.categories.default.education', icon: 'school', type: 'expense' },
+  // ...
+];
+
+// Gelir kategorileri
+const incomeCategories = [
+  { name_key: 'screens.categories.default.salary', icon: 'work', type: 'income' },
+  { name_key: 'screens.categories.default.freelance', icon: 'laptop', type: 'income' },
+  { name_key: 'screens.categories.default.investment', icon: 'trending_up', type: 'income' },
+  // ...
+];
+```
+
+#### Kategori Formu
+```typescript
+// CategoryForm bileşeni
+<CategoryForm
+  category={selectedCategory}
+  onSave={handleSaveCategory}
+  onCancel={handleCancel}
+  visible={showForm}
+/>
+
+// Form verisi
+interface CategoryFormData {
+  name: string;
+  custom_name: string;
+  icon: string;
+  color: string;
+  type: 'expense' | 'income' | 'receivable';
+}
+```
+
 #### Hata Yönetimi
 ```typescript
 // Database hatalarını yakalama

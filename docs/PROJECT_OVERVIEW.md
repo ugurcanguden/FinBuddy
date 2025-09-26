@@ -6,17 +6,19 @@ Bu dosya, projenin amacını, kapsamını ve başarı ölçütlerini tek yerde t
 Kullanıcıların kişisel bütçe ve ödemelerini düzenli yönetmesini sağlamak: gider/gelir/alacak kayıtları, tek seferlik veya taksitli ödemeler, hatırlatmalar ve ödenenlerin hızlıca işaretlenmesi.
 
 ## Hedefler (Goals)
-- [ ] Kullanıcı kategoriler oluşturup düzenleyebilir (varsayılan + özel)
+- [x] Kullanıcı kategoriler oluşturup düzenleyebilir (varsayılan + özel)
+- [x] Kategoriler gelen ve giden ödemeler için ayrı tiplere sahip
 - [ ] Tek seferlik ve taksitli gider/gelir girişleri yapılabilir
 - [ ] Vade günü yaklaşan ödemeler için hatırlatma üretilebilir; "N gün kala" kullanıcı tarafından ayarlanabilir (varsayılan 1)
-- [ ] Ödeme/Alacaklar “ödendi/alındı” olarak işaretlenebilir (check)
+- [ ] Ödeme/Alacaklar "ödendi/alındı" olarak işaretlenebilir (check)
 - [ ] Bildirimler kullanıcı ayarlarına göre yönetilir (açık/kapalı)
 
 ## Kapsam (In-scope)
 - Kategori yönetimi (varsayılanlar + kullanıcı kategorileri)
+- **Kategori Tipleri**: Gider ve gelir kategorileri ayrı ayrı yönetilir
 - Gider/gelir/alacak kayıtları
-- Taksit planı (örn. 10 ay, her ayın 1’i)
-- Hatırlatma mekanizması (due date’e göre; N gün kala ayarlanabilir)
+- Taksit planı (örn. 10 ay, her ayın 1'i)
+- Hatırlatma mekanizması (due date'e göre; N gün kala ayarlanabilir)
 - Bildirim tercihleri (uygulama içi/yerel bildirim)
 
 ## Kapsam Dışı (Out-of-scope)

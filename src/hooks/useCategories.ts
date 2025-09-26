@@ -8,6 +8,7 @@ interface UseCategoriesReturn {
   loading: boolean;
   error: string | null;
   refreshCategories: () => Promise<void>;
+  getCategoriesByType: (type: 'expense' | 'income' | 'receivable') => Promise<Category[]>;
   createCategory: (data: CreateCategoryData) => Promise<Category>;
   updateCategory: (id: string, data: UpdateCategoryData) => Promise<Category>;
   deleteCategory: (id: string) => Promise<void>;
@@ -35,6 +36,19 @@ export const useCategories = (): UseCategoriesReturn => {
       console.error('❌ Refresh categories failed:', err);
     } finally {
       setLoading(false);
+    }
+  }, []);
+
+  // Type'a göre kategorileri getir
+  const getCategoriesByType = useCallback(async (type: 'expense' | 'income' | 'receivable'): Promise<Category[]> => {
+    try {
+      setError(null);
+      return await categoryService.getByType(type);
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Kategoriler getirilirken hata oluştu';
+      setError(errorMessage);
+      console.error('❌ Get categories by type failed:', err);
+      throw err;
     }
   }, []);
 
@@ -134,6 +148,7 @@ export const useCategories = (): UseCategoriesReturn => {
     loading,
     error,
     refreshCategories,
+    getCategoriesByType,
     createCategory,
     updateCategory,
     deleteCategory,

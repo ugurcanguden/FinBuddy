@@ -8,6 +8,7 @@ import { useLocale, usePaymentReminders, useBiometric } from '@/hooks';
 import { useNavigation, useTheme, useCurrency } from '@/contexts';
 import { migrationService, categoryService, notificationService } from '@/services';
 import type { PaymentReminderChannel } from '@/types';
+import { isDevelopment } from '@/utils';
 import { 
   Text, 
   Card, 
@@ -490,59 +491,63 @@ const SettingsScreen: React.FC = () => {
           </Card>
         </View>
 
-        {/* Profil Bölümü */}
-        <View style={styles.section}>
-          <Text variant="primary" size="large" weight="bold" style={styles.sectionTitle}>
-            👤 Profil
-          </Text>
-          
-          <Card variant="default" padding="none" style={styles.card}>
-            <TouchableOpacity 
-              variant="transparent"
-              style={[styles.settingItem, { borderBottomWidth: 0 }]}
-              onPress={() => navigateTo('profile')}
-            >
-              <View variant="transparent" style={styles.settingInfo}>
-                <Text variant="primary" size="medium">
-                  Profil Sayfası
-                </Text>
-                <Text variant="secondary" size="small">
-                  Profil bilgilerinizi görüntüleyin ve düzenleyin
-                </Text>
-              </View>
-              <View variant="transparent" style={styles.settingAction}>
-                <Text variant="secondary" size="medium">👤</Text>
-              </View>
-            </TouchableOpacity>
-          </Card>
-        </View>
+        {/* Profil Bölümü - Sadece Development'ta görünür */}
+        {isDevelopment() && (
+          <View style={styles.section}>
+            <Text variant="primary" size="large" weight="bold" style={styles.sectionTitle}>
+              👤 Profil
+            </Text>
+            
+            <Card variant="default" padding="none" style={styles.card}>
+              <TouchableOpacity 
+                variant="transparent"
+                style={[styles.settingItem, { borderBottomWidth: 0 }]}
+                onPress={() => navigateTo('profile')}
+              >
+                <View variant="transparent" style={styles.settingInfo}>
+                  <Text variant="primary" size="medium">
+                    Profil Sayfası
+                  </Text>
+                  <Text variant="secondary" size="small">
+                    Profil bilgilerinizi görüntüleyin ve düzenleyin
+                  </Text>
+                </View>
+                <View variant="transparent" style={styles.settingAction}>
+                  <Text variant="secondary" size="medium">👤</Text>
+                </View>
+              </TouchableOpacity>
+            </Card>
+          </View>
+        )}
 
-        {/* Geliştirici Bölümü */}
-        <View style={styles.section}>
-          <Text variant="primary" size="large" weight="bold" style={styles.sectionTitle}>
-            🛠️ Geliştirici
-          </Text>
-          
-          <Card variant="default" padding="none" style={styles.card}>
-            <TouchableOpacity 
-              variant="transparent"
-              style={[styles.settingItem, { borderBottomWidth: 0 }]}
-              onPress={() => navigateTo('uiDemo')}
-            >
-              <View variant="transparent" style={styles.settingInfo}>
-                <Text variant="primary" size="medium">
-                  UI Bileşenleri Demo
-                </Text>
-                <Text variant="secondary" size="small">
-                  Yeni UI bileşenlerini test edin
-                </Text>
-              </View>
-              <View variant="transparent" style={styles.settingAction}>
-                <Text variant="secondary" size="medium">🎨</Text>
-              </View>
-            </TouchableOpacity>
-          </Card>
-        </View>
+        {/* Geliştirici Bölümü - Sadece Development'ta görünür */}
+        {isDevelopment() && (
+          <View style={styles.section}>
+            <Text variant="primary" size="large" weight="bold" style={styles.sectionTitle}>
+              🛠️ Geliştirici
+            </Text>
+            
+            <Card variant="default" padding="none" style={styles.card}>
+              <TouchableOpacity 
+                variant="transparent"
+                style={[styles.settingItem, { borderBottomWidth: 0 }]}
+                onPress={() => navigateTo('uiDemo')}
+              >
+                <View variant="transparent" style={styles.settingInfo}>
+                  <Text variant="primary" size="medium">
+                    UI Bileşenleri Demo
+                  </Text>
+                  <Text variant="secondary" size="small">
+                    Yeni UI bileşenlerini test edin
+                  </Text>
+                </View>
+                <View variant="transparent" style={styles.settingAction}>
+                  <Text variant="secondary" size="medium">🎨</Text>
+                </View>
+              </TouchableOpacity>
+            </Card>
+          </View>
+        )}
       </ScrollView>
 
     </Layout>

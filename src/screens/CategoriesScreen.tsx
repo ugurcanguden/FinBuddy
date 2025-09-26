@@ -26,6 +26,10 @@ const CategoriesScreen: React.FC = () => {
     getDisplayName 
   } = useCategories();
 
+  // Kategorileri tip göre grupla
+  const expenseCategories = categories.filter(cat => cat.type === 'expense');
+  const incomeCategories = categories.filter(cat => cat.type === 'income');
+
 
   const getIconStyle = (category: Category) => {
     return {
@@ -43,7 +47,15 @@ const CategoriesScreen: React.FC = () => {
       'directions_bus': '🚌',
       'favorite': '❤️',
       'movie': '🎬',
+      'shopping_cart': '🛒',
       'apps': '📱',
+      'work': '💼',
+      'laptop': '💻',
+      'trending_up': '📈',
+      'card_giftcard': '🎁',
+      'home_work': '🏢',
+      'business': '🏢',
+      'attach_money': '💰',
     };
     return iconMap[iconName] || '📁';
   };
@@ -118,51 +130,117 @@ const CategoriesScreen: React.FC = () => {
           </View>
         ) : (
           <View variant="transparent" style={styles.categoriesList}>
-            {categories.map((category) => (
-              <View key={category.id} variant="surface" style={[styles.categoryCard, { borderColor: colors.border }] as any}>
-                <View variant="transparent" style={styles.categoryInfo}>
-                  <View variant="transparent" style={[styles.categoryIcon, getIconStyle(category)] as any}>
-                    <Text style={[styles.iconText, { color: category.color }] as any}>
-                      {getIconUnicode(category.icon)}
-                    </Text>
-                  </View>
-                  <View variant="transparent" style={styles.categoryTextContainer}>
-                    <Text variant="primary" size="medium" weight="medium">
-                      {getDisplayName(category, t)}
-                    </Text>
-                    {category.is_default && (
-                      <Text variant="secondary" size="small" style={styles.defaultLabel}>
-                        {t('screens.categories.default_category')}
-                      </Text>
-                    )}
-                  </View>
+            {/* Gider Kategorileri */}
+            {expenseCategories.length > 0 && (
+              <>
+                <View variant="transparent" style={styles.sectionHeader}>
+                  <Text variant="primary" size="large" weight="semibold" style={styles.sectionTitle}>
+                    💸 Gider Kategorileri
+                  </Text>
                 </View>
-                <View variant="transparent" style={styles.categoryActions}>
-                  {!category.is_default && (
-                    <>
-                      <TouchableOpacity
-                        variant="transparent"
-                        style={styles.actionButton}
-                        onPress={() => handleEditCategory(category)}
-                      >
-                        <Text variant="secondary" size="medium">
-                          {t('screens.categories.edit')}
+                {expenseCategories.map((category) => (
+                  <View key={category.id} variant="surface" style={[styles.categoryCard, { borderColor: colors.border }] as any}>
+                    <View variant="transparent" style={styles.categoryInfo}>
+                      <View variant="transparent" style={[styles.categoryIcon, getIconStyle(category)] as any}>
+                        <Text style={[styles.iconText, { color: category.color }] as any}>
+                          {getIconUnicode(category.icon)}
                         </Text>
-                      </TouchableOpacity>
-                      <TouchableOpacity
-                        variant="transparent"
-                        style={styles.actionButton}
-                        onPress={() => handleDeleteCategory(category)}
-                      >
-                        <Text variant="secondary" size="medium">
-                          {t('screens.categories.delete')}
+                      </View>
+                      <View variant="transparent" style={styles.categoryTextContainer}>
+                        <Text variant="primary" size="medium" weight="medium">
+                          {getDisplayName(category, t)}
                         </Text>
-                      </TouchableOpacity>
-                    </>
-                  )}
+                        {category.is_default && (
+                          <Text variant="secondary" size="small" style={styles.defaultLabel}>
+                            {t('screens.categories.default_category')}
+                          </Text>
+                        )}
+                      </View>
+                    </View>
+                    <View variant="transparent" style={styles.categoryActions}>
+                      {!category.is_default && (
+                        <>
+                          <TouchableOpacity
+                            variant="transparent"
+                            style={styles.actionButton}
+                            onPress={() => handleEditCategory(category)}
+                          >
+                            <Text variant="secondary" size="medium">
+                              {t('screens.categories.edit')}
+                            </Text>
+                          </TouchableOpacity>
+                          <TouchableOpacity
+                            variant="transparent"
+                            style={styles.actionButton}
+                            onPress={() => handleDeleteCategory(category)}
+                          >
+                            <Text variant="secondary" size="medium">
+                              {t('screens.categories.delete')}
+                            </Text>
+                          </TouchableOpacity>
+                        </>
+                      )}
+                    </View>
+                  </View>
+                ))}
+              </>
+            )}
+
+            {/* Gelir Kategorileri */}
+            {incomeCategories.length > 0 && (
+              <>
+                <View variant="transparent" style={styles.sectionHeader}>
+                  <Text variant="primary" size="large" weight="semibold" style={styles.sectionTitle}>
+                    💰 Gelir Kategorileri
+                  </Text>
                 </View>
-              </View>
-            ))}
+                {incomeCategories.map((category) => (
+                  <View key={category.id} variant="surface" style={[styles.categoryCard, { borderColor: colors.border }] as any}>
+                    <View variant="transparent" style={styles.categoryInfo}>
+                      <View variant="transparent" style={[styles.categoryIcon, getIconStyle(category)] as any}>
+                        <Text style={[styles.iconText, { color: category.color }] as any}>
+                          {getIconUnicode(category.icon)}
+                        </Text>
+                      </View>
+                      <View variant="transparent" style={styles.categoryTextContainer}>
+                        <Text variant="primary" size="medium" weight="medium">
+                          {getDisplayName(category, t)}
+                        </Text>
+                        {category.is_default && (
+                          <Text variant="secondary" size="small" style={styles.defaultLabel}>
+                            {t('screens.categories.default_category')}
+                          </Text>
+                        )}
+                      </View>
+                    </View>
+                    <View variant="transparent" style={styles.categoryActions}>
+                      {!category.is_default && (
+                        <>
+                          <TouchableOpacity
+                            variant="transparent"
+                            style={styles.actionButton}
+                            onPress={() => handleEditCategory(category)}
+                          >
+                            <Text variant="secondary" size="medium">
+                              {t('screens.categories.edit')}
+                            </Text>
+                          </TouchableOpacity>
+                          <TouchableOpacity
+                            variant="transparent"
+                            style={styles.actionButton}
+                            onPress={() => handleDeleteCategory(category)}
+                          >
+                            <Text variant="secondary" size="medium">
+                              {t('screens.categories.delete')}
+                            </Text>
+                          </TouchableOpacity>
+                        </>
+                      )}
+                    </View>
+                  </View>
+                ))}
+              </>
+            )}
           </View>
         )}
       </ScrollView>
@@ -312,6 +390,14 @@ const styles = StyleSheet.create({
   emptySubtext: {
     marginTop: 8,
     textAlign: 'center',
+  },
+  sectionHeader: {
+    marginTop: 24,
+    marginBottom: 12,
+    paddingHorizontal: 4,
+  },
+  sectionTitle: {
+    fontSize: 18,
   },
 });
 

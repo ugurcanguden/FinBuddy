@@ -8,11 +8,12 @@ Bu dosya, sürüm planını ve kilometre taşlarını içerir.
 
 ## Sürümler
 - v0.1 (MVP)
-  - [ ] Kategori yönetimi (varsayılan + özel)
+  - [x] Kategori yönetimi (varsayılan + özel)
+  - [x] **Kategori Tipleri**: Gider ve gelir kategorileri ayrı ayrı yönetim
   - [ ] Gider/gelir/alacak temel model ve CRUD
   - [ ] Taksit planı (periyodik aylık), vade günü hesaplama
   - [ ] Hatırlatma üretimi (N gün kala ayarlanabilir), yerel bildirim altyapısı
-  - [ ] Ödeme/Alacak “check/işaretle” akışı
+  - [ ] Ödeme/Alacak "check/işaretle" akışı
   - [ ] Basit liste ekranları (Home, Categories, Add/Edit, Settings)
 - v0.2
   - [ ] Hatırlatma kuralları (ileri seviye: tekrar/çalışma saatleri)
@@ -23,7 +24,8 @@ Bu dosya, sürüm planını ve kilometre taşlarını içerir.
   - [ ] Gelişmiş filtreleme ve arama
 
 ## Milestones
-- M1: MVP veri modeli ve SQLite migration (v1)
+- M1: MVP veri modeli ve SQLite migration (v1-v5) ✅
+- M1.1: Kategori tip sistemi ve filtreleme ✅
 - M2: Taksit akışı + hatırlatmalar (lokal notifikasyon)
 - M3: Raporlama ve ayarlar genişletme
 

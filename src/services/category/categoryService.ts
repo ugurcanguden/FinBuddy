@@ -33,6 +33,7 @@ class CategoryService {
         data.custom_name || null,
         data.icon,
         data.color,
+        data.type,
         0 // is_default = false (kullanıcı kategorisi)
       ]);
 
@@ -62,6 +63,7 @@ class CategoryService {
         data.custom_name || null,
         data.icon,
         data.color,
+        data.type || 'expense', // Varsayılan olarak expense
         id
       ]);
 
@@ -115,6 +117,16 @@ class CategoryService {
         return categories;
       } catch (error) {
       console.error('❌ Get all categories failed:', error);
+      throw error;
+    }
+  }
+
+  // Type'a göre kategorileri getir
+  async getByType(type: 'expense' | 'income' | 'receivable'): Promise<Category[]> {
+    try {
+      return await databaseService.getAll<Category>(CATEGORY_SCRIPTS.GET_BY_TYPE, [type]);
+    } catch (error) {
+      console.error('❌ Get categories by type failed:', error);
       throw error;
     }
   }

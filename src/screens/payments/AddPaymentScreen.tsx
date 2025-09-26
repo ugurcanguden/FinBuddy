@@ -45,10 +45,16 @@ const AddPaymentScreen = forwardRef<AddPaymentScreenHandle, AddPaymentScreenProp
       directions_bus: '🚌',
       favorite: '❤️',
       movie: '🎬',
-      apps: '📱',
       shopping_cart: '🛒',
-      sports: '⚽',
+      apps: '📱',
       work: '💼',
+      laptop: '💻',
+      trending_up: '📈',
+      card_giftcard: '🎁',
+      home_work: '🏢',
+      business: '🏢',
+      attach_money: '💰',
+      sports: '⚽',
       travel: '✈️',
     };
     return iconMap[iconName] || '📁';
@@ -57,9 +63,9 @@ const AddPaymentScreen = forwardRef<AddPaymentScreenHandle, AddPaymentScreenProp
   const categoryOptions = useMemo(
     () =>
       categories
-        .filter((c) => c.is_active)
+        .filter((c) => c.is_active && c.type === entryType)
         .map((c) => ({ value: c.id, label: getDisplayName(c, t), nativeName: '', flag: getIconEmoji(c.icon) })),
-    [categories, getDisplayName, t]
+    [categories, getDisplayName, t, entryType]
   );
 
     const [form, setForm] = useState<FormState>({ amount: '', months: '', startDate: '', title: '', categoryId: '' });

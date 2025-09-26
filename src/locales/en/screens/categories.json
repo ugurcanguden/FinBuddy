@@ -46,10 +46,16 @@
     "transport": "Transport",
     "health": "Health",
     "entertainment": "Entertainment",
-    "other": "Other",
     "shopping": "Shopping",
-    "sports": "Sports",
+    "other": "Other",
     "work": "Work",
+    "laptop": "Laptop",
+    "trending_up": "Trending Up",
+    "card_giftcard": "Gift Card",
+    "home_work": "Office",
+    "business": "Business",
+    "attach_money": "Money",
+    "sports": "Sports",
     "travel": "Travel"
   },
   "default": {
@@ -60,7 +66,15 @@
     "transport": "Transport",
     "health": "Health",
     "entertainment": "Entertainment",
-    "other": "Other"
+    "shopping": "Shopping",
+    "other": "Other",
+    "salary": "Salary",
+    "freelance": "Freelance",
+    "investment": "Investment",
+    "bonus": "Bonus",
+    "rental": "Rental Income",
+    "business": "Business",
+    "other_income": "Other Income"
   },
   "add_category": {
     "title": "New Category",

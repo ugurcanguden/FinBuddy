@@ -1,0 +1,154 @@
+# FinBuddy - Cursor AI Rules
+
+## Proje Genel Bakış
+FinBuddy, kişisel finans yönetimi için geliştirilmiş bir React Native (Expo) uygulamasıdır. Kategoriler gelen ve giden ödemeler için ayrı tiplere sahiptir.
+
+## Teknoloji Stack
+- **Framework**: Expo 54 + React Native 0.81 + React 19.1
+- **Language**: TypeScript (strict mode)
+- **Database**: SQLite (expo-sqlite)
+- **State Management**: React Context + Custom Hooks
+- **Styling**: StyleSheet + Theme System
+- **Package Manager**: Yarn
+
+## Proje Yapısı
+```
+src/
+├── components/          # Yeniden kullanılabilir UI bileşenleri
+│   ├── common/         # Genel amaçlı bileşenler
+│   ├── forms/          # Form bileşenleri
+│   └── navigation/     # Navigasyon bileşenleri
+├── screens/            # Ekran bileşenleri
+├── services/           # Servis katmanı
+│   ├── database/       # Veritabanı servisleri
+│   ├── category/       # Kategori servisleri
+│   ├── payment/        # Ödeme servisleri
+│   └── locale/         # Lokalizasyon servisleri
+├── hooks/              # Custom React hooks
+├── contexts/           # React Context providers
+├── types/              # TypeScript tip tanımları
+├── constants/          # Sabitler ve scriptler
+├── locales/            # Çoklu dil desteği
+└── utils/              # Yardımcı fonksiyonlar
+```
+
+## Kategori Sistemi
+- **Kategori Tipleri**: Her kategori ya `expense` (gider) ya da `income` (gelir) tipinde olmalı
+- **Filtreleme**: UI'da kategoriler entry type'a göre filtrelenir
+- **Varsayılan Kategoriler**: Hem gider hem gelir kategorileri mevcut
+- **Kategori Yönetimi**: Kategoriler tip göre gruplandırılarak gösterilir
+
+## Kodlama Standartları
+
+### TypeScript
+- Strict mode kullan, `any` tipinden kaçın
+- Interface'leri `PascalCase` ile isimlendir
+- Props interface'lerini `ComponentNameProps` formatında isimlendir
+- Generic tipleri açıkça belirt
+
+### React/React Native
+- Functional component'ler kullan
+- Custom hook'ları `use` prefix'i ile isimlendir
+- Props destructuring kullan
+- `useMemo` ve `useCallback` ile performans optimizasyonu yap
+- Error boundary'ler kullan
+
+### Styling
+- StyleSheet kullan, inline style'dan kaçın
+- Theme system'i kullan (`useTheme` hook)
+- Responsive design prensiplerini uygula
+- Platform-specific styling için `Platform.OS` kullan
+
+### Veritabanı
+- SQLite sorgularını `constants/scripts/` altında organize et
+- Transaction kullan, veri tutarlılığını sağla
+- Migration scriptlerini versiyonla
+- Soft delete kullan (`is_active` field)
+
+### Servis Katmanı
+- Servisleri singleton pattern ile oluştur
+- Error handling ekle
+- Logging ekle (console.log/console.error)
+- Async/await kullan, Promise chain'den kaçın
+
+## Önemli Kurallar
+
+### Kategori Yönetimi
+- Kategoriler mutlaka `type` field'ına sahip olmalı
+- UI'da kategoriler entry type'a göre filtrelenmeli
+- Kategori formunda tip seçimi zorunlu olmalı
+- Varsayılan kategoriler düzenlenememeli
+
+### Veri Tutarlılığı
+- Entry'ler sadece uygun tip kategorilerle oluşturulabilir
+- Kategori silinirken ilişkili entry'ler kontrol edilmeli
+- Migration scriptleri geriye dönük uyumlu olmalı
+
+### UI/UX
+- Tema sistemini kullan, hardcoded renklerden kaçın
+- Lokalizasyon desteği ekle
+- Loading ve error state'lerini yönet
+- Accessibility özelliklerini ekle
+
+### Performans
+- Gereksiz re-render'ları önle
+- List'lerde `key` prop'u kullan
+- Heavy computation'ları memoize et
+- Image'ları optimize et
+
+## Dosya İsimlendirme
+- Component dosyaları: `PascalCase.tsx`
+- Hook dosyaları: `camelCase.ts`
+- Service dosyaları: `camelCase.ts`
+- Type dosyaları: `camelCase.ts` veya `index.tsx`
+- Constant dosyaları: `camelCase.ts`
+
+## Import Sıralaması
+1. React ve React Native imports
+2. Third-party library imports
+3. Internal imports (components, hooks, services)
+4. Type imports
+5. Relative imports
+
+## Commit Mesajları
+- Conventional Commits formatı kullan
+- `feat:`, `fix:`, `docs:`, `style:`, `refactor:`, `test:`, `chore:` prefix'leri
+- Türkçe açıklama ekle (gerekirse)
+
+## Test Stratejisi
+- Unit test'ler için Vitest kullan
+- Component test'ler için React Native Testing Library
+- Integration test'ler için gerçek veritabanı
+- E2E test'ler için Detox (gelecekte)
+
+## Hata Yönetimi
+- Try-catch blokları kullan
+- Kullanıcı dostu hata mesajları göster
+- Error logging ekle
+- Fallback UI'lar sağla
+
+## Güvenlik
+- SQL injection'dan korun (parameterized queries)
+- Input validation yap
+- Sensitive data'yı güvenli sakla
+- API key'leri environment variable'da tut
+
+## Performans İpuçları
+- FlatList kullan, ScrollView'den kaçın
+- Image lazy loading uygula
+- Bundle size'ı optimize et
+- Memory leak'leri önle
+
+## Debugging
+- Console.log'ları production'da kaldır
+- React DevTools kullan
+- Flipper ile debugging yap
+- Error boundary'ler ile hata yakalama
+
+## Dokümantasyon
+- README.md'yi güncel tut
+- Code comment'leri ekle
+- API dokümantasyonu yaz
+- Changelog tut
+
+Bu kurallar FinBuddy projesinin tutarlılığını ve kalitesini sağlamak için oluşturulmuştur. Tüm geliştiriciler bu kurallara uymalıdır.

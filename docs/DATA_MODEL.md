@@ -8,6 +8,7 @@ Temel varlıklar ve ilişkiler (SQLite şeması için taslak).
   - name_key TEXT (nullable, varsayılanlar için)
   - custom_name TEXT (nullable, kullanıcı kategorisi)
   - icon TEXT, color TEXT
+  - type TEXT CHECK ('expense'|'income'|'receivable') NOT NULL
   - is_default BOOLEAN, is_active BOOLEAN
   - created_at, updated_at
 
@@ -38,10 +39,15 @@ Temel varlıklar ve ilişkiler (SQLite şeması için taslak).
   - default_reminder_days_before INTEGER DEFAULT 1
 
 ## Akış Notları
-- Entry kaydı taksitli ise Payment’lar ileriye dönük olarak oluşturulur (örn. 10 ay).
-- Hatırlatmalar due_date - reminder_days_before gününde planlanır; entry’de yoksa Settings.default_reminder_days_before kullanılır.
+- Entry kaydı taksitli ise Payment'lar ileriye dönük olarak oluşturulur (örn. 10 ay).
+- Hatırlatmalar due_date - reminder_days_before gününde planlanır; entry'de yoksa Settings.default_reminder_days_before kullanılır.
 - Status: expense→paid, receivable→received; income tek seferlik paid/received.
+- **Kategori Tipi**: Her kategori ya sadece gider (expense) ya da sadece gelir (income) için kullanılabilir.
+- **Kategori Filtreleme**: UI'da kategoriler entry type'a göre filtrelenir.
 
 ## Migration Planı
 - v1: Category (mevcut)
 - v2: Entry, Payment, Settings tabloları + seed Settings(1)
+- v3: Reports tablosu
+- v4: Categories tablosuna type kolonu eklendi
+- v5: Varsayılan gelir kategorileri eklendi
