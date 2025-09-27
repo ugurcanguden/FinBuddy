@@ -1,16 +1,14 @@
 // Add Category Screen - Yeni kategori ekleme sayfası
 import React from 'react';
-import { StyleSheet, Alert } from 'react-native';
+import { Alert } from 'react-native';
 import { useLocale, useCategories } from '@/hooks';
 import { useNavigation } from '@/contexts';
-import { 
-  Container, 
-  ScrollView, 
+import {
   CategoryForm,
   PageHeader,
   Layout
 } from '@/components';
-import { CategoryFormData } from '@/types';
+import { CategoryFormData } from '@/models';
 
 const AddCategoryScreen: React.FC = () => {
   const { t } = useLocale();
@@ -65,6 +63,5 @@ const AddCategoryScreen: React.FC = () => {
   );
 };
 
-const styles = StyleSheet.create({});
 
 export default AddCategoryScreen;

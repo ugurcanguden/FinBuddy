@@ -4,5 +4,12 @@
   "paid_subtitle": "pago",
   "category_distribution": "Distribución por Categoría",
   "first_report": "Cree Su Primer Reporte",
-  "first_report_message": "Aún no hay reportes. Comience creando su primer reporte."
+  "first_report_message": "Aún no hay reportes. Comience creando su primer reporte.",
+  "no_weekly_data": "Aún no hay datos semanales disponibles",
+  "total_expense": "Gasto Total",
+  "pending": "Pendiente",
+  "total_income": "Ingreso Total",
+  "this_month": "este mes",
+  "weekly_summary": "Resumen Semanal",
+  "no_saved_reports": "No hay reportes guardados"
 }

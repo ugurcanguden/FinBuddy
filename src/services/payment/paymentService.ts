@@ -1,9 +1,12 @@
 // Payment Service - Entry ve Payment yönetimi
 import { databaseService } from '@/services/database';
-import { PAYMENT_SCRIPTS } from '@/constants/scripts/paymentScripts';
+import type { DatabaseQueryParams, Entry, Payment } from '@/models';
 
 function addMonthsClamp(dateISO: string, monthsToAdd: number): string {
   const [y, m, d] = dateISO.split('-').map(Number);
+  if (!y || !m || !d) {
+    throw new Error('Invalid date format');
+  }
   const base = new Date(y, m - 1 + monthsToAdd, 1);
   // hedef ayın gün sayısına clamp
   const daysInTarget = new Date(base.getFullYear(), base.getMonth() + 1, 0).getDate();
@@ -28,7 +31,7 @@ export interface CreateEntryInput {
 
 class PaymentService {
   private async sumBy(type: 'expense' | 'income', status?: 'paid' | 'pending' | 'any', ym?: string): Promise<number> {
-    const params: any[] = [];
+    const params: DatabaseQueryParams[] = [];
     let where = `e.type = ? AND e.is_active = 1 AND p.is_active = 1`;
     params.push(type);
     if (status && status !== 'any') {
@@ -73,11 +76,11 @@ class PaymentService {
   async getMonthlySeries(
     type: 'expense' | 'income',
     options?: { year?: string; limit?: number }
-  ): Promise<Array<{ ym: string; total: number }>> {
+  ): Promise<Array<{ ym: string; total: number; paid: number }>> {
     const { year, limit = 12 } = options ?? {};
     const today = new Date().toISOString().slice(0, 10);
     const where: string[] = ['e.type = ?', 'e.is_active = 1', 'p.is_active = 1'];
-    const params: any[] = [type];
+    const params: DatabaseQueryParams[] = [type];
     if (year) {
       where.push('substr(p.due_date,1,4) = ?');
       params.push(year);
@@ -87,8 +90,11 @@ class PaymentService {
       params.push(today);
     }
 
-    const rows = await databaseService.getAll<{ ym: string; total: number }>(
-      `SELECT substr(p.due_date,1,7) AS ym, COALESCE(SUM(p.amount),0) AS total
+    const rows = await databaseService.getAll<{ ym: string; total: number; paid: number }>(
+      `SELECT 
+         substr(p.due_date,1,7) AS ym, 
+         COALESCE(SUM(p.amount),0) AS total,
+         COALESCE(SUM(CASE WHEN p.status IN ('paid','received') THEN p.amount ELSE 0 END),0) AS paid
        FROM payments p
        JOIN entries e ON e.id = p.entry_id
        WHERE ${where.join(' AND ')}
@@ -96,14 +102,18 @@ class PaymentService {
        ORDER BY ym ASC`,
       params
     );
-    return limit ? rows.slice(-limit) : rows;
+    
+    
+    // Verileri sırala ve limit uygula
+    const sortedRows = rows.sort((a, b) => a.ym.localeCompare(b.ym));
+    return limit ? sortedRows.slice(-limit) : sortedRows;
   }
 
   async getMonthlyExpenseBreakdown(options?: { year?: string; limit?: number }): Promise<Array<{ ym: string; total: number; paid: number }>> {
     const { year, limit = 12 } = options ?? {};
     const today = new Date().toISOString().slice(0, 10);
     const where: string[] = [`e.type = 'expense'`, 'e.is_active = 1', 'p.is_active = 1'];
-    const params: any[] = [];
+    const params: DatabaseQueryParams[] = [];
     if (year) {
       where.push('substr(p.due_date,1,4) = ?');
       params.push(year);
@@ -124,7 +134,12 @@ class PaymentService {
        ORDER BY ym ASC`,
       params
     );
-    const sliced = limit ? rows.slice(-limit) : rows;
+    
+    
+    // Verileri sırala ve formatla
+    const sortedRows = rows.sort((a, b) => a.ym.localeCompare(b.ym));
+    const sliced = limit ? sortedRows.slice(-limit) : sortedRows;
+    
     return sliced.map((row) => ({
       ym: row.ym,
       total: Number(row.total || 0),
@@ -221,7 +236,7 @@ class PaymentService {
 
   async getTotalsByCategory(params?: { ym?: string; type?: 'expense' | 'income' }): Promise<Array<{ category_id: string; total: number }>> {
     const where: string[] = ['e.id = p.entry_id', 'e.is_active = 1', 'p.is_active = 1'];
-    const bind: any[] = [];
+    const bind: DatabaseQueryParams[] = [];
     if (params?.type) {
       where.push('e.type = ?');
       bind.push(params.type);
@@ -258,7 +273,7 @@ class PaymentService {
     const dimExpr = dimMap[params.dimension];
     const meaExpr = meaMap[params.measure];
     const where: string[] = ['e.id = p.entry_id', 'e.is_active = 1', 'p.is_active = 1'];
-    const bind: any[] = [];
+    const bind: DatabaseQueryParams[] = [];
     const factType: EntryType | undefined =
       params.fact === 'payments_expense'
         ? 'expense'
@@ -282,20 +297,20 @@ class PaymentService {
     const rows = await databaseService.getAll<{ k: string; v: number }>(sql, bind);
     return rows.map(r => ({ key: r.k, value: Number(r.v || 0) }));
   }
-  async getEntries(type?: 'expense' | 'income' | 'receivable'): Promise<any[]> {
+  async getEntries(type?: 'expense' | 'income' | 'receivable'): Promise<Entry[]> {
     if (type) {
-      return databaseService.getAll<any>(
+      return databaseService.getAll<Entry>(
         `SELECT * FROM entries WHERE is_active = 1 AND type = ? ORDER BY created_at DESC`,
         [type]
       );
     }
-    return databaseService.getAll<any>(
+    return databaseService.getAll<Entry>(
       `SELECT * FROM entries WHERE is_active = 1 ORDER BY created_at DESC`
     );
   }
 
-  async getEntryById(entryId: string): Promise<any> {
-    return databaseService.getFirst<any>(
+  async getEntryById(entryId: string): Promise<Entry | null> {
+    return databaseService.getFirst<Entry>(
       `SELECT * FROM entries WHERE id = ? AND is_active = 1`,
       [entryId]
     );
@@ -313,8 +328,8 @@ class PaymentService {
     return unique.length > 0 ? unique : ['expense', 'income'];
   }
 
-  async getPaymentsByEntry(entryId: string): Promise<any[]> {
-    return databaseService.getAll<any>(`SELECT * FROM payments WHERE entry_id = ? AND is_active = 1 ORDER BY due_date ASC`, [entryId]);
+  async getPaymentsByEntry(entryId: string): Promise<Payment[]> {
+    return databaseService.getAll<Payment>(`SELECT * FROM payments WHERE entry_id = ? AND is_active = 1 ORDER BY due_date ASC`, [entryId]);
   }
 
   async updatePaymentStatus(paymentId: string, status: 'pending' | 'paid' | 'received'): Promise<void> {

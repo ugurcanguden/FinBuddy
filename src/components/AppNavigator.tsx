@@ -16,6 +16,7 @@ import {
   IncomesScreen,
   ReportsHubScreen,
   ReportBuilderScreen,
+  InitialSetupScreen,
   UIDemoScreen,
 } from '@/screens';
 import { SafeArea } from './common';
@@ -31,6 +32,10 @@ const AppNavigator: React.FC<AppNavigatorProps> = () => {
 
   const renderScreen = () => {
     switch (currentScreen) {
+      case 'initialSetup':
+        return <InitialSetupScreen />;
+      case 'onboarding':
+        return <HomeScreen />; // OnboardingScreen henüz yok, geçici olarak HomeScreen
       case 'home':
         return <HomeScreen />;
       case 'settings':
@@ -44,15 +49,15 @@ const AppNavigator: React.FC<AppNavigatorProps> = () => {
       case 'addPayment':
         return <AddPaymentScreen />;
       case 'addEntry':
-        return <AddEntryScreen type={currentParams?.type} />;
+        return <AddEntryScreen type={currentParams?.['type'] as 'expense' | 'income'} />;
       case 'editCategory':
-        return <EditCategoryScreen categoryId={currentParams?.categoryId} />;
+        return <EditCategoryScreen categoryId={currentParams?.['categoryId'] as string} />;
       case 'payments':
         return <PaymentsScreen/>;
       case 'paymentsHub':
         return <PaymentsHubScreen/>;
       case 'paymentDetails':
-        return <PaymentDetailsScreen entryId={currentParams?.entryId}/>;
+        return <PaymentDetailsScreen entryId={currentParams?.['entryId'] as string}/>;
       case 'transactions':
         return <HomeScreen />;
       case 'accounts':

@@ -4,5 +4,14 @@
   "paid_subtitle": "payment",
   "category_distribution": "Category Distribution",
   "first_report": "Create Your First Report",
-  "first_report_message": "No reports yet. Start by creating your first report."
+  "first_report_message": "No reports yet. Start by creating your first report.",
+  "no_weekly_data": "No weekly data available yet",
+  "no_monthly_data": "No monthly data available yet",
+  "total_expense": "Total Expense",
+  "pending": "Pending",
+  "total_income": "Total Income",
+  "this_month": "this month",
+  "weekly_summary": "Weekly Summary",
+  "monthly_summary": "Monthly Summary",
+  "no_saved_reports": "No saved reports"
 }

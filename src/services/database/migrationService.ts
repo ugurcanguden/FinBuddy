@@ -4,7 +4,7 @@ import { DATABASE_SCRIPTS } from '@/constants/scripts/databaseScripts';
 import { PAYMENT_SCRIPTS } from '@/constants/scripts/paymentScripts';
 import { CATEGORY_SCRIPTS } from '@/constants/scripts/categoryScripts';
 
-const CURRENT_SCHEMA_VERSION = 5; // Geçerli şema sürümü
+// const CURRENT_SCHEMA_VERSION = 5; // Geçerli şema sürümü
 
 class MigrationService {
   async getCurrentVersion(): Promise<number> {

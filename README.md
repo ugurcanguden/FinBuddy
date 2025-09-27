@@ -10,18 +10,24 @@ Kişisel finans yönetimi için geliştirilmiş modern React Native uygulaması.
 - **Kategori Sistemi**: Gelen ve giden ödemeler için ayrı kategoriler
 - **Taksitli Ödemeler**: Aylık taksitli ödemelerinizi planlayın
 - **Hatırlatıcılar**: Ödeme tarihlerinizi unutmayın
+- **Dashboard**: Finansal özet ve istatistikler
+- **Raporlama**: Grafik ve analiz araçları
 
 ### 🎨 Modern UI/UX
-- **Tema Desteği**: Açık/koyu/renkli tema seçenekleri
-- **Çoklu Dil**: Türkçe, İngilizce ve daha fazlası
+- **6 Tema Modu**: Light, Dark, Colorful, Ocean, Sunset, Forest
+- **6 Dil Desteği**: Türkçe, İngilizce, Almanca, Fransızca, İtalyanca, İspanyolca
+- **İlk Kurulum**: Dil ve para birimi seçimi
 - **Responsive Design**: Tüm cihazlarda mükemmel görünüm
 - **Animasyonlar**: Akıcı ve modern kullanıcı deneyimi
+- **Modern Bileşenler**: 20+ özel UI bileşeni
 
 ### 📱 Teknik Özellikler
 - **Expo 54**: En güncel React Native framework
-- **TypeScript**: Tip güvenli kod yapısı
+- **TypeScript**: Strict mode ile tip güvenli kod yapısı
 - **SQLite**: Yerel veritabanı ile hızlı erişim
 - **Offline First**: İnternet bağlantısı olmadan çalışır
+- **Modüler Yapı**: Refactor edilmiş, bakımı kolay kod
+- **Entity Models**: Tip güvenli veri modelleri
 
 ## 🚀 Hızlı Başlangıç
 

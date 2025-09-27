@@ -1,15 +1,19 @@
 // Payments Screen - Modern ödemeler listesi
 import React, { useCallback, useEffect, useState, useMemo } from 'react';
 import { Alert, StyleSheet } from 'react-native';
-import { Layout, PageHeader, ScrollView, View, Text, TouchableOpacity, Card, Button } from '@/components';
-import { StatCard, Badge } from '@/components/common';
+import { Layout, PageHeader, ScrollView } from '@/components';
 import { useNavigation } from '@/contexts';
 import { useLocale } from '@/hooks';
 import { paymentService } from '@/services';
-import type { Entry } from '@/types';
+import type { Entry } from '@/models';
+import { 
+  PaymentStatsSection, 
+  QuickActionsSection, 
+  PaymentListSection 
+} from './components';
 
 const PaymentsScreen: React.FC = () => {
-  const { goBack, navigateTo } = useNavigation();
+  const { goBack } = useNavigation();
   const { t } = useLocale();
   const [entries, setEntries] = useState<Entry[]>([]);
   const [loading, setLoading] = useState(true);
@@ -138,195 +142,26 @@ const PaymentsScreen: React.FC = () => {
     <Layout headerComponent={<PageHeader title={t('navigation.tabs.payments') || 'Ödemeler'} showBackButton={false} onBackPress={goBack} /> }>
       <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
         {/* İstatistikler */}
-        <View style={styles.section}>
-          <Text variant="primary" size="large" weight="bold" style={styles.sectionTitle}>
-            {t('screens.payments.payment_statistics') || 'Ödeme İstatistikleri'}
-          </Text>
-          
-          <View style={styles.statsGrid}>
-            <StatCard
-              title={t('screens.payments.total_amount') || 'Toplam Tutar'}
-              value={formatCurrency(stats.totalAmount)}
-              subtitle={t('screens.payments.total_payments_subtitle') || 'tüm ödemeler'}
-              icon="💸"
-              variant="danger"
-              animated={true}
-              style={styles.statCard}
-            />
-            
-            <StatCard
-              title={t('screens.payments.installment') || 'Taksitli'}
-              value={stats.installmentCount.toString()}
-              subtitle={t('screens.payments.installment_subtitle') || 'ödeme'}
-              icon="📅"
-              variant="warning"
-              animated={true}
-              style={styles.statCard}
-            />
-            
-            <StatCard
-              title={t('screens.payments.one_time') || 'Tek Seferlik'}
-              value={stats.oneTimeCount.toString()}
-              subtitle={t('screens.payments.one_time_subtitle') || 'ödeme'}
-              icon="💳"
-              variant="info"
-              animated={true}
-              style={styles.statCard}
-            />
-            
-            <StatCard
-              title={t('screens.payments.total_installments') || 'Toplam Taksit'}
-              value={stats.totalMonths.toString()}
-              subtitle={t('screens.payments.total_installments_subtitle') || 'ay'}
-              icon="📊"
-              variant="primary"
-              animated={true}
-              style={styles.statCard}
-            />
-          </View>
-        </View>
+        <PaymentStatsSection
+          stats={stats}
+          formatCurrency={formatCurrency}
+        />
 
         {/* Hızlı Eylemler */}
-        <View style={styles.section}>
-          <Text variant="primary" size="large" weight="bold" style={styles.sectionTitle}>
-            {t('screens.payments.quick_actions') || 'Hızlı Eylemler'}
-          </Text>
-          
-          <View style={styles.actionButtons}>
-            <Button
-              variant="primary"
-              size="large"
-              onPress={() => navigateTo('addEntry', { type: 'expense' })}
-              icon="➕"
-              title={t('screens.payments.add_payment') || 'Yeni Ödeme Ekle'}
-              style={styles.actionButton}
-            />
-          </View>
-        </View>
+        <QuickActionsSection />
 
         {/* Ödemeler Listesi */}
-        <View style={styles.section}>
-          <View style={styles.sectionHeader}>
-            <Text variant="primary" size="large" weight="bold" style={styles.sectionTitle}>
-              {t('screens.payments.payments_list') || 'Ödemeler'} ({entries.length})
-            </Text>
-            
-            {entries.length > 0 && (
-              <Button
-                variant="outline"
-                size="small"
-                onPress={() => navigateTo('addPayment')}
-                title={t('screens.payments.add_payment_button') || 'Yeni Ekle'}
-                style={styles.addButton}
-              />
-            )}
-          </View>
-
-          {loading ? (
-            <Card variant="default" style={styles.loadingCard}>
-              <Text variant="secondary" size="medium" style={styles.loadingText}>
-                {t('common.messages.loading')}
-              </Text>
-            </Card>
-          ) : error ? (
-            <Card variant="outlined" style={styles.errorCard}>
-              <Text variant="error" size="medium" style={styles.errorText}>
-                {error}
-              </Text>
-              <Button
-                variant="outline"
-                size="small"
-                onPress={loadEntries}
-                title={t('screens.payments.try_again') || 'Tekrar Dene'}
-                style={styles.retryButton}
-              />
-            </Card>
-          ) : entries.length === 0 ? (
-            <Card variant="outlined" style={styles.emptyCard}>
-              <Text variant="secondary" size="medium" style={styles.emptyText}>
-                {t('screens.payments.first_payment_message') || 'Henüz ödeme yok'}
-              </Text>
-              <Button
-                variant="primary"
-                size="medium"
-                onPress={() => navigateTo('addPayment')}
-                title={t('screens.payments.first_payment') || 'İlk Ödemenizi Ekleyin'}
-                style={styles.emptyButton}
-              />
-            </Card>
-          ) : (
-            <View style={styles.entriesList}>
-              {entries.map((entry) => (
-                <Card key={entry.id} variant="elevated" style={styles.entryCard}>
-                  <View style={styles.entryContainer}>
-                    <TouchableOpacity
-                      onPress={() => navigateTo('paymentDetails', { entryId: entry.id })}
-                      style={styles.entryContent}
-                    >
-                      <View style={styles.entryHeader}>
-                        <Text variant="primary" size="medium" weight="bold" style={styles.entryTitle}>
-                          {entry.title || (t('screens.payments.payment') || 'Ödeme')}
-                        </Text>
-                        <Badge 
-                          variant={entry.schedule_type === 'installment' ? 'warning' : 'info'}
-                          size="small"
-                        >
-                          {entry.schedule_type === 'installment' 
-                            ? (t('screens.payments.installment') || 'Taksitli') 
-                            : (t('screens.payments.one_time') || 'Tek Seferlik')
-                          }
-                        </Badge>
-                      </View>
-                      
-                      <View style={styles.entryDetails}>
-                        <Text variant="primary" size="large" weight="bold" style={styles.entryAmount}>
-                          {formatCurrency(entry.amount)}
-                        </Text>
-                        <Text variant="secondary" size="small" style={styles.entryDate}>
-                          {formatDate(entry.start_date)}
-                        </Text>
-                      </View>
-                      
-                      {entry.schedule_type === 'installment' && (
-                        <View style={styles.installmentInfo}>
-                          <Text variant="secondary" size="small">
-                            {entry.months} {t('screens.payments.installment') || 'taksit'} • {entry.category_id}
-                          </Text>
-                        </View>
-                      )}
-                    </TouchableOpacity>
-                    
-                    <View style={styles.entryActions}>
-                      <TouchableOpacity
-                        style={[
-                          styles.payButton,
-                          entryStatuses[entry.id] === 'paid' && styles.paidButton
-                        ]}
-                        onPress={() => handlePaymentAction(entry.id)}
-                      >
-                        <Text style={[
-                          styles.payButtonText,
-                          entryStatuses[entry.id] === 'paid' && styles.paidButtonText
-                        ]}>
-                          {entryStatuses[entry.id] === 'paid' 
-                            ? (t('screens.payments.paid_button') || 'Ödendi')
-                            : (t('screens.payments.pay_button') || 'Öde')
-                          }
-                        </Text>
-                      </TouchableOpacity>
-                      <TouchableOpacity
-                        style={styles.deleteButton}
-                        onPress={() => confirmDelete(entry.id)}
-                      >
-                        <Text variant="error" size="medium">🗑️</Text>
-                      </TouchableOpacity>
-                    </View>
-                  </View>
-                </Card>
-              ))}
-            </View>
-          )}
-        </View>
+        <PaymentListSection
+          entries={entries}
+          loading={loading}
+          error={error}
+          entryStatuses={entryStatuses}
+          onLoadEntries={loadEntries}
+          onPaymentAction={handlePaymentAction}
+          onConfirmDelete={confirmDelete}
+          formatCurrency={formatCurrency}
+          formatDate={formatDate}
+        />
       </ScrollView>
     </Layout>
   );
@@ -336,136 +171,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
-  },
-  section: {
-    marginBottom: 32,
-  },
-  sectionTitle: {
-    marginBottom: 16,
-  },
-  sectionHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 16,
-  },
-  statsGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
-    gap: 12,
-  },
-  statCard: {
-    width: '48%',
-  },
-  actionButtons: {
-    flexDirection: 'row',
-    gap: 12,
-  },
-  actionButton: {
-    flex: 1,
-  },
-  addButton: {
-    alignSelf: 'flex-end',
-  },
-  loadingCard: {
-    padding: 24,
-    alignItems: 'center',
-  },
-  loadingText: {
-    textAlign: 'center',
-  },
-  errorCard: {
-    padding: 24,
-    alignItems: 'center',
-  },
-  errorText: {
-    textAlign: 'center',
-    marginBottom: 16,
-  },
-  retryButton: {
-    alignSelf: 'center',
-  },
-  emptyCard: {
-    padding: 32,
-    alignItems: 'center',
-  },
-  emptyText: {
-    textAlign: 'center',
-    marginBottom: 16,
-  },
-  emptyButton: {
-    alignSelf: 'center',
-  },
-  entriesList: {
-    gap: 12,
-  },
-  entryCard: {
-    padding: 16,
-  },
-  entryContainer: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    gap: 12,
-  },
-  entryContent: {
-    flex: 1,
-  },
-  entryHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
-    marginBottom: 12,
-  },
-  entryTitle: {
-    flex: 1,
-    marginRight: 12,
-  },
-  entryDetails: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 8,
-  },
-  entryAmount: {
-    color: '#E74C3C',
-  },
-  entryDate: {
-    textAlign: 'right',
-  },
-  installmentInfo: {
-    marginTop: 4,
-  },
-  entryActions: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 8,
-  },
-  payButton: {
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 16,
-    backgroundColor: '#27AE60',
-    minWidth: 50,
-    alignItems: 'center',
-  },
-      payButtonText: {
-        color: 'white',
-        fontSize: 12,
-        fontWeight: '600',
-      },
-      paidButton: {
-        backgroundColor: '#95A5A6', // Gri renk
-      },
-      paidButtonText: {
-        color: 'white',
-        fontSize: 12,
-        fontWeight: '600',
-      },
-  deleteButton: {
-    padding: 8,
-    borderRadius: 8,
-    backgroundColor: 'rgba(231, 76, 60, 0.1)',
   },
 });
 

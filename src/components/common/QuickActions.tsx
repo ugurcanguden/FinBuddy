@@ -27,7 +27,7 @@ export interface QuickActionsProps {
 
 const QuickActions: React.FC<QuickActionsProps> = ({
   actions,
-  columns = 2,
+  columns: _columns = 2,
   animated = true,
   style,
   testID,
@@ -188,7 +188,7 @@ const QuickActions: React.FC<QuickActionsProps> = ({
     return {
       flexDirection: 'row' as const,
       flexWrap: 'wrap' as const,
-      justifyContent: 'space-between',
+      justifyContent: 'space-between' as const,
       gap: 8,
     };
   }, []);

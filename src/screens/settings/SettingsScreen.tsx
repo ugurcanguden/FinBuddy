@@ -2,7 +2,6 @@
 import React, { useCallback, useEffect } from 'react';
 import { Alert, StyleSheet, Platform } from 'react-native';
 import type { ThemeMode } from '@/contexts';
-import { themes } from '@/contexts';
 import { LANGUAGE_OPTIONS } from '@/constants/languageOptions';
 import { useLocale, usePaymentReminders, useBiometric } from '@/hooks';
 import { useNavigation, useTheme, useCurrency } from '@/contexts';
@@ -19,12 +18,11 @@ import {
   View,
   PageHeader,
   Layout,
-  TimePicker,
-  Button
+  TimePicker
 } from '@/components';
 import { StatCard, Badge } from '@/components/common';
 import { CURRENCY_OPTIONS } from '@/constants';
-import type { Currency } from '@/types';
+import type { Currency } from '@/models';
 
 const SettingsScreen: React.FC = () => {
   const { t, currentLanguage, changeLanguage } = useLocale();
@@ -173,16 +171,6 @@ const SettingsScreen: React.FC = () => {
   }, [t, isAvailable, isEnrolled, authenticate]);
 
 
-  const getThemePreviewStyle = (themeType: ThemeMode) => {
-    const palette = themes[themeType].colors;
-    const isSelected = currentTheme === themeType;
-    
-    return {
-      backgroundColor: palette.background,
-      borderColor: isSelected ? palette.primary : palette.border,
-      borderWidth: isSelected ? 2 : 1,
-    };
-  };
 
   return (
     <Layout

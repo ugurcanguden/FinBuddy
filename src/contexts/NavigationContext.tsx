@@ -2,6 +2,8 @@
 import React, { createContext, useContext, useState, useCallback, ReactNode } from 'react';
 
 export type ScreenType =
+  | 'initialSetup'
+  | 'onboarding'
   | 'home'
   | 'settings'
   | 'profile'
@@ -22,12 +24,12 @@ export type ScreenType =
 
 interface NavigationContextType {
   currentScreen: ScreenType;
-  navigateTo: (screen: ScreenType, params?: any) => void;
+  navigateTo: (screen: ScreenType, params?: Record<string, unknown>) => void;
   goBack: () => void;
   resetToHome: () => void;
   screenHistory: ScreenType[];
-  currentParams: any;
-  getCurrentParams: () => any;
+  currentParams: Record<string, unknown> | null;
+  getCurrentParams: () => Record<string, unknown>;
 }
 
 const NavigationContext = createContext<NavigationContextType | undefined>(undefined);
@@ -37,13 +39,13 @@ interface NavigationProviderProps {
 }
 
 export const NavigationProvider: React.FC<NavigationProviderProps> = ({ children }) => {
-  const [currentScreen, setCurrentScreen] = useState<ScreenType>('home');
-  const [screenHistory, setScreenHistory] = useState<ScreenType[]>(['home']);
-  const [currentParams, setCurrentParams] = useState<any>(null);
+  const [currentScreen, setCurrentScreen] = useState<ScreenType>('initialSetup');
+  const [screenHistory, setScreenHistory] = useState<ScreenType[]>(['initialSetup']);
+  const [currentParams, setCurrentParams] = useState<Record<string, unknown> | null>(null);
 
-  const navigateTo = useCallback((screen: ScreenType, params?: any) => {
+  const navigateTo = useCallback((screen: ScreenType, params?: Record<string, unknown>) => {
     setCurrentScreen(screen);
-    setCurrentParams(params);
+    setCurrentParams(params || null);
     setScreenHistory(prev => [...prev, screen]);
   }, []);
 
@@ -71,7 +73,7 @@ export const NavigationProvider: React.FC<NavigationProviderProps> = ({ children
     resetToHome,
     screenHistory,
     currentParams,
-    getCurrentParams: () => currentParams,
+    getCurrentParams: () => currentParams || {},
   };
 
   return (

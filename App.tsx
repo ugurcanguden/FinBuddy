@@ -4,6 +4,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { useLocale } from '@/hooks';
 import { NavigationProvider, ThemeProvider, CurrencyProvider } from '@/contexts';
 import { databaseService, migrationService, categoryService, storageService, notificationService } from '@/services';
+import { STORAGE_KEYS } from '@/constants';
 import * as Notifications from 'expo-notifications';
 import AppNavigator from '@/components/AppNavigator';
 import OnboardingScreen from '@/screens/OnboardingScreen';
@@ -13,6 +14,7 @@ const App: React.FC = () => {
   const [dbInitialized, setDbInitialized] = useState(false);
   const [dbError, setDbError] = useState<string | null>(null);
   const [showOnboarding, setShowOnboarding] = useState(false);
+  const [showInitialSetup, setShowInitialSetup] = useState(false);
 
   // Veritabanını başlat
   useEffect(() => {
@@ -25,8 +27,16 @@ const App: React.FC = () => {
         // Bildirim servisini başlat
         await notificationService.initialize();
         
-        const done = await storageService.get<boolean>('onboarding_completed');
-        setShowOnboarding(!done);
+        // İlk kurulum kontrolü
+        const initialSetupCompleted = await storageService.get<boolean>(STORAGE_KEYS.INITIAL_SETUP_COMPLETED);
+        const onboardingCompleted = await storageService.get<boolean>('onboarding_completed');
+        
+        if (!initialSetupCompleted) {
+          setShowInitialSetup(true);
+        } else if (!onboardingCompleted) {
+          setShowOnboarding(true);
+        }
+        
         setDbInitialized(true);
         console.log('✅ App initialization completed');
       } catch (error) {
@@ -68,7 +78,9 @@ const App: React.FC = () => {
       <ThemeProvider>
         <CurrencyProvider>
           <NavigationProvider>
-            {showOnboarding ? (
+            {showInitialSetup ? (
+              <AppNavigator />
+            ) : showOnboarding ? (
               <OnboardingScreen
                 onComplete={async () => {
                   await storageService.set('onboarding_completed', true);

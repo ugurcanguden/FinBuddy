@@ -14,7 +14,7 @@ import {
   Button,
   RadioButton
 } from '@/components';
-import { Category, CategoryFormData } from '@/types';
+import { Category, CategoryFormData } from '@/models';
 
 interface CategoryFormProps {
   category?: Category | null;

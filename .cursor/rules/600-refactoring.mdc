@@ -1,0 +1,100 @@
+---
+description: Code refactoring and component organization guidelines for FinBuddy.
+alwaysApply: false
+---
+
+## Screen Refactoring
+- Break down large screens into smaller, focused components.
+- Follow the pattern established in `HomeScreen` and `ReportsHubScreen` refactoring.
+- Create component directories under each screen (e.g., `src/screens/home/components/`).
+- Export components through `index.tsx` files for clean imports.
+
+## Component Organization
+- Group related components in the same directory.
+- Use descriptive names that reflect component purpose.
+- Keep components small and focused on single responsibility.
+- Avoid deep nesting of component directories.
+
+## HomeScreen Refactoring Pattern
+- `WalletSection`: Cüzdan kartı ve bakiye gösterimi
+- `StatsSection`: İstatistik kartları grid'i
+- `IncomeReportSection`: Gelir grafiği ve yıl seçimi
+- `ExpenseReportSection`: Gider grafiği
+- `PaymentStatusSection`: Yaklaşan/geciken ödemeler listesi
+
+## ReportsHubScreen Refactoring Pattern
+- `MonthlySummarySection`: Aylık özet istatistikleri ve grafik
+- `CategoryDistributionSection`: Kategori dağılım grafiği
+- `SavedReportsSection`: Kayıtlı raporlar listesi
+
+## Component Props
+- Define component props interfaces in the same file as the component.
+- Use descriptive prop names that clearly indicate purpose.
+- Provide default values for optional props.
+- Document complex props with JSDoc comments.
+
+## State Management
+- Keep component state local when possible.
+- Lift state up only when multiple components need access.
+- Use custom hooks for shared state logic.
+- Avoid prop drilling by using context when appropriate.
+
+## Styling
+- Use `StyleSheet.create()` for component styles.
+- Keep styles close to the component that uses them.
+- Use theme tokens instead of hardcoded values.
+- Extract common styles into shared style objects.
+
+## Import Organization
+- Group imports by type: React, third-party, local.
+- Use absolute imports with `@/` alias.
+- Import only what you need to reduce bundle size.
+- Sort imports alphabetically within each group.
+
+## File Naming
+- Use PascalCase for component files: `WalletSection.tsx`.
+- Use camelCase for utility files: `formatCurrency.ts`.
+- Use descriptive names that indicate file purpose.
+- Avoid generic names like `utils.ts` or `helpers.ts`.
+
+## Export Patterns
+- Use named exports for utilities and constants.
+- Use default exports for React components.
+- Export types and interfaces separately from implementations.
+- Use barrel exports (`index.tsx`) for clean imports.
+
+## Code Duplication
+- Extract common logic into custom hooks.
+- Create reusable utility functions for repeated operations.
+- Use higher-order components for cross-cutting concerns.
+- Refactor similar components into generic, configurable ones.
+
+## Performance Considerations
+- Use `React.memo` for components that don't change often.
+- Implement `useMemo` and `useCallback` for expensive operations.
+- Avoid creating objects and functions in render methods.
+- Lazy load heavy components when possible.
+
+## Testing
+- Write unit tests for refactored components.
+- Test component behavior with different props.
+- Mock dependencies and external services.
+- Ensure tests cover edge cases and error scenarios.
+
+## Documentation
+- Update component documentation when refactoring.
+- Add JSDoc comments for complex components.
+- Document prop interfaces and usage examples.
+- Keep README files updated with new component structure.
+
+## Migration Strategy
+- Refactor incrementally, one screen at a time.
+- Maintain backward compatibility during refactoring.
+- Test thoroughly after each refactoring step.
+- Use feature flags for gradual rollout if needed.
+
+## Code Review
+- Review refactored code for maintainability and readability.
+- Ensure consistent patterns across similar components.
+- Check for proper error handling and edge cases.
+- Verify that performance is not degraded.

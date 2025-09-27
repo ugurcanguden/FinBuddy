@@ -1,0 +1,78 @@
+---
+description: Modern UI components and design system guidelines for FinBuddy.
+alwaysApply: false
+---
+
+## Modern UI Components
+- Use 20+ modern UI components from `@/components/common` for consistent design.
+- Components include: `ProgressBar`, `Badge`, `StatCard`, `WalletCard`, `BarChart`, `LineChart`, `GroupedColumnChart`, `QuickActions`, `RecentTransactions`, `WeeklySummary`.
+- All components are theme-aware and support 6 theme modes: Light, Dark, Colorful, Ocean, Sunset, Forest.
+
+## Chart Components
+- Use `BarChart` for simple data visualization with animations and value labels.
+- Use `LineChart` for trend analysis with colored segments and points.
+- Use `GroupedColumnChart` for comparing multiple data series with tooltips and scrolling.
+- All charts support theme colors and responsive design.
+
+## Card Components
+- Use `StatCard` for displaying statistics with icons, trends, and loading states.
+- Use `WalletCard` for financial summaries with animated balance updates.
+- Use `Card` with variants: `default`, `elevated`, `outlined` for different contexts.
+
+## Interactive Components
+- Use `QuickActions` for primary action buttons with icons and badges.
+- Use `RecentTransactions` for transaction lists with status indicators.
+- Use `WeeklySummary` for weekly data visualization with progress indicators.
+
+## Form Components
+- Use `FormSection` for grouping related form fields.
+- Use `KeyboardAwareScrollView` for forms with multiple inputs.
+- Use `Dropdown`, `RadioButton`, `TimePicker`, `DatePicker` for user input.
+
+## Layout Components
+- Use `Layout` as the main screen wrapper with optional header and footer.
+- Use `PageHeader` for consistent page titles with back buttons and actions.
+- Use `BottomTabBar` for primary navigation with theme support.
+- Use `SafeArea` for proper safe area handling across devices.
+
+## Theming Guidelines
+- All components support 6 theme modes with consistent color palettes.
+- Use `useTheme()` hook to access theme tokens and colors.
+- Avoid hardcoded colors; use theme-aware color variants.
+- Support both light and dark modes with proper contrast ratios.
+
+## Animation Guidelines
+- Use smooth transitions and micro-interactions for better UX.
+- Implement loading states with skeleton screens or progress indicators.
+- Use `Animated` API for complex animations and gestures.
+- Keep animations subtle and purposeful, not distracting.
+
+## Responsive Design
+- Design for multiple screen sizes and orientations.
+- Use flexible layouts with `flex` properties and responsive spacing.
+- Test on different device sizes and orientations.
+- Ensure touch targets are at least 44pt for accessibility.
+
+## Accessibility
+- Add `accessibilityLabel` and `accessibilityHint` to interactive elements.
+- Use semantic roles and states for screen readers.
+- Ensure proper color contrast ratios for text and backgrounds.
+- Support keyboard navigation and voice-over features.
+
+## Component Composition
+- Break down large screens into smaller, reusable components.
+- Follow the single responsibility principle for each component.
+- Use composition over inheritance for component relationships.
+- Keep component props minimal and focused.
+
+## Performance
+- Use `React.memo` for expensive components that don't change often.
+- Implement `useMemo` and `useCallback` for expensive calculations.
+- Lazy load heavy components and images when possible.
+- Optimize re-renders by minimizing prop changes.
+
+## Testing
+- Write unit tests for component behavior and user interactions.
+- Test components with different theme modes and screen sizes.
+- Use React Native Testing Library for component testing.
+- Mock external dependencies and services in tests.

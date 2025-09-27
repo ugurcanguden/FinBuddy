@@ -4,8 +4,9 @@ alwaysApply: true
 ## Initialization Safety
 - Keep the boot sequence in `App.tsx` intact; new async tasks must finish before setting `dbInitialized` to true.
 - Surface initialization failures through the existing `dbError` handling instead of throwing unhandled rejections.
-- Respect the onboarding gate driven by `storageService` (`onboarding_completed`) when altering first-run flows.
+- Respect the initial setup gate driven by `storageService` (`INITIAL_SETUP_COMPLETED`) and onboarding gate (`onboarding_completed`) when altering first-run flows.
 - Defer notification scheduling or other background jobs until after database and locale setup complete.
+- **Initial Setup Flow**: Check `INITIAL_SETUP_COMPLETED` before `onboarding_completed` for proper flow control.
 
 ## Data & Services
 - Do not call `expo-sqlite` or `AsyncStorage` directly from UI components—always go through the established services and hooks.
@@ -24,3 +25,6 @@ alwaysApply: true
 - Honour the `@/` alias imports and expose new modules via barrel files instead of deep relative paths.
 - Stick with ES module syntax so Expo bundling remains stable; avoid mixing CommonJS patterns into new code.
 - Default to ASCII in source files; only add non-ASCII characters where the existing UI already relies on them (e.g. emoji in `BottomTabBar`).
+- **CRITICAL**: Use `src/models/` for entity types, not `src/types/` (deprecated).
+- **Type Safety**: Avoid `any` types; use specific entity interfaces from `src/models/`.
+- **Component Imports**: Use base components from `@/components`, not direct React Native imports.

@@ -2,12 +2,19 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { StyleSheet, ScrollView as RNScrollView, RefreshControl, Animated, Alert } from 'react-native';
 import { useLocale } from '@/hooks';
-import { Layout, PageHeader, View, Text, Card, TouchableOpacity, Dropdown, StatCard, WalletCard, BarChart } from '@/components';
+import { Layout, PageHeader } from '@/components';
 import { useTheme, useCurrency } from '@/contexts';
 import { paymentService } from '@/services';
+import { 
+  WalletSection, 
+  StatsSection, 
+  IncomeReportSection, 
+  ExpenseReportSection, 
+  PaymentStatusSection 
+} from './components';
 
-const BAR_WIDTH = 44;
-const BAR_SPACING = 16;
+// const BAR_WIDTH = 44;
+// const BAR_SPACING = 16;
 
 const HomeScreen: React.FC = () => {
   const { t } = useLocale();
@@ -15,7 +22,7 @@ const HomeScreen: React.FC = () => {
   const { colors } = useTheme();
   const { currency } = useCurrency();
   const [summary, setSummary] = useState<{ expense: { total: number; paid: number; pending: number }; income: { total: number; paid: number; pending: number } } | null>(null);
-  const [incomeSeries, setIncomeSeries] = useState<Array<{ ym: string; total: number }>>([]);
+  const [incomeSeries, setIncomeSeries] = useState<Array<{ ym: string; total: number; paid: number }>>([]);
   const [expenseSeries, setExpenseSeries] = useState<Array<{ ym: string; total: number; paid: number }>>([]);
   const [upcomings, setUpcomings] = useState<Array<{ id: string; entry_id: string; title: string | null; due_date: string; amount: number; type: string }>>([]);
   const [overdueExpenses, setOverdueExpenses] = useState<Array<{ id: string; entry_id: string; title: string | null; due_date: string; amount: number; type: string }>>([]);
@@ -31,7 +38,7 @@ const HomeScreen: React.FC = () => {
   const loadDashboard = useCallback(async (year: string, showSpinner = false) => {
     if (showSpinner) setRefreshing(true);
     try {
-      const [sum, inc, expenseBreakdown, upc, overdueExp, overdueInc, flow] = await Promise.all([
+      const [sum, inc, expenseBreakdown, upc, overdueExp, overdueInc, flow, years] = await Promise.all([
         paymentService.getDashboardSummary(),
         paymentService.getMonthlySeries('income', { year, limit: 12 }),
         paymentService.getMonthlyExpenseBreakdown({ year, limit: 12 }),
@@ -39,8 +46,8 @@ const HomeScreen: React.FC = () => {
         paymentService.getOverduePayments('expense', 10),
         paymentService.getOverduePayments('income', 10),
         paymentService.getYearlyCashFlow(year),
+        paymentService.getAvailableYears(),
       ]);
-      
       
       setSummary(sum);
       setIncomeSeries(inc);
@@ -49,6 +56,12 @@ const HomeScreen: React.FC = () => {
       setOverdueExpenses(overdueExp);
       setOverdueIncomes(overdueInc);
       setCashFlow(flow);
+      setAvailableYears(years);
+      
+      // Eğer seçili yıl mevcut değilse, en yeni yılı seç
+      if (years.length > 0 && !years.includes(year)) {
+        setSelectedYear(years[0]!);
+      }
     } finally {
       if (showSpinner) setRefreshing(false);
     }
@@ -77,46 +90,29 @@ const HomeScreen: React.FC = () => {
     }
   }, [loadDashboard, selectedYear]);
 
-  useEffect(() => {
-    (async () => {
-      const years = await paymentService.getAvailableYears();
-      const fallbackYear = new Date().getFullYear();
-      const numeric = years
-        .map((year) => Number(year))
-        .filter((year) => Number.isFinite(year));
-      const minYear = numeric.length ? Math.min(...numeric) : fallbackYear;
-      const maxYear = numeric.length ? Math.max(...numeric) : fallbackYear;
-      const fullRange: string[] = [];
-      for (let y = maxYear; y >= minYear; y -= 1) {
-        fullRange.push(String(y));
-      }
-      const list = fullRange.length ? fullRange : [String(fallbackYear)];
-      setAvailableYears(list);
-      setSelectedYear((prev) => (list.includes(prev) ? prev : list[0]!));
-    })();
-  }, []);
 
   useEffect(() => {
     if (!selectedYear) return;
     loadDashboard(selectedYear);
   }, [loadDashboard, selectedYear]);
 
-  // Chart yüksekliği
-  const chartHeight = 160;
 
-  const latestIncome = incomeSeries.length ? incomeSeries[incomeSeries.length - 1]!.total : 0;
+  // Chart yüksekliği
+  // const chartHeight = 160;
+
+  // const latestIncome = incomeSeries.length ? incomeSeries[incomeSeries.length - 1]!.total : 0;
   // const previousIncome = incomeSeries.length > 1 ? incomeSeries[incomeSeries.length - 2]!.total : null; // BarChart içinde hesaplanıyor
-  const latestExpense = expenseSeries.length ? expenseSeries[expenseSeries.length - 1]!.total : 0;
+  // const latestExpense = expenseSeries.length ? expenseSeries[expenseSeries.length - 1]!.total : 0;
   // const previousExpense = expenseSeries.length > 1 ? expenseSeries[expenseSeries.length - 2]!.total : null; // BarChart içinde hesaplanıyor
 
   // const expenseYearTotal = useMemo(
   //   () => expenseSeries.reduce((sum, item) => sum + (item.total || 0), 0),
   //   [expenseSeries]
   // ); // BarChart içinde hesaplanıyor
-  const expenseYearPaid = useMemo(
-    () => expenseSeries.reduce((sum, item) => sum + (item.paid || 0), 0),
-    [expenseSeries]
-  );
+  // const expenseYearPaid = useMemo(
+  //   () => expenseSeries.reduce((sum, item) => sum + (item.paid || 0), 0),
+  //   [expenseSeries]
+  // );
   // const expenseYearOutstanding = Math.max(expenseYearTotal - expenseYearPaid, 0); // BarChart içinde hesaplanıyor
   const netCash = useMemo(
     () => cashFlow.incomePaid - cashFlow.expensePaid,
@@ -211,175 +207,121 @@ const HomeScreen: React.FC = () => {
     if (Number.isNaN(yearNum) || Number.isNaN(monthNum)) return ym;
     const date = new Date(yearNum, monthNum, 1);
     if (Number.isNaN(date.getTime())) return ym;
+    
+    // Dil karşılığı için ay isimleri
+    const monthNames = [
+      t('common.months.january') || 'Oca',
+      t('common.months.february') || 'Şub',
+      t('common.months.march') || 'Mar',
+      t('common.months.april') || 'Nis',
+      t('common.months.may') || 'May',
+      t('common.months.june') || 'Haz',
+      t('common.months.july') || 'Tem',
+      t('common.months.august') || 'Ağu',
+      t('common.months.september') || 'Eyl',
+      t('common.months.october') || 'Eki',
+      t('common.months.november') || 'Kas',
+      t('common.months.december') || 'Ara',
+    ];
+    
     try {
-      return new Intl.DateTimeFormat(undefined, { month: 'short', year: 'numeric' }).format(date);
+      return `${monthNames[monthNum]} ${year}`;
     } catch {
       return `${month}.${year}`;
     }
-  }, []);
+  }, [t]);
 
-  // BarChart verilerini hazırla
-  const incomeChartData = useMemo(() => {
-    // Eğer veri yoksa test verisi ekle
-    if (incomeSeries.length === 0) {
-      return [
-        { label: 'Oca', value: 15000, color: colors.primary },
-        { label: 'Şub', value: 18000, color: colors.primary },
-        { label: 'Mar', value: 12000, color: colors.primary },
-        { label: 'Nis', value: 22000, color: colors.primary },
-        { label: 'May', value: 19000, color: colors.primary },
-        { label: 'Haz', value: 25000, color: colors.primary },
-      ];
-    }
-    
-    return incomeSeries.map(s => ({
-      label: formatMonthLabel(s.ym),
-      value: s.total,
-      color: colors.primary,
-    }));
-  }, [incomeSeries, colors.primary, formatMonthLabel]);
+  // LineChart verilerini hazırla - artık kullanılmıyor
+  // const incomeChartData = useMemo(() => {
+  //   // Verileri sırala ve formatla
+  //   const sortedData = [...incomeSeries].sort((a, b) => a.ym.localeCompare(b.ym));
+  //   const chartDataMap = new Map<string, { label: string; value: number; status: 'paid' | 'pending' | 'overdue' }>();
+  //   
+  //   sortedData.forEach(s => {
+  //     const paid = s.paid || 0;
+  //     const unpaid = s.total - paid;
+  //     const isOverdue = new Date(s.ym + '-01') < new Date();
+  //     const label = formatMonthLabel(s.ym);
+  //     
+  //     // Ödenen kısmı ekle
+  //     if (paid > 0) {
+  //       const key = `${s.ym}_paid`; // ym kullan, label değil
+  //       if (chartDataMap.has(key)) {
+  //         chartDataMap.get(key)!.value += paid;
+  //       } else {
+  //         chartDataMap.set(key, {
+  //           label,
+  //           value: paid,
+  //           status: 'paid', // Ödenen - yeşil
+  //         });
+  //       }
+  //     }
+  //     
+  //     // Ödenmemiş kısmı ekle
+  //     if (unpaid > 0) {
+  //       const status = isOverdue ? 'overdue' : 'pending';
+  //       const key = `${s.ym}_${status}`; // ym kullan, label değil
+  //       if (chartDataMap.has(key)) {
+  //         chartDataMap.get(key)!.value += unpaid;
+  //       } else {
+  //         chartDataMap.set(key, {
+  //           label,
+  //           value: unpaid,
+  //           status, // Geciken veya bekleyen
+  //         });
+  //       }
+  //     }
+  //   });
+  //   
+  //   return Array.from(chartDataMap.values());
+  // }, [incomeSeries, formatMonthLabel]);
 
-  const expenseChartData = useMemo(() => {
-    // Eğer veri yoksa test verisi ekle
-    if (expenseSeries.length === 0) {
-      return [
-        { label: 'Oca', value: 12000, secondaryValue: 8000, color: colors.danger, secondaryColor: colors.success },
-        { label: 'Şub', value: 15000, secondaryValue: 12000, color: colors.danger, secondaryColor: colors.success },
-        { label: 'Mar', value: 18000, secondaryValue: 15000, color: colors.danger, secondaryColor: colors.success },
-        { label: 'Nis', value: 14000, secondaryValue: 10000, color: colors.danger, secondaryColor: colors.success },
-        { label: 'May', value: 16000, secondaryValue: 14000, color: colors.danger, secondaryColor: colors.success },
-        { label: 'Haz', value: 20000, secondaryValue: 18000, color: colors.danger, secondaryColor: colors.success },
-      ];
-    }
-    
-    return expenseSeries.map(s => ({
-      label: formatMonthLabel(s.ym),
-      value: s.total,
-      secondaryValue: s.paid,
-      color: colors.danger,
-      secondaryColor: colors.success,
-    }));
-  }, [expenseSeries, colors.danger, colors.success, formatMonthLabel]);
+  // const expenseChartData = useMemo(() => {
+  //   // Verileri sırala ve formatla
+  //   const sortedData = [...expenseSeries].sort((a, b) => a.ym.localeCompare(b.ym));
+  //   const chartDataMap = new Map<string, { label: string; value: number; status: 'paid' | 'pending' | 'overdue' }>();
+  //   
+  //   sortedData.forEach(s => {
+  //     const paid = s.paid || 0;
+  //     const unpaid = s.total - paid;
+  //     const isOverdue = new Date(s.ym + '-01') < new Date();
+  //     const label = formatMonthLabel(s.ym);
+  //     
+  //     // Ödenen kısmı ekle
+  //     if (paid > 0) {
+  //       const key = `${s.ym}_paid`; // ym kullan, label değil
+  //       if (chartDataMap.has(key)) {
+  //         chartDataMap.get(key)!.value += paid;
+  //       } else {
+  //         chartDataMap.set(key, {
+  //           label,
+  //           value: paid,
+  //           status: 'paid', // Ödenen - yeşil
+  //         });
+  //       }
+  //     }
+  //     
+  //     // Ödenmemiş kısmı ekle
+  //     if (unpaid > 0) {
+  //       const status = isOverdue ? 'overdue' : 'pending';
+  //       const key = `${s.ym}_${status}`; // ym kullan, label değil
+  //       if (chartDataMap.has(key)) {
+  //         chartDataMap.get(key)!.value += unpaid;
+  //       } else {
+  //         chartDataMap.set(key, {
+  //           label,
+  //           value: unpaid,
+  //           status, // Geciken veya bekleyen
+  //         });
+  //       }
+  //     }
+  //   });
+  //   
+  //   return Array.from(chartDataMap.values());
+  // }, [expenseSeries, formatMonthLabel]);
 
-  const listTabs = useMemo(
-    () => [
-      { key: 'upcoming_expense' as const, label: t('screens.home.upcoming_expenses') || 'Yaklaşan Giderler' },
-      { key: 'upcoming_income' as const, label: t('screens.home.upcoming_incomes') || 'Yaklaşan Gelirler' },
-      { key: 'overdue_expense' as const, label: t('screens.home.overdue_expenses') || 'Ödemesi Geçenler' },
-      { key: 'overdue_income' as const, label: t('screens.home.overdue_incomes') || 'Tahsilatı Gecikenler' },
-    ],
-    [t]
-  );
 
-  const listItems = useMemo(() => {
-    switch (listTab) {
-      case 'upcoming_expense':
-        // Sadece gider ödemelerini göster
-        return upcomings.filter(item => item.type === 'expense');
-      case 'upcoming_income':
-        // Sadece gelir ödemelerini göster
-        return upcomings.filter(item => item.type === 'income');
-      case 'overdue_expense':
-        return overdueExpenses;
-      case 'overdue_income':
-        return overdueIncomes;
-      default:
-        return [] as typeof upcomings;
-    }
-  }, [listTab, overdueExpenses, overdueIncomes, upcomings]);
-
-  const statItems = useMemo(() => {
-    if (!summary) return [];
-    
-    // Trend hesaplamaları (basit örnek - gerçek uygulamada daha karmaşık olabilir)
-    const expenseTrend = summary.expense.paid > 0 ? 'up' : 'neutral';
-    const incomeTrend = summary.income.total > 0 ? 'up' : 'neutral';
-    const pendingTrend = summary.expense.pending > 0 ? 'down' : 'neutral';
-    
-    return [
-      { 
-        title: t('screens.reports.expense_total') || 'Gider Toplam', 
-        value: formatCurrency(summary.expense.total),
-        icon: '💸',
-        variant: 'danger' as const,
-        trend: expenseTrend as 'up' | 'down' | 'neutral',
-        trendValue: summary.expense.total > 0 ? 'Aktif' : 'Yok',
-        subtitle: 'Bu ay toplam gider'
-      },
-      { 
-        title: t('screens.reports.expense_paid') || 'Ödenen', 
-        value: formatCurrency(summary.expense.paid),
-        icon: '✅',
-        variant: 'success' as const,
-        trend: 'up',
-        trendValue: summary.expense.paid > 0 ? 'Ödendi' : 'Bekliyor',
-        subtitle: 'Tamamlanan ödemeler'
-      },
-      { 
-        title: t('screens.reports.expense_pending') || 'Bekleyen', 
-        value: formatCurrency(summary.expense.pending),
-        icon: '⏳',
-        variant: 'warning' as const,
-        trend: pendingTrend as 'up' | 'down' | 'neutral',
-        trendValue: summary.expense.pending > 0 ? 'Bekliyor' : 'Yok',
-        subtitle: 'Ödenmemiş tutarlar'
-      },
-      { 
-        title: t('screens.reports.income_total') || 'Gelir Toplam', 
-        value: formatCurrency(summary.income.total),
-        icon: '💰',
-        variant: 'primary' as const,
-        trend: incomeTrend as 'up' | 'down' | 'neutral',
-        trendValue: summary.income.total > 0 ? 'Geldi' : 'Bekliyor',
-        subtitle: 'Bu ay toplam gelir'
-      },
-    ];
-  }, [formatCurrency, summary, t]);
-
-  const listMeta = useMemo(() => {
-    switch (listTab) {
-      case 'upcoming_expense':
-        return {
-          icon: '💸',
-          color: colors.danger,
-          emptyText: t('screens.home.no_upcoming_expenses') || 'Yaklaşan gider bulunmuyor.',
-          fallbackTitle: t('screens.home.expense') || 'Gider',
-          secondaryLabel: t('screens.home.due_date_label') || 'Son Tarih',
-        };
-      case 'upcoming_income':
-        return {
-          icon: '💰',
-          color: colors.success,
-          emptyText: t('screens.home.no_upcoming_incomes') || 'Yaklaşan gelir bulunmuyor.',
-          fallbackTitle: t('screens.home.income') || 'Gelir',
-          secondaryLabel: t('screens.home.due_date_label') || 'Son Tarih',
-        };
-      case 'overdue_expense':
-        return {
-          icon: '⚠️',
-          color: colors.danger,
-          emptyText: t('screens.home.no_overdue_expenses') || 'Geciken ödeme bulunmuyor.',
-          fallbackTitle: t('screens.home.expense') || 'Gider',
-          secondaryLabel: t('screens.home.overdue_date_label') || 'Son Tarih',
-        };
-      case 'overdue_income':
-        return {
-          icon: '💰',
-          color: colors.primary,
-          emptyText: t('screens.home.no_overdue_incomes') || 'Geciken tahsilat bulunmuyor.',
-          fallbackTitle: t('screens.home.income') || 'Gelir',
-          secondaryLabel: t('screens.home.overdue_date_label') || 'Son Tarih',
-        };
-      default:
-        return {
-          icon: '💳',
-          color: colors.primary,
-          emptyText: t('common.messages.no_data') || 'Veri yok',
-          fallbackTitle: t('screens.home.payment') || t('common.labels.payment') || 'Ödeme',
-          secondaryLabel: t('screens.home.due_date_label') || 'Son Tarih',
-        };
-    }
-  }, [colors.danger, colors.primary, colors.success, listTab, t]);
+  // Component'lere taşındı - artık burada yok
 
   return (
     <Layout
@@ -396,176 +338,49 @@ const HomeScreen: React.FC = () => {
           />
         )}
       >
-        <WalletCard
-          title={t('screens.home.wallet_title') || 'Cüzdan'}
-          balance={netCash}
-          income={cashFlow.incomePaid}
-          expense={cashFlow.expensePaid}
-          currency={currency}
-          animated={true}
+        {/* Cüzdan Bölümü */}
+        <WalletSection
+          netCash={netCash}
+          incomePaid={cashFlow.incomePaid}
+          expensePaid={cashFlow.expensePaid}
           loading={refreshing}
-          style={{ marginBottom: 16 }}
         />
 
-        {/* Modern Stat Cards */}
-        <View style={styles.grid}>
-          {statItems.map((item, idx) => (
-            <StatCard
-              key={idx}
-              title={item.title}
-              value={item.value}
-              subtitle={item.subtitle}
-              icon={item.icon}
-              trend={item.trend as 'up' | 'neutral' | 'down'}
-              trendValue={item.trendValue}
-              variant={item.variant}
-              animated={true} 
-              style={styles.statCard}
-            />
-          ))}
-        </View>
+        {/* İstatistik Kartları */}
+        <StatsSection
+          summary={summary}
+          formatCurrency={formatCurrency}
+        />
 
-        {/* Gelir ve Giderler */}
-        <View style={styles.section}>
-          <Text variant="primary" size="large" weight="bold" style={styles.sectionTitle}>
-            {t('screens.home.income_and_expenses') || 'Gelir ve Giderler'}
-          </Text>
-          <View variant="transparent" style={styles.yearRow}>
-            <Text variant="secondary" size="small" weight="medium">
-              {t('screens.home.year_filter_label') || 'Yıl'}
-            </Text>
-            <Dropdown
-              options={availableYears.map((year) => ({ value: year, label: year, nativeName: '', flag: '' }))}
-              selectedValue={selectedYear}
-              onSelect={(value) => setSelectedYear(value)}
-              style={{ flex: 0, minWidth: 140 }}
-              disabled={availableYears.length === 0}
-            />
-          </View>
+        {/* Gelir Raporu */}
+        <IncomeReportSection
+          incomeSeries={incomeSeries}
+          availableYears={availableYears}
+          selectedYear={selectedYear}
+          onYearChange={setSelectedYear}
+          formatCurrency={formatCurrency}
+          formatMonthLabel={formatMonthLabel}
+        />
 
-          <BarChart
-            title={t('screens.home.income_chart_title') || 'Gelir'}
-            subtitle={`${t('screens.home.last_month') || 'Son ay'}: ${formatCurrency(latestIncome)}`}
-            data={incomeChartData}
-            height={chartHeight}
-            barWidth={BAR_WIDTH}
-            barSpacing={BAR_SPACING}
-            animated={true}
-            showValues={true}
-            showLabels={true}
-            variant="gradient"
-            style={styles.chartCard}
-          />
-
-          <BarChart
-            title={t('screens.home.expenses_chart_title') || 'Giderler'}
-            subtitle={`${t('screens.home.last_month') || 'Son ay'}: ${formatCurrency(latestExpense)} | ${t('screens.home.paid') || 'Ödenen'}: ${formatCurrency(expenseYearPaid)}`}
-            data={expenseChartData}
-            height={chartHeight}
-            barWidth={BAR_WIDTH}
-            barSpacing={BAR_SPACING}
-            animated={true}
-            showValues={true}
-            showLabels={true}
-            variant="stacked"
-            style={styles.chartCard}
-          />
-        </View>
+        {/* Gider Raporu */}
+        <ExpenseReportSection
+          expenseSeries={expenseSeries}
+          formatCurrency={formatCurrency}
+          formatMonthLabel={formatMonthLabel}
+        />
 
         {/* Ödeme Durumu */}
-        <View style={styles.section}>
-          <Text variant="primary" size="large" weight="bold" style={styles.sectionTitle}>
-            {t('screens.home.activity_section_title') || 'Ödeme Durumu'}
-          </Text>
-          <View style={[styles.tabBar, { borderColor: colors.border }] as any}>
-            {listTabs.map((tab) => {
-              const active = listTab === tab.key;
-              return (
-                <TouchableOpacity
-                  key={tab.key}
-                  variant="transparent"
-                  onPress={() => setListTab(tab.key)}
-                  style={[
-                    styles.tabButton,
-                    {
-                      backgroundColor: active ? colors.primary : 'transparent',
-                      borderColor: colors.border,
-                    },
-                  ] as any}
-                >
-                  <Text style={{ color: active ? colors.onPrimary : colors.text ,textAlign:'center'}}>
-                    {tab.label}
-                  </Text>
-                </TouchableOpacity>
-              );
-            })}
-          </View>
-          <View style={{ gap: 12 }}>
-            {listItems.length === 0 ? (
-              <Card padding="medium">
-                <Text variant="secondary">{listMeta.emptyText}</Text>
-              </Card>
-            ) : (
-              listItems.map((item) => {
-                const overdueDays = calculateOverdueDays(item.due_date);
-                const remainingDays = calculateDaysUntil(item.due_date);
-                const extraInfo = (listTab === 'upcoming_expense' || listTab === 'upcoming_income')
-                  ? (typeof remainingDays === 'number' && remainingDays > 0
-                      ? `${t('screens.home.remaining_days') || 'Kalan'}: ${remainingDays} ${t('common.time.days') || 'gün'}`
-                      : null)
-                  : (typeof overdueDays === 'number' && overdueDays > 0
-                      ? `${t('screens.home.overdue_days') || 'Gecikme'}: ${overdueDays} ${t('common.time.days') || 'gün'}`
-                      : null);
-                return (
-                  <Card key={item.id} padding="medium">
-                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
-                      <View
-                        style={{
-                          width: 48,
-                          height: 48,
-                          borderRadius: 24,
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          backgroundColor: `${listMeta.color}20` as any,
-                        }}
-                      >
-                        <Text style={{ color: listMeta.color }}>{listMeta.icon}</Text>
-                      </View>
-                      <View style={{ flex: 1 }}>
-                        <Text variant="primary" weight="medium">{item.title || listMeta.fallbackTitle}</Text>
-                        <Text variant="secondary" size="small">{`${listMeta.secondaryLabel}: ${item.due_date}`}</Text>
-                        {extraInfo && (
-                          <Text variant="secondary" size="small">{extraInfo}</Text>
-                        )}
-                      </View>
-                      <View style={{ alignItems: 'flex-end', gap: 8 }}>
-                        <Text variant="primary" weight="semibold">{formatCurrency(item.amount)}</Text>
-                        <TouchableOpacity
-                          style={{
-                            backgroundColor: listMeta.color,
-                            paddingHorizontal: 12,
-                            paddingVertical: 6,
-                            borderRadius: 16,
-                            minWidth: 60,
-                            alignItems: 'center',
-                          }}
-                          onPress={() => handlePaymentAction(item.id, item.type as 'expense' | 'income')}
-                        >
-                          <Text style={{ color: 'white', fontSize: 12, fontWeight: '600' }}>
-                            {item.type === 'expense' 
-                              ? (t('screens.home.pay_button') || 'Öde')
-                              : (t('screens.home.receive_button') || 'Al')
-                            }
-                          </Text>
-                        </TouchableOpacity>
-                      </View>
-                    </View>
-                  </Card>
-                );
-              })
-            )}
-          </View>
-        </View>
+        <PaymentStatusSection
+          upcomings={upcomings}
+          overdueExpenses={overdueExpenses}
+          overdueIncomes={overdueIncomes}
+          listTab={listTab}
+          onTabChange={setListTab}
+          onPaymentAction={handlePaymentAction}
+          formatCurrency={formatCurrency}
+          calculateOverdueDays={calculateOverdueDays}
+          calculateDaysUntil={calculateDaysUntil}
+        />
       </RNScrollView>
     </Layout>
   );
@@ -573,25 +388,6 @@ const HomeScreen: React.FC = () => {
 
 const styles = StyleSheet.create({
   container: { flex: 1, padding: 16 },
-  grid: { flexDirection: 'row', flexWrap: 'wrap', gap: 16 },
-  statCard: { width: '47%' },
-  section: { marginTop: 24, gap: 16 },
-  sectionTitle: { marginBottom: 4 },
-  chartCard: { gap: 12 },
-  chartHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
-  barsRow: { flexDirection: 'row', alignItems: 'flex-end' },
-  labelsRow: { flexDirection: 'row', justifyContent: 'space-between', marginTop: 8 },
-  legendRow: { flexDirection: 'row', justifyContent: 'space-between', marginTop: 8 },
-  legendItem: { flexDirection: 'row', alignItems: 'center', gap: 6 },
-  legendDot: { width: 12, height: 12, borderRadius: 6 },
-  tabBar: { flexDirection: 'row', borderWidth: 1, borderRadius: 999, padding: 4, gap: 4 },
-  tabButton: { flex: 1, paddingVertical: 8, borderRadius: 999, alignItems: 'center', justifyContent: 'center', borderWidth: 1 },
-  yearRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 8 },
-  walletCard: { gap: 12 },
-  walletHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
-  walletRow: { flexDirection: 'row', alignItems: 'center' },
-  walletInfoRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
-  walletBar: { height: 12, borderRadius: 8, backgroundColor: '#E5E7EB', overflow: 'hidden' },
 });
 
 export default HomeScreen;

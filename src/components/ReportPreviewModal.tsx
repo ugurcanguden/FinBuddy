@@ -21,7 +21,7 @@ const ReportPreviewModal: React.FC<ReportPreviewModalProps> = ({ visible, report
   console.log('ReportPreviewModal render - visible:', visible, 'report:', report);
   const { colors } = useTheme();
   const { t } = useLocale();
-  const { categories, getDisplayName } = useCategories();
+  const { categories, getDisplayName: _getDisplayName } = useCategories();
   const { currency } = useCurrency();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -75,7 +75,7 @@ const ReportPreviewModal: React.FC<ReportPreviewModalProps> = ({ visible, report
         console.log('Fetching data with fact:', fact, 'dimension:', config?.dimension, 'measure:', config?.measure);
 
         // Filtreleri hazırla
-        const baseFilters = { ...(config?.filters ?? {}) } as Record<string, any>;
+        const baseFilters = { ...(config?.filters ?? {}) } as Record<string, unknown>;
         const effectiveFilters = {
           ...baseFilters,
         };
@@ -110,24 +110,45 @@ const ReportPreviewModal: React.FC<ReportPreviewModalProps> = ({ visible, report
   const resolveLabel = useCallback(
     (key: string): string => {
       if (!config) return key;
+      
       if (config.dimension === 'category') {
         const category = categories.find((c) => c.id === key);
-        if (category) return getDisplayName(category, t);
+        if (category) {
+          // Eğer varsayılan kategori ise dil karşılığını dene
+          if (category.is_default) {
+            const translationKey = `screens.categories.default.${category.id.replace('cat_', '')}`;
+            const translatedName = t(translationKey);
+            
+            // Eğer çeviri varsa ve gerçek bir çeviri ise (anahtar değil) kullan
+            if (translatedName && translatedName !== translationKey) {
+              return translatedName;
+            } else {
+              // Çeviri yoksa kategori adını kullan
+              return category.name_key || key;
+            }
+          } else {
+            // Kullanıcı oluşturduğu kategori ise direkt adını kullan (çeviri yapma)
+            return category.name_key || key;
+          }
+        }
         return key;
       }
+      
       if (config.dimension === 'type') {
         if (key === 'expense') return t('screens.report_builder.type_expense') || 'Expense';
         if (key === 'income') return t('screens.report_builder.type_income') || 'Income';
         if (key === 'receivable') return t('screens.report_builder.type_receivable') || 'Receivable';
       }
+      
       if (config.dimension === 'status') {
         if (key === 'pending') return t('screens.report_builder.status_pending') || 'Pending';
         if (key === 'paid') return t('screens.report_builder.status_paid') || 'Paid';
         if (key === 'received') return t('screens.report_builder.status_received') || 'Received';
       }
+      
       return key;
     },
-    [categories, config, getDisplayName, t]
+    [categories, config, t]
   );
 
   const displayRows = useMemo(
@@ -443,21 +464,21 @@ const ReportPreviewModal: React.FC<ReportPreviewModalProps> = ({ visible, report
                         </RNView>
                         {linePoints.length > 0 && (
                           <RNView style={[styles.lineChartLabels, { width: chartContentWidth || undefined }]}>
-                            {linePoints.map((point) => (
-                              <Text
-                                key={`label-${point.key}`}
-                                variant="secondary"
-                                size="small"
-                                style={{
-                                  position: 'absolute',
-                                  left: point.x - 40,
-                                  width: 80,
-                                  textAlign: 'center',
-                                }}
-                              >
-                                {point.key}
-                              </Text>
-                            ))}
+                              {linePoints.map((point) => (
+                                <Text
+                                  key={`label-${point.key}`}
+                                  variant="secondary"
+                                  size="small"
+                                  style={{
+                                    position: 'absolute',
+                                    left: point.x - 40,
+                                    width: 80,
+                                    textAlign: 'center',
+                                  }}
+                                >
+                                  {point.label}
+                                </Text>
+                              ))}
                           </RNView>
                         )}
                       </RNView>

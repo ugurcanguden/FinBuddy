@@ -10,6 +10,7 @@
   "income": "Gelir",
   "expense": "Gider",
   "create_report": "Rapor Oluştur",
+  "saved_reports": "Kayıtlı Raporlar",
   "saved_reports_title": "Kaydedilen Raporlar",
   "saved_reports_empty": "Henüz kaydedilmiş rapor yok.",
   "saved_reports_view": "Aç",

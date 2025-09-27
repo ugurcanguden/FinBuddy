@@ -3,8 +3,6 @@ import { useState, useEffect, useCallback } from 'react';
 import { storageService } from '@/services';
 import { STORAGE_KEYS } from '@/constants';
 import type {
-  PaymentReminderChannel,
-  PaymentReminderChannelsSettings,
   PaymentRemindersSettings,
 } from '@/types';
 
@@ -15,7 +13,7 @@ const defaultSettings: PaymentRemindersSettings = {
   channels: {
     myPayments: true,
     upcomingPayments: true,
-  },
+  } as any,
 };
 
 export const usePaymentReminders = () => {
@@ -34,7 +32,7 @@ export const usePaymentReminders = () => {
           ...savedSettings,
           channels: {
             ...defaultSettings.channels,
-            ...(savedSettings.channels ?? {}),
+            ...((savedSettings as any).channels ?? {}),
           },
         });
       } else {

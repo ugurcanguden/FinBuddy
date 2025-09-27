@@ -8,10 +8,14 @@ Kullanıcıların kişisel bütçe ve ödemelerini düzenli yönetmesini sağlam
 ## Hedefler (Goals)
 - [x] Kullanıcı kategoriler oluşturup düzenleyebilir (varsayılan + özel)
 - [x] Kategoriler gelen ve giden ödemeler için ayrı tiplere sahip
-- [ ] Tek seferlik ve taksitli gider/gelir girişleri yapılabilir
-- [ ] Vade günü yaklaşan ödemeler için hatırlatma üretilebilir; "N gün kala" kullanıcı tarafından ayarlanabilir (varsayılan 1)
-- [ ] Ödeme/Alacaklar "ödendi/alındı" olarak işaretlenebilir (check)
-- [ ] Bildirimler kullanıcı ayarlarına göre yönetilir (açık/kapalı)
+- [x] Tek seferlik ve taksitli gider/gelir girişleri yapılabilir
+- [x] Vade günü yaklaşan ödemeler için hatırlatma üretilebilir; "N gün kala" kullanıcı tarafından ayarlanabilir (varsayılan 1)
+- [x] Ödeme/Alacaklar "ödendi/alındı" olarak işaretlenebilir (check)
+- [x] Bildirimler kullanıcı ayarlarına göre yönetilir (açık/kapalı)
+- [x] İlk kurulumda dil ve para birimi seçimi
+- [x] Modern UI/UX tasarımı
+- [x] Çoklu dil desteği (6 dil)
+- [x] Tema sistemi (6 tema modu)
 
 ## Kapsam (In-scope)
 - Kategori yönetimi (varsayılanlar + kullanıcı kategorileri)
@@ -20,6 +24,11 @@ Kullanıcıların kişisel bütçe ve ödemelerini düzenli yönetmesini sağlam
 - Taksit planı (örn. 10 ay, her ayın 1'i)
 - Hatırlatma mekanizması (due date'e göre; N gün kala ayarlanabilir)
 - Bildirim tercihleri (uygulama içi/yerel bildirim)
+- **İlk Kurulum**: Dil ve para birimi seçimi
+- **Modern UI**: 6 tema modu, animasyonlar, responsive tasarım
+- **Çoklu Dil**: 6 dil desteği (TR, EN, DE, FR, IT, ES)
+- **Raporlama**: Grafik ve analiz araçları
+- **Dashboard**: Finansal özet ve istatistikler
 
 ## Kapsam Dışı (Out-of-scope)
 - Banka entegrasyonları, otomatik hesap eşleştirme

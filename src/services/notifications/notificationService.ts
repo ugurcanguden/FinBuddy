@@ -516,12 +516,12 @@ export class NotificationService {
 
   private static getReminderTemplate(language: string, channel: PaymentReminderChannel): PaymentReminderTemplate {
     const templates = PAYMENT_REMINDER_TEMPLATES[language] ?? PAYMENT_REMINDER_TEMPLATES[DEFAULT_TEMPLATE_LANGUAGE];
-    return templates[channel] ?? PAYMENT_REMINDER_TEMPLATES[DEFAULT_TEMPLATE_LANGUAGE][channel];
+    return templates?.[channel] ?? PAYMENT_REMINDER_TEMPLATES[DEFAULT_TEMPLATE_LANGUAGE]?.[channel] ?? { dayBeforeTitle: '', dayOfTitle: '', body: '' };
   }
 
   private static getFallbackPaymentTitle(language: string, channel: PaymentReminderChannel): string {
     const titles = PAYMENT_TITLE_FALLBACKS[language] ?? PAYMENT_TITLE_FALLBACKS[DEFAULT_TEMPLATE_LANGUAGE];
-    return titles[channel] ?? PAYMENT_TITLE_FALLBACKS[DEFAULT_TEMPLATE_LANGUAGE][channel];
+    return titles?.[channel] ?? PAYMENT_TITLE_FALLBACKS[DEFAULT_TEMPLATE_LANGUAGE]?.[channel] ?? '';
   }
 
   private static async scheduleCalendarNotification(
@@ -531,7 +531,10 @@ export class NotificationService {
     try {
       return await Notifications.scheduleNotificationAsync({
         content,
-        trigger: triggerDate,
+        trigger: { 
+          type: SchedulableTriggerInputTypes.DATE,
+          date: triggerDate 
+        },
       });
     } catch (error) {
       console.error('Error scheduling calendar notification:', error);

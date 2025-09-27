@@ -135,7 +135,6 @@ const RecentTransactions: React.FC<RecentTransactionsProps> = ({
 
   const renderTransaction = (transaction: Transaction, index: number) => {
     const isIncome = transaction.type === 'income';
-    const amountColor = isIncome ? colors.success : colors.danger;
     const iconColor = isIncome ? colors.success : colors.danger;
 
     return (

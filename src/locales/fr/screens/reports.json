@@ -1,0 +1,19 @@
+{
+  "monthly_summary": "Résumé Mensuel",
+  "expense_total": "Dépense Totale",
+  "expense_paid": "Payé",
+  "expense_pending": "En Attente",
+  "income_total": "Revenu Total",
+  "category_distribution": "Distribution par Catégorie",
+  "month": "Mois",
+  "cash_flow": "Flux de Trésorerie",
+  "income": "Revenu",
+  "expense": "Dépense",
+  "create_report": "Créer Rapport",
+  "saved_reports": "Rapports Sauvegardés",
+  "saved_reports_title": "Rapports Sauvegardés",
+  "saved_reports_empty": "Aucun rapport sauvegardé pour le moment.",
+  "saved_reports_view": "Ouvrir",
+  "saved_reports_preview": "Aperçu",
+  "saved_reports_delete": "Supprimer"
+}

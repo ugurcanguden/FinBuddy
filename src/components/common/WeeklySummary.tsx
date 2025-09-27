@@ -8,7 +8,8 @@ import View from './View';
 import ProgressBar from './ProgressBar';
 
 export interface WeeklyData {
-  day: string;
+  day?: string;
+  month?: string;
   income: number;
   expense: number;
   net: number;
@@ -105,10 +106,11 @@ const WeeklySummary: React.FC<WeeklySummaryProps> = ({
     const incomeHeight = getBarHeight(dayData.income);
     const expenseHeight = getBarHeight(dayData.expense);
     const isPositive = dayData.net >= 0;
+    const label = dayData.day || dayData.month || '';
 
     return (
       <Animated.View
-        key={dayData.day}
+        key={label}
         style={[
           {
             alignItems: 'center',
@@ -161,9 +163,9 @@ const WeeklySummary: React.FC<WeeklySummaryProps> = ({
           />
         </View>
 
-        {/* Day Label */}
+        {/* Day/Month Label */}
         <Text variant="secondary" size="small" weight="bold">
-          {dayData.day}
+          {label}
         </Text>
 
         {/* Net Amount */}
@@ -201,10 +203,13 @@ const WeeklySummary: React.FC<WeeklySummaryProps> = ({
         {/* Header */}
         <View style={{ marginBottom: 16 }}>
           <Text variant="primary" size="large" weight="bold" style={{ marginBottom: 4 }}>
-            Haftalık Özet
+            {data[0]?.month ? 'Aylık Özet' : 'Haftalık Özet'}
           </Text>
           <Text variant="secondary" size="small">
-            Bu hafta {data.length} günlük performans
+            {data[0]?.month 
+              ? `Son ${data.length} aylık performans`
+              : `Bu hafta ${data.length} günlük performans`
+            }
           </Text>
         </View>
 
@@ -236,7 +241,7 @@ const WeeklySummary: React.FC<WeeklySummaryProps> = ({
           </View>
         </View>
 
-        {/* Weekly Chart */}
+        {/* Weekly/Monthly Chart */}
         <View style={{ marginBottom: 16 }}>
           <View style={{ flexDirection: 'row', justifyContent: 'space-around', alignItems: 'flex-end' }}>
             {data.map((dayData, index) => renderDayBar(dayData, index))}
@@ -248,7 +253,7 @@ const WeeklySummary: React.FC<WeeklySummaryProps> = ({
           <View style={{ gap: 12 }}>
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
               <Text variant="secondary" size="small" weight="medium">
-                Haftalık Hedef İlerlemesi
+                {data[0]?.month ? 'Aylık Hedef İlerlemesi' : 'Haftalık Hedef İlerlemesi'}
               </Text>
               <Text variant="secondary" size="small">
                 {Math.round((weeklyTotals.totalIncome / Math.max(weeklyTotals.totalExpense, 1)) * 100)}%

@@ -65,5 +65,8 @@
   "income_success": "Income marked successfully!",
   "action_success": "Success",
   "action_error": "Error",
-  "action_error_message": "An error occurred during the operation."
+  "action_error_message": "An error occurred during the operation.",
+  "received": "Received",
+  "pending": "Pending",
+  "overdue": "Overdue"
 }

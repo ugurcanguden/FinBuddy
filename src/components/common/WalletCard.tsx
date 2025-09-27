@@ -7,7 +7,7 @@ import Text from './Text';
 import View from './View';
 import ProgressBar from './ProgressBar';
 
-const { width: screenWidth } = Dimensions.get('window');
+const { width: _screenWidth } = Dimensions.get('window');
 
 export interface WalletCardProps {
   title: string;

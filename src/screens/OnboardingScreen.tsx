@@ -1,6 +1,6 @@
 // Onboarding Screen - İlk açılış tanıtım ekranı
 import React, { useState } from 'react';
-import { StyleSheet, Alert } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { Layout, View, Text, TouchableOpacity } from '@/components';
 import { useTheme } from '@/contexts';
 import { notificationService } from '@/services';

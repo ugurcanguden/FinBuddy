@@ -1,16 +1,20 @@
 // ReportsHubScreen - Modern rapor hub'ı
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Alert, StyleSheet } from 'react-native';
-import { Layout, PageHeader, ScrollView, View, Text, Card, Dropdown, TouchableOpacity, ReportPreviewModal, Button } from '@/components';
-import { StatCard, BarChart, WeeklySummary } from '@/components/common';
-import { useLocale } from '@/hooks';
-import { useTheme, useNavigation } from '@/contexts';
-import { paymentService, reportsService, type ReportDef, type ReportConfig } from '@/services';
+import { Layout, PageHeader, ScrollView, View, Text, Dropdown, ReportPreviewModal, Button } from '@/components';
+import { useLocale, useCategories } from '@/hooks';
+import { useNavigation } from '@/contexts';
+import { paymentService, reportsService, databaseService, type ReportDef } from '@/services';
+import { 
+  MonthlySummarySection, 
+  CategoryDistributionSection, 
+  SavedReportsSection 
+} from './components';
 
 const ReportsHubScreen: React.FC = () => {
   const { t } = useLocale();
-  const { colors } = useTheme();
   const { navigateTo } = useNavigation();
+  const { getCategoriesByType } = useCategories();
 
   const [ym, setYm] = useState<string>(() => new Date().toISOString().slice(0, 7));
   const [summary, setSummary] = useState<{ expense: { total: number; paid: number; pending: number }; income: { total: number; paid: number; pending: number } } | null>(null);
@@ -19,19 +23,51 @@ const ReportsHubScreen: React.FC = () => {
   const [savedLoading, setSavedLoading] = useState<boolean>(true);
   const [previewReport, setPreviewReport] = useState<ReportDef | null>(null);
   const [previewVisible, setPreviewVisible] = useState(false);
+  const [dbReady, setDbReady] = useState<boolean>(false);
+  const [expenseCategories, setExpenseCategories] = useState<Array<{ id: string; name: string; custom_name?: string; is_default: boolean }>>([]);
+
+  // Veritabanı hazır olana kadar bekle
+  useEffect(() => {
+    const checkDbReady = async () => {
+      try {
+        // Basit bir test sorgusu ile veritabanının hazır olup olmadığını kontrol et
+        await databaseService.getAll('SELECT 1');
+        setDbReady(true);
+      } catch (error) {
+        console.log('Database not ready yet, retrying...');
+        setTimeout(checkDbReady, 100);
+      }
+    };
+    checkDbReady();
+  }, []);
 
   useEffect(() => {
+    if (!dbReady) return;
+    
     (async () => {
-      const [sum, cats] = await Promise.all([
-        paymentService.getDashboardSummary(ym),
-        paymentService.getTotalsByCategory({ ym, type: 'expense' }),
-      ]);
-      setSummary(sum);
-      setByCat(cats);
+      try {
+        const [sum, cats, expenseCats] = await Promise.all([
+          paymentService.getDashboardSummary(ym),
+          paymentService.getTotalsByCategory({ ym, type: 'expense' }),
+          getCategoriesByType('expense'),
+        ]);
+        setSummary(sum);
+        setByCat(cats);
+        setExpenseCategories(expenseCats?.map((cat:any) => ({
+          id: cat.id,
+          name: cat.name || '',
+          custom_name: cat.custom_name || undefined,
+          is_default: cat.is_default
+        })));
+      } catch (error) {
+        console.error('Failed to load dashboard data:', error);
+      }
     })();
-  }, [ym]);
+  }, [ym, dbReady, getCategoriesByType]);
 
   const loadSavedReports = useCallback(async () => {
+    if (!dbReady) return;
+    
     try {
       setSavedLoading(true);
       const list = await reportsService.listReports();
@@ -41,7 +77,7 @@ const ReportsHubScreen: React.FC = () => {
     } finally {
       setSavedLoading(false);
     }
-  }, []);
+  }, [dbReady]);
 
   useEffect(() => {
     loadSavedReports();
@@ -56,38 +92,7 @@ const ReportsHubScreen: React.FC = () => {
     }).format(value);
   }, []);
 
-  const factText = useCallback((fact: ReportConfig['fact']) => {
-    const map: Record<string, string> = {
-      payments_expense: t('screens.report_builder.fact_payments_expense') || 'Giderler',
-      payments_income: t('screens.report_builder.fact_payments_income') || 'Gelirler',
-    };
-    return map[fact] ?? String(fact);
-  }, [t]);
-
-  const dimensionText = useCallback((dim: ReportConfig['dimension']) => {
-    const map = {
-      month: t('screens.report_builder.dimension_month') || 'Ay',
-      category: t('screens.report_builder.dimension_category') || 'Kategori',
-      status: t('screens.report_builder.dimension_status') || 'Durum',
-      type: t('screens.report_builder.dimension_type') || 'Tip',
-    };
-    return map[dim] ?? String(dim);
-  }, [t]);
-
-  const measureText = useCallback((msr: ReportConfig['measure']) => {
-    const map = {
-      sum: t('screens.report_builder.measure_sum') || 'Toplam',
-      count: t('screens.report_builder.measure_count') || 'Sayı',
-      avg: t('screens.report_builder.measure_avg') || 'Ortalama',
-    };
-    return map[msr] ?? String(msr);
-  }, [t]);
-
-  const chartText = useCallback((chart?: ReportConfig['chart']) => {
-    if (chart === 'bar') return t('screens.report_builder.chart_bar') || 'Bar';
-    if (chart === 'line') return t('screens.report_builder.chart_line') || 'Çizgi';
-    return t('screens.report_builder.chart_table') || 'Tablo';
-  }, [t]);
+  // Component'lere taşındı - artık burada yok
 
   const handleOpenSaved = useCallback((report: ReportDef) => {
     navigateTo('reportBuilder', { config: report.config, reportId: report.id, name: report.name });
@@ -146,45 +151,29 @@ const ReportsHubScreen: React.FC = () => {
     return arr.map(v => ({ value: v, label: v, nativeName: '', flag: '' }));
   }, []);
 
-  // Haftalık veri hazırla
-  const weeklyData = useMemo(() => {
-    if (!summary) return [];
-    
-    // Basit haftalık veri simülasyonu
-    const weeks = ['Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt', 'Paz'];
-    return weeks.map((day) => {
-      const income = Math.floor(summary.income.total / 7) + (Math.random() - 0.5) * 1000;
-      const expense = Math.floor(summary.expense.total / 7) + (Math.random() - 0.5) * 1000;
-      return {
-        day,
-        income,
-        expense,
-        net: income - expense,
-      };
-    });
-  }, [summary]);
+  // Component'lere taşındı - artık burada yok
 
-  // Kategori grafik verisi
-  const categoryChartData = useMemo(() => {
-    return byCat.slice(0, 6).map((item) => {
-      // Kategori adını basit şekilde göster
-      const categoryName = item.category_id.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
-      return {
-        label: categoryName.slice(0, 8),
-        value: item.total,
-        color: colors.primary,
-      };
-    });
-  }, [byCat, colors.primary]);
+  // Veritabanı hazır değilse loading göster
+  if (!dbReady) {
+    return (
+      <Layout headerComponent={<PageHeader title={t('navigation.tabs.reports')} /> }>
+        <View style={styles.loadingContainer}>
+          <Text variant="secondary" size="medium">
+            {t('common.messages.loading')}
+          </Text>
+        </View>
+      </Layout>
+    );
+  }
 
   return (
-    <Layout headerComponent={<PageHeader title={t('navigation.tabs.reports') || 'Raporlar'} /> }>
+    <Layout headerComponent={<PageHeader title={t('navigation.tabs.reports')} /> }>
       <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
         {/* Header Actions */}
         <View style={styles.headerActions}>
           <View style={styles.monthPicker}>
             <Text variant="secondary" size="small" weight="medium" style={styles.monthLabel}>
-              {t('screens.reports.month') || 'Ay'}
+              {t('screens.reports.month')}
             </Text>
             <Dropdown 
               options={monthOptions} 
@@ -199,172 +188,32 @@ const ReportsHubScreen: React.FC = () => {
             size="medium"
             onPress={() => navigateTo('reportBuilder')}
             icon="➕"
-            title={t('screens.reports.create_report') || 'Rapor Oluştur'}
+            title={t('screens.reports.create_report')}
             style={styles.createButton}
           />
         </View>
 
-        {/* Aylık İstatistikler */}
-        <View style={styles.section}>
-          <Text variant="primary" size="large" weight="bold" style={styles.sectionTitle}>
-            {ym} {t('screens.reports.monthly_summary') || 'Aylık Özet'}
-          </Text>
-          
-          {summary ? (
-            <View style={styles.statsGrid}>
-              <StatCard
-                title="Toplam Gider"
-                value={formatCurrencyValue(summary.expense.total)}
-                subtitle="bu ay"
-                icon="💸"
-                variant="danger"
-                animated={true}
-                style={styles.statCard}
-              />
-              
-              <StatCard
-                title={t('screens.reports_hub.paid') || 'Ödenen'}
-                value={formatCurrencyValue(summary.expense.paid)}
-                subtitle={t('screens.reports_hub.paid_subtitle') || 'gider'}
-                icon="✅"
-                variant="success"
-                animated={true}
-                style={styles.statCard}
-              />
-              
-              <StatCard
-                title="Bekleyen"
-                value={formatCurrencyValue(summary.expense.pending)}
-                subtitle={t('screens.reports_hub.paid_subtitle') || 'ödeme'}
-                icon="⏳"
-                variant="warning"
-                animated={true}
-                style={styles.statCard}
-              />
-              
-              <StatCard
-                title="Toplam Gelir"
-                value={formatCurrencyValue(summary.income.total)}
-                subtitle="bu ay"
-                icon="💰"
-                variant="success"
-                animated={true}
-                style={styles.statCard}
-              />
-            </View>
-          ) : (
-            <Card variant="default" style={styles.loadingCard}>
-              <Text variant="secondary" size="medium" style={styles.loadingText}>
-                {t('common.messages.loading') || 'Yükleniyor...'}
-              </Text>
-            </Card>
-          )}
-        </View>
+        {/* Aylık Özet */}
+        <MonthlySummarySection
+          summary={summary}
+          formatCurrencyValue={formatCurrencyValue}
+        />
 
-        {/* Haftalık Özet */}
-        {summary && (
-          <View style={styles.section}>
-            <Text variant="primary" size="large" weight="bold" style={styles.sectionTitle}>
-              Haftalık Özet
-            </Text>
-            <WeeklySummary
-              data={weeklyData}
-              animated={true}
-              showProgress={true}
-            />
-          </View>
-        )}
-
-        {/* Kategori Dağılımı Grafiği */}
-        {byCat.length > 0 && (
-          <View style={styles.section}>
-            <Text variant="primary" size="large" weight="bold" style={styles.sectionTitle}>
-              {t('screens.reports.category_distribution') || 'Kategori Dağılımı'}
-            </Text>
-            <BarChart
-              title={t('screens.reports_hub.category_distribution') || 'Kategori Dağılımı'}
-              data={categoryChartData}
-              height={200}
-              barWidth={40}
-              barSpacing={8}
-              animated={true}
-              showValues={true}
-              showLabels={true}
-              variant="gradient"
-              style={styles.chartCard}
-            />
-          </View>
-        )}
+        {/* Kategori Dağılımı */}
+        <CategoryDistributionSection
+          byCat={byCat}
+          expenseCategories={expenseCategories}
+          formatCurrencyValue={formatCurrencyValue}
+        />
 
         {/* Kayıtlı Raporlar */}
-        <View style={styles.section}>
-          <Text variant="primary" size="large" weight="bold" style={styles.sectionTitle}>
-            {t('screens.reports.saved_reports') || 'Kayıtlı Raporlar'}
-          </Text>
-          
-          {savedLoading ? (
-            <Card variant="default" style={styles.loadingCard}>
-              <Text variant="secondary" size="medium" style={styles.loadingText}>
-                {t('common.messages.loading') || 'Yükleniyor...'}
-              </Text>
-            </Card>
-          ) : savedReports.length > 0 ? (
-            <View style={styles.reportsGrid}>
-              {savedReports.map((report) => (
-                <Card key={report.id} variant="elevated" style={styles.reportCard}>
-                  <View style={styles.reportHeader}>
-                    <Text variant="primary" size="medium" weight="bold" style={styles.reportTitle}>
-                      {report.name}
-                    </Text>
-                    <View style={styles.reportActions}>
-                      <TouchableOpacity 
-                        onPress={() => openPreview(report)} 
-                        style={styles.actionButton}
-                      >
-                        <Text variant="primary" size="medium">👁️</Text>
-                      </TouchableOpacity>
-                      <TouchableOpacity 
-                        onPress={() => handleOpenSaved(report)} 
-                        style={styles.actionButton}
-                      >
-                        <Text variant="primary" size="medium">✏️</Text>
-                      </TouchableOpacity>
-                      <TouchableOpacity 
-                        onPress={() => handleDeleteSaved(report)} 
-                        style={styles.actionButton}
-                      >
-                        <Text variant="error" size="medium">🗑️</Text>
-                      </TouchableOpacity>
-                    </View>
-                  </View>
-                  
-                  <Text variant="secondary" size="small" style={styles.reportDescription}>
-                    {factText(report.config.fact)} • {dimensionText(report.config.dimension)} • {measureText(report.config.measure)}
-                  </Text>
-                  
-                  <View style={styles.reportChart}>
-                    <Text variant="secondary" size="small" weight="medium">
-                      📊 {chartText(report.config.chart)}
-                    </Text>
-                  </View>
-                </Card>
-              ))}
-            </View>
-          ) : (
-            <Card variant="outlined" style={styles.emptyCard}>
-              <Text variant="secondary" size="medium" style={styles.emptyText}>
-                {t('screens.reports.no_saved_reports') || 'Kayıtlı rapor yok'}
-              </Text>
-              <Button
-                variant="outline"
-                size="small"
-                onPress={() => navigateTo('reportBuilder')}
-                title={t('screens.reports_hub.first_report') || 'İlk Raporınızı Oluşturun'}
-                style={styles.emptyButton}
-              />
-            </Card>
-          )}
-        </View>
+        <SavedReportsSection
+          savedReports={savedReports}
+          savedLoading={savedLoading}
+          onOpenSaved={handleOpenSaved}
+          onOpenPreview={openPreview}
+          onDeleteSaved={handleDeleteSaved}
+        />
       </ScrollView>
 
       <ReportPreviewModal
@@ -380,6 +229,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 24,
   },
   headerActions: {
     flexDirection: 'row',
@@ -399,74 +254,6 @@ const styles = StyleSheet.create({
   },
   createButton: {
     alignSelf: 'flex-end',
-  },
-  section: {
-    marginBottom: 32,
-  },
-  sectionTitle: {
-    marginBottom: 16,
-  },
-  statsGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
-    gap: 12,
-  },
-  statCard: {
-    width: '48%',
-  },
-  loadingCard: {
-    padding: 24,
-    alignItems: 'center',
-  },
-  loadingText: {
-    textAlign: 'center',
-  },
-  chartCard: {
-    marginTop: 8,
-  },
-  reportsGrid: {
-    gap: 12,
-  },
-  reportCard: {
-    padding: 16,
-  },
-  reportHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
-    marginBottom: 8,
-  },
-  reportTitle: {
-    flex: 1,
-    marginRight: 12,
-  },
-  reportActions: {
-    flexDirection: 'row',
-    gap: 8,
-  },
-  actionButton: {
-    padding: 8,
-    borderRadius: 8,
-    backgroundColor: 'rgba(0, 0, 0, 0.05)',
-  },
-  reportDescription: {
-    marginBottom: 8,
-  },
-  reportChart: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  emptyCard: {
-    padding: 32,
-    alignItems: 'center',
-  },
-  emptyText: {
-    textAlign: 'center',
-    marginBottom: 16,
-  },
-  emptyButton: {
-    alignSelf: 'center',
   },
 });
 

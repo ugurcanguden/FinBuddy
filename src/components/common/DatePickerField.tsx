@@ -55,7 +55,7 @@ const DatePickerField: React.FC<DatePickerFieldProps> = ({ value, onChange, plac
           activeOpacity={1}
         >
           <View variant="surface" style={[styles.sheet, { borderColor: colors.border }] as any}>
-            <DatePicker value={temp} onChange={setTemp as any} />
+            <DatePicker value={temp || ''} onChange={setTemp as any} />
             <View variant="transparent" style={styles.actions}>
               <TouchableOpacity
                 variant="transparent"

@@ -4,5 +4,12 @@
   "paid_subtitle": "paiement",
   "category_distribution": "Distribution par Catégorie",
   "first_report": "Créez Votre Premier Rapport",
-  "first_report_message": "Aucun rapport pour le moment. Commencez par créer votre premier rapport."
+  "first_report_message": "Aucun rapport pour le moment. Commencez par créer votre premier rapport.",
+  "no_weekly_data": "Aucune donnée hebdomadaire disponible pour le moment",
+  "total_expense": "Dépense Totale",
+  "pending": "En Attente",
+  "total_income": "Revenu Total",
+  "this_month": "ce mois",
+  "weekly_summary": "Résumé Hebdomadaire",
+  "no_saved_reports": "Aucun rapport sauvegardé"
 }

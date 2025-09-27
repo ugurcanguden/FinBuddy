@@ -9,38 +9,91 @@ Bu doküman, uygulamanın katmanlarını, klasör yapılanmasını ve akışlar�
 - Data/Services: `services/` altında API, storage, adapterlar.
 - Utilities/Theme/Types: Yardımcılar, tema token’ları ve paylaşılan tipler.
 
-## Önerilen Dizin Yapısı
+## Mevcut Dizin Yapısı
 ```
 src/
   App.tsx
-  navigation/
-    AppNavigator.tsx
-    types.ts
-  screens/
-    CategoriesScreen.tsx
-    EditCategoryScreen.tsx
   components/
-    Button/
-      Button.tsx
-      Button.styles.ts
-      index.ts
+    AppNavigator.tsx
+    common/
+      Button.tsx, Card.tsx, Text.tsx, View.tsx
+      BarChart.tsx, LineChart.tsx, GroupedColumnChart.tsx
+      WalletCard.tsx, StatCard.tsx, QuickActions.tsx
+      RecentTransactions.tsx, WeeklySummary.tsx
+      ProgressBar.tsx, Badge.tsx, Layout.tsx
+      PageHeader.tsx, BottomTabBar.tsx
+      Dropdown.tsx, RadioButton.tsx, Switch.tsx
+      DatePicker.tsx, TimePicker.tsx
+      FormSection.tsx, KeyboardAwareScrollView.tsx
+    forms/
+      CategoryForm.tsx
+    ReportPreviewModal.tsx
+  screens/
+    home/
+      HomeScreen.tsx
+      components/
+        WalletSection.tsx, StatsSection.tsx
+        IncomeReportSection.tsx, ExpenseReportSection.tsx
+        PaymentStatusSection.tsx
+    categories/
+      CategoriesScreen.tsx, AddCategoryScreen.tsx, EditCategoryScreen.tsx
+      components/
+        CategoryListSection.tsx, CategoryCard.tsx, AddCategoryButton.tsx
+    payments/
+      PaymentsScreen.tsx, IncomesScreen.tsx, AddPaymentScreen.tsx
+      AddEntryScreen.tsx, PaymentDetailsScreen.tsx, PaymentsHubScreen.tsx
+      components/
+        PaymentStatsSection.tsx, QuickActionsSection.tsx
+        PaymentListSection.tsx, IncomeStatsSection.tsx
+        IncomeQuickActionsSection.tsx, IncomeListSection.tsx
+    reports/
+      ReportsHubScreen.tsx, ReportBuilderScreen.tsx
+      components/
+        MonthlySummarySection.tsx, CategoryDistributionSection.tsx
+        SavedReportsSection.tsx
+    settings/
+      SettingsScreen.tsx
+    profile/
+      ProfileScreen.tsx
+    InitialSetupScreen.tsx
+    OnboardingScreen.tsx
+    UIDemoScreen.tsx
+  contexts/
+    NavigationContext.tsx, ThemeContext.tsx, CurrencyContext.tsx
   hooks/
-    useCategories.ts
+    useCategories.ts, useLocale.ts, useStorage.ts
+    usePaymentReminders.ts, useBiometric.ts
   services/
-    api/
-      client.ts
-      categories.api.ts
-    storage/
-      mmkv.ts
-  store/
-    categories.store.ts
-  theme/
-    colors.ts
-    spacing.ts
-  types/
+    database/
+      databaseService.ts, migrationService.ts
+    category/
+      categoryService.ts
+    payment/
+      paymentService.ts
+    locale/
+      localeService.ts
+    notifications/
+      notificationService.ts
+    reports/
+      reportsService.ts
+    text/
+      textService.ts
+    storage.ts
+  models/
+    Category.ts, Entry.ts, Payment.ts, Report.ts
+    Settings.ts, Database.ts, Common.ts
     index.ts
+  constants/
+    colors.ts, storageKeys.ts, currencyOptions.ts, languageOptions.ts
+    scripts/
+      categoryScripts/, paymentScripts/, databaseScripts/
+  locales/
+    tr/, en/, de/, fr/, it/, es/
+      common.json, navigation.json, screens/
   utils/
-    format.ts
+    environment.ts, format.ts
+  types/
+    index.tsx (deprecated - now using models/)
 ```
 
 ## Veri Akışı

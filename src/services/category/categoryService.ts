@@ -1,7 +1,7 @@
 // Category Service - Kategori yönetimi
 import { databaseService } from '../database';
 import { CATEGORY_SCRIPTS } from '@/constants/scripts';
-import { Category, CreateCategoryData, UpdateCategoryData } from '@/types';
+import { Category, CreateCategoryData, UpdateCategoryData } from '@/models';
 
 class CategoryService {
   // Veritabanını başlat ve varsayılan kategorileri ekle
@@ -29,8 +29,8 @@ class CategoryService {
 
       await databaseService.query(CATEGORY_SCRIPTS.INSERT, [
         id,
-        data.name_key || null, // name_key = null (kullanıcı kategorisi için)
-        data.custom_name || null,
+        data.name_key ?? null, // name_key = null (kullanıcı kategorisi için)
+        data.custom_name ?? null,
         data.icon,
         data.color,
         data.type,
@@ -60,10 +60,10 @@ class CategoryService {
 
       await databaseService.query(CATEGORY_SCRIPTS.UPDATE, [
         null, // name_key = null (kullanıcı kategorisi için)
-        data.custom_name || null,
-        data.icon,
-        data.color,
-        data.type || 'expense', // Varsayılan olarak expense
+        data.custom_name ?? null,
+        data.icon || '',
+        data.color || '',
+        data.type ?? 'expense', // Varsayılan olarak expense
         id
       ]);
 

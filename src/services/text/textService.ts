@@ -46,9 +46,9 @@ class TextService {
     if (!existingText) throw new Error('Text bulunamadı');
 
     await databaseService.query(TEXT_SCRIPTS.UPDATE, [
-      data.title || existingText.title,
-      data.content !== undefined ? data.content : existingText.content,
-      data.is_active !== undefined ? data.is_active : existingText.is_active,
+      (data.title ?? existingText.title) || '',
+      (data.content ?? existingText.content) || '',
+      (data.is_active ?? existingText.is_active) || true,
       id
     ]);
 

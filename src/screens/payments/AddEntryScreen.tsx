@@ -2,7 +2,7 @@
 import React, { useCallback, useMemo, useRef, useState, useEffect } from 'react';
 import { StyleSheet } from 'react-native';
 import { Layout, PageHeader, View, Text, TouchableOpacity, KeyboardAwareScrollView, Button, Card } from '@/components';
-import { Badge, StatCard } from '@/components/common';
+import { Badge } from '@/components/common';
 import { useNavigation, useTheme } from '@/contexts';
 import AddPaymentScreen, { AddPaymentScreenHandle } from './AddPaymentScreen';
 import { useLocale } from '@/hooks';
@@ -20,7 +20,7 @@ const AddEntryScreen: React.FC<AddEntryScreenProps> = ({ type = 'expense' }) => 
 
   // URL parametresinden veya prop'tan tab'ı belirle
   const params = getCurrentParams();
-  const initialTab = params?.type || type;
+  const initialTab = (params?.['type'] as 'expense' | 'income') || type;
   const [tab, setTab] = useState<'expense' | 'income'>(initialTab);
   const expenseRef = useRef<AddPaymentScreenHandle>(null);
   const incomeRef = useRef<AddPaymentScreenHandle>(null);
@@ -29,9 +29,9 @@ const AddEntryScreen: React.FC<AddEntryScreenProps> = ({ type = 'expense' }) => 
 
   // Parametre değiştiğinde tab'ı güncelle (sadece ilk yüklemede)
   useEffect(() => {
-    const newTab = params?.type || type;
+    const newTab = (params?.['type'] as 'expense' | 'income') || type;
     setTab(newTab);
-  }, [params?.type, type]); // tab dependency'sini kaldırdık
+  }, [params, type]); // tab dependency'sini kaldırdık
 
   const currentValid = useMemo(() => (tab === 'expense' ? expenseValid : incomeValid), [expenseValid, incomeValid, tab]);
 
@@ -56,7 +56,7 @@ const AddEntryScreen: React.FC<AddEntryScreenProps> = ({ type = 'expense' }) => 
         {/* Modern Header */}
         <Card variant="elevated" style={styles.headerCard}>
           <View style={styles.headerContent}>
-            <Text style={[styles.headerIcon, { color: currentColor }]}>{currentIcon}</Text>
+            <Text style={[styles.headerIcon, { color: currentColor }] as any}>{currentIcon}</Text>
             <View style={styles.headerText}>
               <Text variant="primary" size="large" weight="bold" style={styles.headerTitle}>
                 {isExpense ? 'Yeni Ödeme Ekle' : 'Yeni Gelir Ekle'}
@@ -92,10 +92,10 @@ const AddEntryScreen: React.FC<AddEntryScreenProps> = ({ type = 'expense' }) => 
                   ] as any}
                   onPress={() => setTab(key)}
                 >
-                  <Text style={[styles.tabIcon, { color: isActive ? color : colors.textSecondary }]}>
+                  <Text style={[styles.tabIcon, { color: isActive ? color : colors.textSecondary }] as any}>
                     {icon}
                   </Text>
-                  <Text style={[styles.tabText, { color: isActive ? color : colors.text }]}>
+                  <Text style={[styles.tabText, { color: isActive ? color : colors.text }] as any}>
                     {key === 'expense' ? t('screens.add_entry.tab_expense') : t('screens.add_entry.tab_income')}
                   </Text>
                 </TouchableOpacity>

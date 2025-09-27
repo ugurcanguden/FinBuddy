@@ -4,6 +4,7 @@ import { StyleSheet, ScrollView, Alert } from 'react-native';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useNavigation } from '@/contexts/NavigationContext';
 import { usePaymentReminders } from '@/hooks/usePaymentReminders';
+import { useLocale } from '@/hooks';
 import { 
   Layout, 
   Text, 
@@ -32,6 +33,7 @@ const ProfileScreen: React.FC = () => {
   const { colors } = useTheme();
   const { navigateTo } = useNavigation();
   const { settings: paymentReminders, updateSettings } = usePaymentReminders();
+  const { t } = useLocale();
   
   // State
   const [profileStats] = useState<ProfileStats>({

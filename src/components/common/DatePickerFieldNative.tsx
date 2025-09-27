@@ -102,8 +102,6 @@ const DatePickerFieldNative: React.FC<DatePickerFieldNativeProps> = ({ value, on
             mode="date"
             display="calendar"
             onChange={handleAndroidChange}
-            locale={pickerLocale}
-            themeVariant={themeVariant}
           />
         ) : (
           <Modal visible transparent animationType="fade" onRequestClose={() => setOpen(false)}>

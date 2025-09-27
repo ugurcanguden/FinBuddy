@@ -185,6 +185,7 @@ const Badge: React.FC<BadgeProps> = ({
     } else {
       pulseAnim.setValue(1);
     }
+    return undefined;
   }, [pulse, pulseAnim]);
 
   const renderChildren = () => {

@@ -2,10 +2,12 @@
 import React, { useState } from 'react';
 import { StyleSheet, ScrollView as RNScrollView } from 'react-native';
 import { useTheme } from '@/contexts';
+import { useLocale } from '@/hooks';
 import { Layout, PageHeader, View, Text, Card, Button, ProgressBar, Badge, StatCard, WalletCard, BarChart, QuickActions, RecentTransactions, WeeklySummary } from '@/components';
 
 const UIDemoScreen: React.FC = () => {
   const { colors } = useTheme();
+  const { t } = useLocale();
   const [progress, setProgress] = useState(65);
   const [loading, setLoading] = useState(false);
 

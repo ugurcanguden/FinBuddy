@@ -6,7 +6,7 @@ alwaysApply: false
 - Implement services as classes with a single exported instance (see `storageService`, `categoryService`, `paymentService`) and keep constructors side-effect free.
 - Export every service through `src/services/index.tsx` so `@/services` remains the canonical barrel.
 - Prevent UI coupling by limiting service dependencies to other services, contexts, constants, and utilities.
-- Type all public methods using models from `src/types`; return explicit promises instead of `any`.
+- **CRITICAL**: Type all public methods using models from `src/models`; return explicit promises instead of `any`. `src/types` is deprecated.
 
 ## Existing Services
 - Delegate persistence to `storageService` and consume it through hooks like `useStorage` or `usePaymentReminders`.
@@ -17,7 +17,7 @@ alwaysApply: false
 ## Extending Services
 - Place new domain logic under `src/services/<domain>/`, add an `index.ts` for exports, and wire it into `src/services/index.tsx`.
 - Co-locate SQL or constants with the service (e.g. under `src/constants/scripts/`) to avoid scattering magic strings.
-- Update or add shared types in `src/types/index.tsx` so all layers consume the same contracts.
+- **CRITICAL**: Update or add shared types in `src/models/` so all layers consume the same contracts. `src/types/` is deprecated.
 - Keep logging concise (✅/❌ patterns) and throw errors back to callers; surface user messaging in hooks or screens.
 
 ## Notifications & External IO
@@ -25,3 +25,5 @@ alwaysApply: false
 - Manage language and currency preferences via `localeService` and `CurrencyProvider` so persisted settings remain consistent.
 - Wrap native APIs such as `LocalAuthentication` in hooks (`useBiometric`) or services to shield the UI from platform differences.
 - Update `app.json` plugins and document requirements in `docs/DEVELOPMENT_GUIDE.md` whenever you add new native capabilities.
+- **Initial Setup**: Support language and currency selection in initial setup flow.
+- **6 Languages**: Ensure notification templates support all 6 languages (TR, EN, DE, FR, IT, ES).

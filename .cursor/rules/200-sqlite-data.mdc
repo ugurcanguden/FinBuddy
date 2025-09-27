@@ -21,6 +21,8 @@ alwaysApply: false
 - Bump `CURRENT_SCHEMA_VERSION` in `migrationService.ts` and add a guarded `migrateToV#` whenever you modify the schema.
 - Preserve soft-delete (`is_active`) and timestamp conventions across new tables and updates.
 - Update seed data blocks like `INSERT_DEFAULT_CATEGORIES` when you change default icons or translation keys.
+- **Category Types**: Support `expense`, `income`, and `receivable` category types with proper filtering.
+- **Migration v5**: Added category type column and default income categories.
 
 ## Writing Queries
 - Use `databaseService.query`, `getAll`, `getFirst`, and `transaction` helpers instead of calling `expo-sqlite` APIs directly.

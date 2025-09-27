@@ -51,3 +51,14 @@ Temel varlıklar ve ilişkiler (SQLite şeması için taslak).
 - v3: Reports tablosu
 - v4: Categories tablosuna type kolonu eklendi
 - v5: Varsayılan gelir kategorileri eklendi
+
+## Yeni Eklenen Özellikler
+- **İlk Kurulum**: Dil ve para birimi seçimi
+- **Modern UI**: 6 tema modu, animasyonlar, responsive tasarım
+- **Çoklu Dil**: 6 dil desteği (TR, EN, DE, FR, IT, ES)
+- **Raporlama**: Grafik ve analiz araçları
+- **Dashboard**: Finansal özet ve istatistikler
+- **Kategori Sistemi**: Gider ve gelir kategorileri ayrı yönetim
+- **Ödeme Takibi**: Tek seferlik ve taksitli ödemeler
+- **Hatırlatıcılar**: Ödeme tarihi hatırlatmaları
+- **Bildirimler**: Yerel bildirim sistemi

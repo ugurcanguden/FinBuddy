@@ -1,5 +1,6 @@
 // Database Service - SQLite yönetimi
 import * as SQLite from 'expo-sqlite';
+import type { DatabaseQueryParams } from '@/models';
 
 class DatabaseService {
   private db: SQLite.SQLiteDatabase | null = null;
@@ -16,7 +17,7 @@ class DatabaseService {
   }
 
   // Genel sorgu çalıştır
-  async query(sql: string, params: any[] = []): Promise<SQLite.SQLiteRunResult> {
+  async query(sql: string, params: DatabaseQueryParams[] = []): Promise<SQLite.SQLiteRunResult> {
     if (!this.db) throw new Error('Database not initialized');
     
     try {
@@ -28,7 +29,7 @@ class DatabaseService {
   }
 
   // Veri getir
-  async getAll<T = any>(sql: string, params: any[] = []): Promise<T[]> {
+  async getAll<T = unknown>(sql: string, params: DatabaseQueryParams[] = []): Promise<T[]> {
     if (!this.db) throw new Error('Database not initialized');
     
     try {
@@ -40,7 +41,7 @@ class DatabaseService {
   }
 
   // Tek veri getir
-  async getFirst<T = any>(sql: string, params: any[] = []): Promise<T | null> {
+  async getFirst<T = unknown>(sql: string, params: DatabaseQueryParams[] = []): Promise<T | null> {
     if (!this.db) throw new Error('Database not initialized');
     
     try {

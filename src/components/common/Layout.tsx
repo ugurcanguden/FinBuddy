@@ -42,8 +42,8 @@ const Layout: React.FC<LayoutProps> = ({
     () => ({
       borderTopWidth: StyleSheet.hairlineWidth,
       borderTopColor: colors.border,
-      //paddingTop: 12,
-      //paddingBottom: Math.max(insets.bottom, 12),
+      paddingTop: 12,
+      paddingBottom: Math.max(insets.bottom, 12),
       backgroundColor: colors.card,
     }),
     [colors.border, colors.card, insets.bottom],
@@ -60,7 +60,7 @@ const Layout: React.FC<LayoutProps> = ({
   );
 
   return (
-    <SafeArea edges={['left', 'right']} style={[{ flex: 1, backgroundColor: colors.background }, style]}>
+    <SafeArea edges={['left', 'right', 'bottom']} style={[{ flex: 1, backgroundColor: colors.background }, style]}>
       <StatusBar />
 
       {/* Header */}

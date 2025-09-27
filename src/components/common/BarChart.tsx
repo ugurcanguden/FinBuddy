@@ -46,6 +46,7 @@ const BarChart: React.FC<BarChartProps> = ({
   const { colors } = useTheme();
   const barAnims = useRef<Animated.Value[]>([]);
   const chartAnim = useRef(new Animated.Value(0)).current;
+  
 
   // Animasyon değerlerini başlat
   useEffect(() => {
@@ -54,16 +55,21 @@ const BarChart: React.FC<BarChartProps> = ({
 
   // Maksimum değeri hesapla
   const maxValue = useMemo(() => {
+    if (data.length === 0) return 100;
     const values = data.map(d => Math.max(d.value, d.secondaryValue || 0));
     const max = Math.max(...values);
     // Eğer tüm değerler 0 ise, minimum bir maxValue kullan
-    return max === 0 ? 100 : max;
+    // Küçük değerler için minimum maxValue kullan
+    return max === 0 ? 100 : Math.max(max, 50);
   }, [data]);
 
   // Değer ölçekleme fonksiyonu
   const scaleValue = (value: number) => {
-    if (maxValue === 0) return 6; // minimum bar height
-    return Math.max(6, (value / maxValue) * (height - 20));
+    if (value === 0) return 0; // 0 değer için 0 yükseklik
+    if (maxValue === 0) return 20; // minimum bar height
+    const scaledHeight = (value / maxValue) * (height - 40);
+    const result = Math.max(20, scaledHeight); // En az 20px yükseklik
+    return result;
   };
 
   // Format currency
@@ -83,32 +89,72 @@ const BarChart: React.FC<BarChartProps> = ({
 
   // Animasyonları başlat
   useEffect(() => {
+    // Önce tüm animasyonları sıfırla
+    chartAnim.setValue(0);
+    barAnims.current.forEach(anim => anim.setValue(0));
+    
     if (animated) {
-      Animated.sequence([
-        Animated.timing(chartAnim, {
-          toValue: 1,
-          duration: 300,
-          useNativeDriver: true,
-        }),
-        Animated.stagger(
-          100,
-          barAnims.current.map(anim =>
-            Animated.timing(anim, {
-              toValue: 1,
-              duration: 600,
-              useNativeDriver: false,
-            })
-          )
-        ),
-      ]).start();
+      // Kısa bir gecikme ile animasyonu başlat
+      setTimeout(() => {
+        Animated.sequence([
+          Animated.timing(chartAnim, {
+            toValue: 1,
+            duration: 300,
+            useNativeDriver: true,
+          }),
+          Animated.stagger(
+            100,
+            barAnims.current.map(anim =>
+              Animated.timing(anim, {
+                toValue: 1,
+                duration: 600,
+                useNativeDriver: false,
+              })
+            )
+          ),
+        ]).start();
+      }, 100);
     } else {
       chartAnim.setValue(1);
       barAnims.current.forEach(anim => anim.setValue(1));
     }
-  }, [animated, chartAnim]);
+  }, [animated, chartAnim, data.length]);
 
   // Chart genişliği
   const chartWidth = Math.max(data.length * (barWidth + barSpacing), 300);
+  
+  // Boş veri durumu
+  if (data.length === 0) {
+    return (
+      <View
+        style={[style]}
+        {...(testID && { testID })}
+      >
+        <Card variant="elevated" padding="medium" style={{ gap: 16 }}>
+          {/* Header */}
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+            <View>
+              <Text variant="primary" size="large" weight="bold">
+                {title}
+              </Text>
+              {subtitle && (
+                <Text variant="secondary" size="small" style={{ marginTop: 4 }}>
+                  {subtitle}
+                </Text>
+              )}
+            </View>
+          </View>
+
+          {/* Empty State */}
+          <View style={{ height, justifyContent: 'center', alignItems: 'center' }}>
+            <Text variant="secondary" size="medium" style={{ textAlign: 'center' }}>
+              Henüz veri bulunmuyor
+            </Text>
+          </View>
+        </Card>
+      </View>
+    );
+  }
 
   const renderBar = (item: BarChartData, index: number) => {
     const barHeight = scaleValue(item.value);
@@ -126,19 +172,20 @@ const BarChart: React.FC<BarChartProps> = ({
         }}
       >
         {/* Bar Container */}
-        <View style={{ position: 'relative', height: totalHeight }}>
+        <View style={{ 
+          position: 'relative', 
+          height: Math.max(totalHeight, 20), // En az 20px yükseklik
+          minHeight: 20,
+        }}>
           {/* Secondary Bar (if exists) */}
           {item.secondaryValue && (
-            <Animated.View
+            <View
               style={{
                 position: 'absolute',
                 left: 0,
                 right: 0,
                 bottom: 0,
-                height: barAnims.current[index]?.interpolate({
-                  inputRange: [0, 1],
-                  outputRange: [0, secondaryHeight],
-                }) || 0,
+                height: secondaryHeight,
                 backgroundColor: item.secondaryColor || colors.success,
                 borderTopLeftRadius: 8,
                 borderTopRightRadius: 8,
@@ -147,16 +194,13 @@ const BarChart: React.FC<BarChartProps> = ({
           )}
 
           {/* Main Bar */}
-          <Animated.View
+          <View
             style={{
               position: 'absolute',
               left: 0,
               right: 0,
               bottom: 0,
-              height: barAnims.current[index]?.interpolate({
-                inputRange: [0, 1],
-                outputRange: [0, barHeight],
-              }) || 0,
+              height: barHeight,
               backgroundColor: item.color || colors.primary,
               borderTopLeftRadius: 8,
               borderTopRightRadius: 8,
@@ -173,23 +217,19 @@ const BarChart: React.FC<BarChartProps> = ({
 
           {/* Value Label */}
           {showValues && (
-            <Animated.View
+            <View
               style={{
                 position: 'absolute',
                 top: -20,
                 left: 0,
                 right: 0,
                 alignItems: 'center',
-                opacity: barAnims.current[index]?.interpolate({
-                  inputRange: [0, 1],
-                  outputRange: [0, 1],
-                }) || 0,
               }}
             >
               <Text variant="secondary" size="small" weight="bold">
                 {formatCurrency(item.value)}
               </Text>
-            </Animated.View>
+            </View>
           )}
         </View>
 
@@ -211,22 +251,9 @@ const BarChart: React.FC<BarChartProps> = ({
   };
 
   return (
-    <Animated.View
-      style={[
-        {
-          opacity: chartAnim,
-          transform: [
-            {
-              translateY: chartAnim.interpolate({
-                inputRange: [0, 1],
-                outputRange: [20, 0],
-              }),
-            },
-          ],
-        },
-        style,
-      ]}
-      testID={testID}
+    <View
+      style={[style]}
+      {...(testID && { testID })}
     >
       <Card variant="elevated" padding="medium" style={{ gap: 16 }}>
         {/* Header */}
@@ -257,6 +284,7 @@ const BarChart: React.FC<BarChartProps> = ({
                 width: chartWidth,
                 flexDirection: 'row',
                 alignItems: 'flex-end',
+                minHeight: height,
               }}
             >
               {data.map((item, index) => renderBar(item, index))}
@@ -323,7 +351,7 @@ const BarChart: React.FC<BarChartProps> = ({
           </View>
         )}
       </Card>
-    </Animated.View>
+    </View>
   );
 };
 

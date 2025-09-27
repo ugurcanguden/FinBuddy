@@ -10,6 +10,7 @@
   "income": "Income",
   "expense": "Expense",
   "create_report": "Create Report",
+  "saved_reports": "Saved Reports",
   "saved_reports_title": "Saved Reports",
   "saved_reports_empty": "No saved reports yet.",
   "saved_reports_view": "Open",

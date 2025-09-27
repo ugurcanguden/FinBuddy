@@ -5,7 +5,7 @@ export interface ReportConfig {
   fact: 'payments_all' | 'payments_expense' | 'payments_income' | 'payments' | 'entries';
   dimension: 'month' | 'category' | 'status' | 'type';
   measure: 'sum' | 'count' | 'avg';
-  filters?: Record<string, any>;
+  filters?: Record<string, unknown>;
   chart?: 'table' | 'bar' | 'line' | 'pie';
 }
 

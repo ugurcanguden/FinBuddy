@@ -4,5 +4,12 @@
   "paid_subtitle": "Zahlung",
   "category_distribution": "Kategorieverteilung",
   "first_report": "Erstellen Sie Ihren ersten Bericht",
-  "first_report_message": "Noch keine Berichte. Beginnen Sie mit Ihrem ersten Bericht."
+  "first_report_message": "Noch keine Berichte. Beginnen Sie mit Ihrem ersten Bericht.",
+  "no_weekly_data": "Noch keine wöchentlichen Daten verfügbar",
+  "total_expense": "Gesamtausgaben",
+  "pending": "Ausstehend",
+  "total_income": "Gesamteinnahmen",
+  "this_month": "diesen Monat",
+  "weekly_summary": "Wöchentliche Zusammenfassung",
+  "no_saved_reports": "Keine gespeicherten Berichte"
 }

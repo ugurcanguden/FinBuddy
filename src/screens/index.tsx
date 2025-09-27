@@ -17,5 +17,8 @@ export { default as IncomesScreen } from './payments/IncomesScreen';
 export { default as ReportBuilderScreen } from './reports/ReportBuilderScreen';
 export { default as ReportsHubScreen } from './reports/ReportsHubScreen';
 
+// Setup Screens
+export { default as InitialSetupScreen } from './InitialSetupScreen';
+
 // Demo Screens
 export { default as UIDemoScreen } from './UIDemoScreen';

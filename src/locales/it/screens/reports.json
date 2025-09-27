@@ -1,0 +1,19 @@
+{
+  "monthly_summary": "Riassunto Mensile",
+  "expense_total": "Spesa Totale",
+  "expense_paid": "Pagato",
+  "expense_pending": "In Attesa",
+  "income_total": "Reddito Totale",
+  "category_distribution": "Distribuzione per Categoria",
+  "month": "Mese",
+  "cash_flow": "Flusso di Cassa",
+  "income": "Reddito",
+  "expense": "Spesa",
+  "create_report": "Crea Rapporto",
+  "saved_reports": "Rapporti Salvati",
+  "saved_reports_title": "Rapporti Salvati",
+  "saved_reports_empty": "Nessun rapporto salvato ancora.",
+  "saved_reports_view": "Apri",
+  "saved_reports_preview": "Anteprima",
+  "saved_reports_delete": "Elimina"
+}

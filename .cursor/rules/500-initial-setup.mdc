@@ -1,0 +1,72 @@
+---
+description: Initial setup flow and onboarding guidelines for FinBuddy.
+alwaysApply: false
+---
+
+## Initial Setup Flow
+- First-time users see `InitialSetupScreen` before onboarding or main app.
+- Setup includes language selection (6 languages) and currency selection (4 currencies).
+- Use `INITIAL_SETUP_COMPLETED` storage key to track completion.
+- Flow: `InitialSetupScreen` → `OnboardingScreen` → `AppNavigator`.
+
+## Language Selection
+- Support 6 languages: Turkish (TR), English (EN), German (DE), French (FR), Italian (IT), Spanish (ES).
+- Use `LANGUAGE_OPTIONS` constant for language dropdown options.
+- Update `useLocale().changeLanguage()` to persist selection.
+- All UI text must be localized through `useLocale().t()`.
+
+## Currency Selection
+- Support 4 currencies: TRY, USD, EUR, GBP.
+- Use `CURRENCY_OPTIONS` constant for currency dropdown options.
+- Update `useCurrency().setCurrency()` to persist selection.
+- Currency formatting must be consistent across the app.
+
+## Screen Navigation
+- Add `initialSetup` and `onboarding` to `ScreenType` union in `NavigationContext.tsx`.
+- Handle new screen types in `AppNavigator.tsx` switch statement.
+- Update `App.tsx` to check `INITIAL_SETUP_COMPLETED` before showing other screens.
+
+## Storage Keys
+- Add `INITIAL_SETUP_COMPLETED` to `STORAGE_KEYS` constant.
+- Use `storageService` to persist setup completion status.
+- Check both `INITIAL_SETUP_COMPLETED` and `onboarding_completed` in app initialization.
+
+## UI Components
+- Use `Dropdown` component for language and currency selection.
+- Use `Button` component for "Continue" action.
+- Use `Layout` and `PageHeader` for consistent screen structure.
+- Use `Card` component for form grouping.
+
+## Validation
+- Validate language and currency selections before proceeding.
+- Show error messages for invalid selections.
+- Disable continue button until valid selections are made.
+
+## Error Handling
+- Handle storage errors gracefully with user-friendly messages.
+- Provide fallback to default language (Turkish) and currency (TRY).
+- Log errors for debugging purposes.
+
+## Testing
+- Test initial setup flow with different language/currency combinations.
+- Test storage persistence and retrieval.
+- Test error scenarios and fallback behavior.
+- Test navigation flow from setup to onboarding to main app.
+
+## Localization
+- All setup screen text must be in locale files.
+- Update all 6 language files with setup screen translations.
+- Use consistent translation keys across languages.
+- Test with different language selections.
+
+## Accessibility
+- Add proper accessibility labels for screen readers.
+- Support keyboard navigation for form inputs.
+- Ensure proper focus management between form elements.
+- Test with accessibility tools and screen readers.
+
+## Performance
+- Lazy load language and currency options to reduce bundle size.
+- Optimize image assets for different screen densities.
+- Use efficient state management for form data.
+- Minimize re-renders during setup process.

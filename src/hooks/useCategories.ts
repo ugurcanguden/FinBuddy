@@ -1,7 +1,7 @@
 // useCategories Hook - Kategori yönetimi
 import { useState, useEffect, useCallback } from 'react';
 import { categoryService } from '@/services';
-import { Category, CreateCategoryData, UpdateCategoryData } from '@/types';
+import { Category, CreateCategoryData, UpdateCategoryData } from '@/models';
 
 interface UseCategoriesReturn {
   categories: Category[];

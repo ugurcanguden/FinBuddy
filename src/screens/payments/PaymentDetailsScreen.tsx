@@ -5,7 +5,7 @@ import { Layout, PageHeader, ScrollView, View, Text, TouchableOpacity } from '@/
 import { useNavigation, useTheme } from '@/contexts';
 import { useLocale } from '@/hooks';
 import { paymentService } from '@/services';
-import type { Payment, Entry } from '@/types';
+import type { Payment, Entry } from '@/models';
 
 interface Props { entryId?: string }
 

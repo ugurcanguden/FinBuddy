@@ -65,5 +65,8 @@
   "income_success": "Gelir başarıyla işaretlendi!",
   "action_success": "Başarılı",
   "action_error": "Hata",
-  "action_error_message": "İşlem sırasında bir hata oluştu."
+  "action_error_message": "İşlem sırasında bir hata oluştu.",
+  "received": "Alınan",
+  "pending": "Bekleyen",
+  "overdue": "Geciken"
 }

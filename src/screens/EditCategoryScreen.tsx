@@ -1,18 +1,16 @@
 // Edit Category Screen - Kategori düzenleme sayfası
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Alert } from 'react-native';
+import { Alert } from 'react-native';
 import { useLocale, useCategories } from '@/hooks';
 import { useNavigation } from '@/contexts';
 import { 
-  Container, 
   Text, 
-  ScrollView, 
   View,
   CategoryForm,
   PageHeader,
   Layout
 } from '@/components';
-import { Category, CategoryFormData } from '@/types';
+import { Category, CategoryFormData } from '@/models';
 
 interface EditCategoryScreenProps {
   categoryId: string;
@@ -123,13 +121,13 @@ const EditCategoryScreen: React.FC<EditCategoryScreenProps> = ({ categoryId }) =
   );
 };
 
-const styles = StyleSheet.create({
+const styles = {
   loadingContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: 'center' as const,
+    alignItems: 'center' as const,
     padding: 20,
   },
-});
+};
 
 export default EditCategoryScreen;

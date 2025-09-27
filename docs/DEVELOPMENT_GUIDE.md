@@ -1921,8 +1921,9 @@ Detaylar için `docs/ARCHITECTURE.md`.
 
 ### ✅ **Modern UI Bileşenleri Eklendi**:
 - ProgressBar, Badge, StatCard, WalletCard
-- BarChart, QuickActions, RecentTransactions, WeeklySummary
-- 15+ yeni modern UI bileşeni
+- BarChart, LineChart, GroupedColumnChart
+- QuickActions, RecentTransactions, WeeklySummary
+- 20+ yeni modern UI bileşeni
 
 ### ✅ **Tema Sistemi Genişletildi**:
 - 6 tema modu: Light, Dark, Colorful, Ocean, Sunset, Forest
@@ -1932,9 +1933,28 @@ Detaylar için `docs/ARCHITECTURE.md`.
 - Profil, Raporlar, Ayarlar sayfaları
 - Ödemeler ve Gelirler sayfaları
 - AddPayment ve AddEntry form ekranları
+- HomeScreen refactor edildi (5 alt bileşene ayrıldı)
+- ReportsHubScreen refactor edildi (3 alt bileşene ayrıldı)
 
 ### ✅ **UX İyileştirmeleri**:
 - BottomTabBar güncellemeleri
 - Hızlı eylemler basitleştirildi
 - Tab geçişleri düzeltildi
 - Layout çakışmaları çözüldü
+
+### ✅ **İlk Kurulum Sistemi**:
+- Dil seçimi (6 dil: TR, EN, DE, FR, IT, ES)
+- Para birimi seçimi (TRY, USD, EUR, GBP)
+- Onboarding akışı
+
+### ✅ **Tip Güvenliği**:
+- `any` tipleri kaldırıldı
+- `src/models/` dizini oluşturuldu
+- Entity interface'leri tanımlandı
+- TypeScript strict mode aktif
+
+### ✅ **Kod Organizasyonu**:
+- Büyük ekranlar alt bileşenlere ayrıldı
+- Component'ler modüler hale getirildi
+- Kod tekrarı azaltıldı
+- Bakım kolaylığı artırıldı

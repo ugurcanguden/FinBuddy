@@ -1,9 +1,11 @@
 // FinBuddy - Genel Tip Tanımları
+// NOTE: Bu dosya artık kullanılmıyor. Tüm entity tipleri src/models/ altında tanımlanmıştır.
+// Geriye dönük uyumluluk için burada tutuluyor.
 
 // Base Component Props - Tüm bileşenler için ortak
 export interface BaseComponentProps {
   testID?: string;
-  style?: any;
+  style?: React.ComponentProps<any>['style'];
 }
 
 // Genel Utility Tipleri

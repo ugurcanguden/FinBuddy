@@ -11,8 +11,8 @@ export interface LocaleConfig {
 class LocaleService {
   private currentLanguage: SupportedLanguage = 'en';
   private fallbackLanguage: SupportedLanguage = 'en';
-  private translations: Record<string, any> = {};
-  private fallbackTranslations: Record<string, any> = {};
+  private translations: Record<string, unknown> = {};
+  private fallbackTranslations: Record<string, unknown> = {};
 
   // Dil servisini başlat
   async initialize(): Promise<void> {
@@ -66,7 +66,7 @@ class LocaleService {
   }
 
   // Dil için çevirileri al
-  private async getTranslationsForLanguage(language: SupportedLanguage): Promise<any> {
+  private async getTranslationsForLanguage(language: SupportedLanguage): Promise<Record<string, unknown>> {
     switch (language) {
       case 'en':
         return {
@@ -206,10 +206,10 @@ class LocaleService {
 
     // Parametreleri değiştir
     if (params) {
-      return this.replaceParams(value, params);
+      return this.replaceParams(String(value || key), params);
     }
 
-    return value;
+    return String(value || key);
   }
 
   // Fallback çevirisi al
@@ -229,10 +229,10 @@ class LocaleService {
     return key;
   }
 
-  private getTranslationValue(source: Record<string, any>, key: string): any {
-    return key.split('.').reduce<any>((acc, current) => {
-      if (acc && typeof acc === 'object' && current in acc) {
-        return acc[current];
+  private getTranslationValue(source: Record<string, unknown>, key: string): unknown {
+    return key.split('.').reduce<unknown>((acc, current) => {
+      if (acc && typeof acc === 'object' && current in (acc as Record<string, unknown>)) {
+        return (acc as Record<string, unknown>)[current];
       }
 
       return undefined;
@@ -269,7 +269,7 @@ class LocaleService {
     return language?.nativeName || code;
   }
 
-  private async unwrapJsonModule<T>(loader: Promise<any>): Promise<T> {
+  private async unwrapJsonModule<T>(loader: Promise<{ default: T }>): Promise<T> {
     const mod = await loader;
 
     if (mod == null) {

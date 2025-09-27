@@ -32,6 +32,7 @@ export { default as Badge } from './Badge';
 export { default as StatCard } from './StatCard';
 export { default as WalletCard } from './WalletCard';
 export { default as BarChart } from './BarChart';
+export { default as LineChart } from './LineChart';
 export { default as QuickActions } from './QuickActions';
 export { default as RecentTransactions } from './RecentTransactions';
 export { default as WeeklySummary } from './WeeklySummary';
@@ -41,4 +42,6 @@ export { default as KeyboardAvoidingView } from './KeyboardAvoidingView';
 export { default as KeyboardAwareScrollView } from './KeyboardAwareScrollView';
 
 // Form Components
-export { default as TimePicker } from './TimePicker';
+export { default as TimePicker } from './TimePicker'; 
+export { default as GroupedColumnChart } from './groupedColumnChart';
+export type { GroupedDatum } from './groupedColumnChart';

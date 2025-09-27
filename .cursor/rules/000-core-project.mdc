@@ -7,14 +7,16 @@ alwaysApply: true
 - Manage dependencies with Yarn (`yarn.lock` is canonical) and document any new scripts you add to `package.json`.
 
 ## Project Layout
-- Keep new source under `src/`, following existing folders (`components/`, `screens/`, `contexts/`, `hooks/`, `services/`, `constants/`, `utils/`, `locales/`, `types/`).
+- Keep new source under `src/`, following existing folders (`components/`, `screens/`, `contexts/`, `hooks/`, `services/`, `constants/`, `utils/`, `locales/`, `models/`).
 - Respect the barrel exports in each `index.tsx`; register new modules there so aliases like `@/components` continue to resolve.
 - Store shared assets in `assets/` and mirror behavioural changes in the documentation under `docs/`.
+- **IMPORTANT**: Use `src/models/` for entity types, not `src/types/` (deprecated).
 
 ## Application Shell
-- `App.tsx` initializes SQLite (`databaseService.initialize` + `migrationService.migrateToLatest`), seeds categories, registers notifications, and gates onboarding with `storageService`; extend that sequence rather than duplicating it.
+- `App.tsx` initializes SQLite (`databaseService.initialize` + `migrationService.migrateToLatest`), seeds categories, registers notifications, and gates initial setup and onboarding with `storageService`; extend that sequence rather than duplicating it.
 - Preserve provider order `<ThemeProvider><CurrencyProvider><NavigationProvider>`; insert new global providers inside this stack without breaking initialization.
 - The Expo entry lives in `index.js` via `registerRootComponent`; keep that wiring intact unless you reconfigure the runtime.
+- **Initial Setup Flow**: Check `INITIAL_SETUP_COMPLETED` flag before showing onboarding or main app.
 
 ## Cross-cutting Practices
 - Pull theme tokens with `useTheme()` and translations through `useLocale().t`; add new strings to `src/locales/**`.

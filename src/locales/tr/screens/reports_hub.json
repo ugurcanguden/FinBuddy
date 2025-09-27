@@ -4,5 +4,14 @@
   "paid_subtitle": "ödeme",
   "category_distribution": "Kategori Dağılımı",
   "first_report": "İlk Raporınızı Oluşturun",
-  "first_report_message": "Henüz rapor bulunmuyor. İlk raporunuzu oluşturarak başlayın."
+  "first_report_message": "Henüz rapor bulunmuyor. İlk raporunuzu oluşturarak başlayın.",
+  "no_weekly_data": "Henüz haftalık veri bulunmuyor",
+  "no_monthly_data": "Henüz aylık veri bulunmuyor",
+  "total_expense": "Toplam Gider",
+  "pending": "Bekleyen",
+  "total_income": "Toplam Gelir",
+  "this_month": "bu ay",
+  "weekly_summary": "Haftalık Özet",
+  "monthly_summary": "Aylık Özet",
+  "no_saved_reports": "Kayıtlı rapor yok"
 }

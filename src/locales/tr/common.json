@@ -66,5 +66,25 @@
     "max_length": "Maksimum uzunluk {max} karakterdir",
     "numeric": "Lütfen geçerli bir sayı girin",
     "positive": "Lütfen pozitif bir sayı girin"
+  },
+  "months": {
+    "january": "Oca",
+    "february": "Şub",
+    "march": "Mar",
+    "april": "Nis",
+    "may": "May",
+    "june": "Haz",
+    "july": "Tem",
+    "august": "Ağu",
+    "september": "Eyl",
+    "october": "Eki",
+    "november": "Kas",
+    "december": "Ara"
+  },
+  "time": {
+    "days": "gün",
+    "hours": "saat",
+    "minutes": "dakika",
+    "seconds": "saniye"
   }
 }

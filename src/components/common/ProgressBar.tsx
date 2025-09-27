@@ -114,6 +114,7 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
     } else {
       pulseAnim.setValue(1);
     }
+    return undefined;
   }, [clampedProgress, pulseAnim]);
 
   const renderLabel = () => {

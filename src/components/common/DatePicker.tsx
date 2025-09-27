@@ -13,13 +13,13 @@ export interface DatePickerProps {
 
 const pad2 = (n: number) => String(n).padStart(2, '0');
 const isLeap = (y: number) => (y % 4 === 0 && y % 100 !== 0) || y % 400 === 0;
-const daysInMonth = (y: number, m: number) => [31, isLeap(y) ? 29 : 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31][m - 1];
+const daysInMonth = (y: number, m: number) => [31, isLeap(y) ? 29 : 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31][m - 1] || 31;
 
 const DatePicker: React.FC<DatePickerProps> = ({ value, onChange, startYear, endYear, style }) => {
   const now = new Date();
-  const [y, setY] = useState<number>(value ? Number(value.slice(0, 4)) : now.getFullYear());
-  const [m, setM] = useState<number>(value ? Number(value.slice(5, 7)) : now.getMonth() + 1);
-  const [d, setD] = useState<number>(value ? Number(value.slice(8, 10)) : now.getDate());
+  const [y, setY] = useState<number>(value ? Number(value.slice(0, 4)) || now.getFullYear() : now.getFullYear());
+  const [m, setM] = useState<number>(value ? Number(value.slice(5, 7)) || now.getMonth() + 1 : now.getMonth() + 1);
+  const [d, setD] = useState<number>(value ? Number(value.slice(8, 10)) || now.getDate() : now.getDate());
 
   const yearStart = startYear ?? now.getFullYear() - 5;
   const yearEnd = endYear ?? now.getFullYear() + 3;
@@ -58,7 +58,7 @@ const DatePicker: React.FC<DatePickerProps> = ({ value, onChange, startYear, end
   useEffect(() => {
     const max = daysInMonth(y, m);
     if (d > max) setD(max);
-  }, [y, m]);
+  }, [y, m, d]);
 
   // Değişimde ISO üret
   useEffect(() => {

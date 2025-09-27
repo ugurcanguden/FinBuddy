@@ -10,4 +10,5 @@ export const STORAGE_KEYS = {
   BUDGETS: 'budgets',
   GOALS: 'goals',
   PAYMENT_REMINDERS: 'payment_reminders',
+  INITIAL_SETUP_COMPLETED: 'initial_setup_completed',
 } as const;
