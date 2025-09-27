@@ -13,9 +13,11 @@
       "backgroundColor": "#001f3f"
     },
     "ios": {
+      "bundleIdentifier": "com.finbuddy.app",
       "supportsTablet": true
     },
     "android": {
+      "package": "com.finbuddy.app",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"

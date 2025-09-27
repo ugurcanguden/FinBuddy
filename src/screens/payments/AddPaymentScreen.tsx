@@ -6,7 +6,7 @@ import { Badge } from '@/components/common';
 import { Platform } from 'react-native';
 import { useLocale } from '@/hooks';
 import { paymentService } from '@/services';
-import { useNavigation } from '@/contexts';
+import { useNavigation, useCurrency } from '@/contexts';
 import { useCategories } from '@/hooks';
 
 interface FormState {
@@ -35,6 +35,18 @@ const AddPaymentScreen = forwardRef<AddPaymentScreenHandle, AddPaymentScreenProp
     const { goBack } = useNavigation();
     const { categories, getDisplayName } = useCategories();
     const { t } = useLocale();
+    const { currency } = useCurrency();
+
+  // Currency symbol mapping
+  const getCurrencySymbol = (currencyCode: string): string => {
+    const symbolMap: Record<string, string> = {
+      'TRY': '₺',
+      'USD': '$',
+      'EUR': '€',
+      'GBP': '£',
+    };
+    return symbolMap[currencyCode] || '₺';
+  };
 
   const getIconEmoji = (iconName: string): string => {
     const iconMap: Record<string, string> = {
@@ -71,12 +83,22 @@ const AddPaymentScreen = forwardRef<AddPaymentScreenHandle, AddPaymentScreenProp
     const [form, setForm] = useState<FormState>({ amount: '', months: '', startDate: '', title: '', categoryId: '' });
 
     const isValid = useMemo(() => {
-      const amountNum = Number(form.amount);
+      const installmentAmount = Number(form.amount);
       const monthsNum = Number(form.months);
       return (
-        !!form.title.trim() && !!form.categoryId && amountNum > 0 && Number.isFinite(amountNum) && (monthsNum === 0 || monthsNum >= 1)
+        !!form.title.trim() && !!form.categoryId && installmentAmount > 0 && Number.isFinite(installmentAmount) && (monthsNum === 0 || monthsNum >= 1)
       );
     }, [form]);
+
+    // Toplam tutarı hesapla (taksit tutarı × taksit sayısı)
+    const totalAmount = useMemo(() => {
+      const installmentAmount = Number(form.amount);
+      const monthsNum = Number(form.months || 0);
+      if (installmentAmount > 0 && monthsNum > 0) {
+        return installmentAmount * monthsNum;
+      }
+      return installmentAmount; // Tek seferlik ödeme
+    }, [form.amount, form.months]);
 
     useEffect(() => {
       onValidityChange?.(isValid);
@@ -91,7 +113,7 @@ const AddPaymentScreen = forwardRef<AddPaymentScreenHandle, AddPaymentScreenProp
         await paymentService.createEntryWithSchedule({
           categoryId: form.categoryId,
           title: form.title.trim(),
-          amount: Number(form.amount),
+          amount: totalAmount, // Toplam tutar
           months: Number(form.months || 0),
           startDate: form.startDate || new Date().toISOString().slice(0, 10),
           type: entryType,
@@ -161,11 +183,11 @@ const AddPaymentScreen = forwardRef<AddPaymentScreenHandle, AddPaymentScreenProp
         </FormSection>
 
         <FormSection
-          title={t(`screens.${i18nKey}.amount`)}
-          description={t(`screens.${i18nKey}.amount_placeholder`)}
+          title={t(`screens.${i18nKey}.installment_amount`)}
+          description={t(`screens.${i18nKey}.installment_amount_description`)}
         >
           <TextInput
-            placeholder={t(`screens.${i18nKey}.amount_placeholder`)}
+            placeholder={t(`screens.${i18nKey}.installment_amount_placeholder`)}
             keyboardType="numeric"
             value={form.amount}
             onChangeText={(amount) => {
@@ -180,6 +202,15 @@ const AddPaymentScreen = forwardRef<AddPaymentScreenHandle, AddPaymentScreenProp
             }}
             variant="outlined"
           />
+          
+          {/* Toplam tutar bilgisi */}
+          {form.amount && form.months && Number(form.months) > 0 && (
+            <View style={styles.totalAmountInfo}>
+              <Text variant="secondary" size="small" style={styles.totalAmountText}>
+                {t(`screens.${i18nKey}.total_amount`)}: {totalAmount.toLocaleString('tr-TR')} {getCurrencySymbol(currency)}
+              </Text>
+            </View>
+          )}
         </FormSection>
 
         <FormSection
@@ -231,7 +262,7 @@ const AddPaymentScreen = forwardRef<AddPaymentScreenHandle, AddPaymentScreenProp
         </FormSection>
       </Card>
 
-      {/* Action Buttons */}
+      {/* Action Button */}
       {!embedded && (
         <View style={styles.actions}>
           <Button
@@ -242,14 +273,6 @@ const AddPaymentScreen = forwardRef<AddPaymentScreenHandle, AddPaymentScreenProp
             style={styles.fullWidthButton}
             icon={isIncome ? '💰' : '💸'}
             title={t('common.buttons.save')}
-          />
-          
-          <Button
-            variant="outline"
-            size="large"
-            onPress={goBack}
-            style={styles.fullWidthButton}
-            title={t('common.actions.cancel') || 'İptal'}
           />
         </View>
       )}
@@ -311,6 +334,19 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   fullWidthButton: { width: '100%' },
+  totalAmountInfo: {
+    marginTop: 8,
+    padding: 12,
+    backgroundColor: '#f8f9fa',
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#e9ecef',
+  },
+  totalAmountText: {
+    fontSize: 14,
+    fontWeight: '600',
+    textAlign: 'center',
+  },
 });
 
 AddPaymentScreen.displayName = 'AddPaymentScreen';

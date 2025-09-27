@@ -11,7 +11,8 @@ import {
   Button, 
   Card,
   ScrollView as CustomScrollView,
-  Dropdown
+  Dropdown,
+  SafeArea
 } from '@/components';
 
 interface PrivacyTermsScreenProps {
@@ -135,26 +136,28 @@ const PrivacyTermsScreen: React.FC<PrivacyTermsScreenProps> = ({ fromSettings = 
         </Card>
       </CustomScrollView>
 
-      {/* Alt Butonlar */}
-      <View style={styles.footer}>
-        {!fromSettings && (
+      {/* Alt Butonlar - SafeArea içinde */}
+      <SafeArea style={styles.safeArea}>
+        <View style={styles.footer}>
+          {!fromSettings && (
+            <Button
+              variant="outline"
+              onPress={handleDecline}
+              style={styles.declineButton}
+              disabled={isLoading}
+              title={t('screens.privacy_terms.decline')}
+            />
+          )}
+          
           <Button
-            variant="outline"
-            onPress={handleDecline}
-            style={styles.declineButton}
-            disabled={isLoading}
-            title={t('screens.privacy_terms.decline')}
+            variant="primary"
+            onPress={handleAccept}
+            style={fromSettings ? styles.singleButton : styles.acceptButton}
+            loading={isLoading}
+            title={fromSettings ? 'Tamam' : t('screens.privacy_terms.accept')}
           />
-        )}
-        
-        <Button
-          variant="primary"
-          onPress={handleAccept}
-          style={fromSettings ? styles.singleButton : styles.acceptButton}
-          loading={isLoading}
-          title={fromSettings ? 'Tamam' : t('screens.privacy_terms.accept')}
-        />
-      </View>
+        </View>
+      </SafeArea>
     </View>
   );
 };
@@ -212,19 +215,28 @@ const styles = StyleSheet.create({
     lineHeight: 20,
     textAlign: 'left',
   },
+  safeArea: {
+    backgroundColor: '#f8f9fa',
+  },
   footer: {
     flexDirection: 'row',
     padding: 24,
+    paddingBottom: 12,
     gap: 12,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   declineButton: {
     flex: 1,
+    maxWidth: 150,
   },
   acceptButton: {
     flex: 1,
+    maxWidth: 150,
   },
   singleButton: {
     flex: 1,
+    maxWidth: 200,
   },
 });
 
