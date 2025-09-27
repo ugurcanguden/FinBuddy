@@ -45,3 +45,4 @@ export { default as KeyboardAwareScrollView } from './KeyboardAwareScrollView';
 export { default as TimePicker } from './TimePicker'; 
 export { default as GroupedColumnChart } from './groupedColumnChart';
 export type { GroupedDatum } from './groupedColumnChart';
+export { default as FinBuddyLogo } from './FinBuddyLogo';

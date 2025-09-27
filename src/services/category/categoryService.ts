@@ -13,9 +13,9 @@ class CategoryService {
         await databaseService.query(CATEGORY_SCRIPTS.INSERT_DEFAULT_CATEGORIES);
       });
       
-      console.log('✅ Category service initialized successfully');
+      // Category service initialized successfully
     } catch (error) {
-      console.error('❌ Category service initialization failed:', error);
+      // Category service initialization failed
       throw error;
     }
   }
@@ -24,8 +24,7 @@ class CategoryService {
   async create(data: CreateCategoryData): Promise<Category> {
     try {
       const id = `cat_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-      console.log('🔄 Creating category:', data);
-      console.log('🔄 Creating category id:', id);
+      // Creating category
 
       await databaseService.query(CATEGORY_SCRIPTS.INSERT, [
         id,
@@ -44,7 +43,7 @@ class CategoryService {
 
       return category;
     } catch (error) {
-      console.error('❌ Category creation failed:', error);
+      // Category creation failed
       throw error;
     }
   }
@@ -74,7 +73,7 @@ class CategoryService {
 
       return category;
     } catch (error) {
-      console.error('❌ Category update failed:', error);
+      // Category update failed
       throw error;
     }
   }
@@ -89,9 +88,9 @@ class CategoryService {
       }
 
       await databaseService.query(CATEGORY_SCRIPTS.DELETE, [id]);
-      console.log(`✅ Category ${id} deleted successfully`);
+      // Category deleted successfully
     } catch (error) {
-      console.error('❌ Category deletion failed:', error);
+      // Category deletion failed
       throw error;
     }
   }
@@ -104,7 +103,7 @@ class CategoryService {
         [id]
       );
     } catch (error) {
-      console.error('❌ Get category by ID failed:', error);
+      // Get category by ID failed
       throw error;
     }
   }
@@ -113,10 +112,10 @@ class CategoryService {
   async getAll(): Promise<Category[]> {
     try {
       let categories = await databaseService.getAll<Category>(CATEGORY_SCRIPTS.GET_ALL);
-      console.log('🔄 Getting all categories:', categories);
+      // Getting all categories
         return categories;
       } catch (error) {
-      console.error('❌ Get all categories failed:', error);
+      // Get all categories failed
       throw error;
     }
   }
@@ -126,7 +125,7 @@ class CategoryService {
     try {
       return await databaseService.getAll<Category>(CATEGORY_SCRIPTS.GET_BY_TYPE, [type]);
     } catch (error) {
-      console.error('❌ Get categories by type failed:', error);
+      // Get categories by type failed
       throw error;
     }
   }
@@ -136,7 +135,7 @@ class CategoryService {
     try {
       return await databaseService.getAll<Category>(CATEGORY_SCRIPTS.GET_DEFAULT);
     } catch (error) {
-      console.error('❌ Get default categories failed:', error);
+      // Get default categories failed
       throw error;
     }
   }
@@ -146,7 +145,7 @@ class CategoryService {
     try {
       return await databaseService.getAll<Category>(CATEGORY_SCRIPTS.GET_CUSTOM);
     } catch (error) {
-      console.error('❌ Get custom categories failed:', error);
+      // Get custom categories failed
       throw error;
     }
   }
@@ -160,7 +159,7 @@ class CategoryService {
         [searchTerm, searchTerm]
       );
     } catch (error) {
-      console.error('❌ Category search failed:', error);
+      // Category search failed
       throw error;
     }
   }
@@ -173,7 +172,7 @@ class CategoryService {
       );
       return result?.count || 0;
     } catch (error) {
-      console.error('❌ Get category count failed:', error);
+      // Get category count failed
       throw error;
     }
   }
@@ -187,7 +186,7 @@ class CategoryService {
       );
       return (result?.count || 0) > 0;
     } catch (error) {
-      console.error('❌ Check category exists failed:', error);
+      // Check category exists failed
       throw error;
     }
   }

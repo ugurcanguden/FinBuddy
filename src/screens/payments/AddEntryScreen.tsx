@@ -51,7 +51,11 @@ const AddEntryScreen: React.FC<AddEntryScreenProps> = ({ type = 'expense' }) => 
   const currentText = isExpense ? 'Ödeme' : 'Gelir';
 
   return (
-    <Layout headerComponent={<PageHeader title={t('screens.add_entry.title')} showBackButton onBackPress={goBack} />} showFooter={false}>
+    <Layout 
+      headerComponent={<PageHeader title={t('screens.add_entry.title')} showBackButton onBackPress={goBack} />} 
+      showFooter={false}
+      keyboardAvoidingView={false}
+    >
       <View style={styles.page}>
         {/* Modern Header */}
         <Card variant="elevated" style={styles.headerCard}>

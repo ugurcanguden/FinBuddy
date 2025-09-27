@@ -8,3 +8,5 @@ export * from './payment';
 export * from './reports/reportsService';
 export { default as notificationService } from './notifications/notificationService';
 export * from './notifications/notificationService';
+export { default as loggerService } from './logging/loggerService';
+export * from './logging/loggerService';

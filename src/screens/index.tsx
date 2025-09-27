@@ -18,7 +18,9 @@ export { default as ReportBuilderScreen } from './reports/ReportBuilderScreen';
 export { default as ReportsHubScreen } from './reports/ReportsHubScreen';
 
 // Setup Screens
+export { default as SplashScreen } from './SplashScreen';
 export { default as InitialSetupScreen } from './InitialSetupScreen';
+export { default as PrivacyTermsScreen } from './PrivacyTermsScreen';
 
 // Demo Screens
 export { default as UIDemoScreen } from './UIDemoScreen';

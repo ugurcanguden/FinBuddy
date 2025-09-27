@@ -168,7 +168,16 @@ const AddPaymentScreen = forwardRef<AddPaymentScreenHandle, AddPaymentScreenProp
             placeholder={t(`screens.${i18nKey}.amount_placeholder`)}
             keyboardType="numeric"
             value={form.amount}
-            onChangeText={(amount) => setForm((s) => ({ ...s, amount }))}
+            onChangeText={(amount) => {
+              // Sadece sayı ve nokta/virgül girişine izin ver
+              const numericValue = amount.replace(/[^0-9.,]/g, '');
+              // Virgülü noktaya çevir
+              const normalizedValue = numericValue.replace(',', '.');
+              // Birden fazla nokta olmasını engelle
+              const parts = normalizedValue.split('.');
+              const finalValue = parts.length > 2 ? parts[0] + '.' + parts.slice(1).join('') : normalizedValue;
+              setForm((s) => ({ ...s, amount: finalValue }));
+            }}
             variant="outlined"
           />
         </FormSection>
@@ -181,7 +190,11 @@ const AddPaymentScreen = forwardRef<AddPaymentScreenHandle, AddPaymentScreenProp
             placeholder={t(`screens.${i18nKey}.months_placeholder`)}
             keyboardType="numeric"
             value={form.months}
-            onChangeText={(months) => setForm((s) => ({ ...s, months }))}
+            onChangeText={(months) => {
+              // Sadece sayı girişine izin ver
+              const numericValue = months.replace(/[^0-9]/g, '');
+              setForm((s) => ({ ...s, months: numericValue }));
+            }}
             variant="outlined"
           />
         </FormSection>
@@ -248,7 +261,10 @@ const AddPaymentScreen = forwardRef<AddPaymentScreenHandle, AddPaymentScreenProp
     }
 
     return (
-      <Layout headerComponent={<PageHeader title={t(`screens.${i18nKey}.title`)} showBackButton onBackPress={goBack} />}>
+      <Layout 
+        headerComponent={<PageHeader title={t(`screens.${i18nKey}.title`)} showBackButton onBackPress={goBack} />}
+        keyboardAvoidingView={false}
+      >
         <KeyboardAwareScrollView
           style={styles.container}
           contentContainerStyle={styles.scrollContent}

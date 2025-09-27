@@ -52,6 +52,7 @@ const AddCategoryScreen: React.FC = () => {
           onBackPress={goBack}
         />
       }
+      keyboardAvoidingView={false}
     >
       <CategoryForm
         category={null}

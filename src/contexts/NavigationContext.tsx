@@ -2,7 +2,10 @@
 import React, { createContext, useContext, useState, useCallback, ReactNode } from 'react';
 
 export type ScreenType =
+  | 'splash'
   | 'initialSetup'
+  | 'privacyTerms'
+  | 'privacyTermsInitial'
   | 'onboarding'
   | 'home'
   | 'settings'
@@ -39,8 +42,8 @@ interface NavigationProviderProps {
 }
 
 export const NavigationProvider: React.FC<NavigationProviderProps> = ({ children }) => {
-  const [currentScreen, setCurrentScreen] = useState<ScreenType>('initialSetup');
-  const [screenHistory, setScreenHistory] = useState<ScreenType[]>(['initialSetup']);
+  const [currentScreen, setCurrentScreen] = useState<ScreenType>('splash');
+  const [screenHistory, setScreenHistory] = useState<ScreenType[]>(['splash']);
   const [currentParams, setCurrentParams] = useState<Record<string, unknown> | null>(null);
 
   const navigateTo = useCallback((screen: ScreenType, params?: Record<string, unknown>) => {

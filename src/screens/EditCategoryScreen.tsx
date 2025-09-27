@@ -91,6 +91,7 @@ const EditCategoryScreen: React.FC<EditCategoryScreenProps> = ({ categoryId }) =
           onBackPress={goBack}
         />
         }
+        keyboardAvoidingView={false}
       >
         <View variant="transparent" style={styles.loadingContainer}>
           <Text variant="secondary" size="medium">
@@ -110,6 +111,7 @@ const EditCategoryScreen: React.FC<EditCategoryScreenProps> = ({ categoryId }) =
           onBackPress={goBack}
         />
       }
+      keyboardAvoidingView={false}
     >
       <CategoryForm
         category={category}

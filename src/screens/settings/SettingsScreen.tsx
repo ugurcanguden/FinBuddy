@@ -7,7 +7,7 @@ import { useLocale, usePaymentReminders, useBiometric } from '@/hooks';
 import { useNavigation, useTheme, useCurrency } from '@/contexts';
 import { migrationService, categoryService, notificationService } from '@/services';
 import type { PaymentReminderChannel } from '@/types';
-import { isDevelopment } from '@/utils';
+// import { isDevelopment } from '@/utils'; // Production'da kaldırıldı
 import { 
   Text, 
   Card, 
@@ -31,6 +31,8 @@ const SettingsScreen: React.FC = () => {
   const { goBack, navigateTo } = useNavigation();
   const { currency, setCurrency } = useCurrency();
   const { authenticate, isAvailable, isEnrolled, checkBiometricAvailability } = useBiometric();
+  
+  // Logging state'leri production'da gizlendi
   // Component mount olduğunda biometric availability'yi kontrol et
   useEffect(() => {
     checkBiometricAvailability();
@@ -41,7 +43,7 @@ const SettingsScreen: React.FC = () => {
     try {
       await setTheme(selectedTheme);
     } catch (error) {
-      console.error('Tema değiştirme hatası:', error);
+      // Tema değiştirme hatası
     }
   };
 
@@ -49,6 +51,8 @@ const SettingsScreen: React.FC = () => {
   const handleLanguageChange = (languageCode: string) => {
     changeLanguage(languageCode as any);
   };
+
+  // Logging kontrolü production'da gizlendi
 
   const handleCurrencyChange = async (currencyCode: string) => {
     await setCurrency(currencyCode as Currency);
@@ -65,7 +69,7 @@ const SettingsScreen: React.FC = () => {
       const hasPermission = await notificationService.initialize();
       if (hasPermission) {
         await notificationService.schedulePaymentReminders(updatedSettings);
-        console.log('✅ Bildirimler zamanlandı:', updatedSettings);
+        // Bildirimler zamanlandı
       } else {
         Alert.alert(
           'Bildirim İzni Gerekli',
@@ -90,7 +94,7 @@ const SettingsScreen: React.FC = () => {
     } else {
       // Bildirimleri iptal et
       await notificationService.cancelAllScheduledNotifications();
-      console.log('❌ Bildirimler iptal edildi');
+      // Bildirimler iptal edildi
     }
   };
 
@@ -102,9 +106,9 @@ const SettingsScreen: React.FC = () => {
     if (updatedSettings.enabled && hasActiveReminderChannel(updatedSettings.channels)) {
       try {
         await notificationService.schedulePaymentReminders(updatedSettings);
-        console.log('✅ Bildirim saati güncellendi:', updatedSettings);
+        // Bildirim saati güncellendi
       } catch (error) {
-        console.error('❌ Bildirim saati güncellenirken hata:', error);
+        // Bildirim saati güncellenirken hata
       }
     }
   };
@@ -123,13 +127,13 @@ const SettingsScreen: React.FC = () => {
     if (updatedSettings.enabled && hasActiveReminderChannel(updatedSettings.channels)) {
       try {
         await notificationService.schedulePaymentReminders(updatedSettings);
-        console.log('✅ Bildirim kanalı güncellendi:', updatedSettings);
+        // Bildirim kanalı güncellendi
       } catch (error) {
-        console.error('❌ Bildirim kanalı güncellenirken hata:', error);
+        // Bildirim kanalı güncellenirken hata
       }
     } else {
       await notificationService.cancelAllScheduledNotifications();
-      console.log('❌ Bildirim kanalı devre dışı bırakıldı');
+      // Bildirim kanalı devre dışı bırakıldı
     }
   };
 
@@ -458,6 +462,8 @@ const SettingsScreen: React.FC = () => {
           </Card>
         </View>
 
+        {/* Logging Ayarları production'da gizlendi */}
+
         {/* Veri temizliği - En altta */}
         <View style={styles.section}>
           <Text variant="secondary" size="medium" weight="semibold" style={styles.sectionTitle}>
@@ -479,63 +485,34 @@ const SettingsScreen: React.FC = () => {
           </Card>
         </View>
 
-        {/* Profil Bölümü - Sadece Development'ta görünür */}
-        {isDevelopment() && (
-          <View style={styles.section}>
-            <Text variant="primary" size="large" weight="bold" style={styles.sectionTitle}>
-              👤 Profil
-            </Text>
-            
-            <Card variant="default" padding="none" style={styles.card}>
-              <TouchableOpacity 
-                variant="transparent"
-                style={[styles.settingItem, { borderBottomWidth: 0 }]}
-                onPress={() => navigateTo('profile')}
-              >
-                <View variant="transparent" style={styles.settingInfo}>
-                  <Text variant="primary" size="medium">
-                    Profil Sayfası
-                  </Text>
-                  <Text variant="secondary" size="small">
-                    Profil bilgilerinizi görüntüleyin ve düzenleyin
-                  </Text>
-                </View>
-                <View variant="transparent" style={styles.settingAction}>
-                  <Text variant="secondary" size="medium">👤</Text>
-                </View>
-              </TouchableOpacity>
-            </Card>
-          </View>
-        )}
+        {/* Yasal Bölüm */}
+        <View style={styles.section}>
+          <Text variant="primary" size="large" weight="bold" style={styles.sectionTitle}>
+            📋 Yasal
+          </Text>
+          
+          <Card variant="default" padding="none" style={styles.card}>
+            <TouchableOpacity 
+              variant="transparent"
+              style={[styles.settingItem, { borderBottomWidth: 1, borderBottomColor: colors.border }]}
+              onPress={() => navigateTo('privacyTerms')}
+            >
+              <View variant="transparent" style={styles.settingInfo}>
+                <Text variant="primary" size="medium">
+                  Gizlilik Politikası ve Kullanım Şartları
+                </Text>
+                <Text variant="secondary" size="small">
+                  Gizlilik politikasını ve kullanım şartlarını tekrar okuyun
+                </Text>
+              </View>
+              <View variant="transparent" style={styles.settingAction}>
+                <Text variant="secondary" size="medium">📄</Text>
+              </View>
+            </TouchableOpacity>
+          </Card>
+        </View>
 
-        {/* Geliştirici Bölümü - Sadece Development'ta görünür */}
-        {isDevelopment() && (
-          <View style={styles.section}>
-            <Text variant="primary" size="large" weight="bold" style={styles.sectionTitle}>
-              🛠️ Geliştirici
-            </Text>
-            
-            <Card variant="default" padding="none" style={styles.card}>
-              <TouchableOpacity 
-                variant="transparent"
-                style={[styles.settingItem, { borderBottomWidth: 0 }]}
-                onPress={() => navigateTo('uiDemo')}
-              >
-                <View variant="transparent" style={styles.settingInfo}>
-                  <Text variant="primary" size="medium">
-                    UI Bileşenleri Demo
-                  </Text>
-                  <Text variant="secondary" size="small">
-                    Yeni UI bileşenlerini test edin
-                  </Text>
-                </View>
-                <View variant="transparent" style={styles.settingAction}>
-                  <Text variant="secondary" size="medium">🎨</Text>
-                </View>
-              </TouchableOpacity>
-            </Card>
-          </View>
-        )}
+        {/* Geliştirici bölümleri production'da gizlendi */}
       </ScrollView>
 
     </Layout>

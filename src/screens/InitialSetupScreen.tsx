@@ -9,7 +9,6 @@ import { STORAGE_KEYS } from '@/constants';
 import { LANGUAGE_OPTIONS } from '@/constants/languageOptions';
 import { CURRENCY_OPTIONS } from '@/constants/currencyOptions';
 import {
-  Layout,
   View,
   Text,
   Button,
@@ -40,7 +39,7 @@ const InitialSetupScreen: React.FC = () => {
       // Onboarding ekranına yönlendir
       navigateTo('onboarding');
     } catch (error) {
-      console.error('Initial setup failed:', error);
+      // Initial setup failed
       Alert.alert(
         'Hata',
         'Kurulum sırasında bir hata oluştu. Lütfen tekrar deneyin.'
@@ -51,63 +50,61 @@ const InitialSetupScreen: React.FC = () => {
   };
 
   return (
-    <Layout>
-      <View style={styles.container}>
-        {/* Header */}
-        <View style={styles.header}>
-          <Text variant="primary" size="large" weight="bold" style={styles.title}>
-            FinBuddy'ye Hoş Geldiniz
-          </Text>
-          <Text variant="secondary" size="medium" style={styles.subtitle}>
-            Başlamak için dil ve para biriminizi seçin
-          </Text>
-        </View>
-
-        {/* Setup Form */}
-        <Card style={styles.formCard}>
-          <View style={styles.form}>
-            {/* Language Selection */}
-            <View style={styles.formGroup}>
-              <Text variant="primary" size="medium" weight="medium" style={styles.label}>
-                Dil / Language
-              </Text>
-              <Dropdown
-                options={LANGUAGE_OPTIONS}
-                selectedValue={selectedLanguage}
-                onSelect={setSelectedLanguage}
-                style={styles.dropdown}
-              />
-            </View>
-
-            {/* Currency Selection */}
-            <View style={styles.formGroup}>
-              <Text variant="primary" size="medium" weight="medium" style={styles.label}>
-                Para Birimi / Currency
-              </Text>
-              <Dropdown
-                options={CURRENCY_OPTIONS}
-                selectedValue={selectedCurrency}
-                onSelect={setSelectedCurrency}
-                style={styles.dropdown}
-              />
-            </View>
-          </View>
-        </Card>
-
-        {/* Action Button */}
-        <View style={styles.actions}>
-          <Button
-            variant="primary"
-            size="large"
-            onPress={handleComplete}
-            loading={loading}
-            disabled={loading}
-            title="Devam Et"
-            style={styles.continueButton}
-          />
-        </View>
+    <View style={styles.container}>
+      {/* Header */}
+      <View style={styles.header}>
+        <Text variant="primary" size="large" weight="bold" style={styles.title}>
+          FinBuddy'ye Hoş Geldiniz
+        </Text>
+        <Text variant="secondary" size="medium" style={styles.subtitle}>
+          Başlamak için dil ve para biriminizi seçin
+        </Text>
       </View>
-    </Layout>
+
+      {/* Setup Form */}
+      <Card style={styles.formCard}>
+        <View style={styles.form}>
+          {/* Language Selection */}
+          <View style={styles.formGroup}>
+            <Text variant="primary" size="medium" weight="medium" style={styles.label}>
+              Dil / Language
+            </Text>
+            <Dropdown
+              options={LANGUAGE_OPTIONS}
+              selectedValue={selectedLanguage}
+              onSelect={setSelectedLanguage}
+              style={styles.dropdown}
+            />
+          </View>
+
+          {/* Currency Selection */}
+          <View style={styles.formGroup}>
+            <Text variant="primary" size="medium" weight="medium" style={styles.label}>
+              Para Birimi / Currency
+            </Text>
+            <Dropdown
+              options={CURRENCY_OPTIONS}
+              selectedValue={selectedCurrency}
+              onSelect={setSelectedCurrency}
+              style={styles.dropdown}
+            />
+          </View>
+        </View>
+      </Card>
+
+      {/* Action Button */}
+      <View style={styles.actions}>
+        <Button
+          variant="primary"
+          size="large"
+          onPress={handleComplete}
+          loading={loading}
+          disabled={loading}
+          title="Devam Et"
+          style={styles.continueButton}
+        />
+      </View>
+    </View>
   );
 };
 
@@ -116,6 +113,7 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 24,
     justifyContent: 'center',
+    backgroundColor: '#f8f9fa', // Full screen background
   },
   header: {
     alignItems: 'center',
