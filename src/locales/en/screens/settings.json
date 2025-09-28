@@ -56,6 +56,20 @@
     "security": "Security",
     "logout": "Logout"
   },
+  "app_info": {
+    "title": "App Information",
+    "version": "Version",
+    "theme": "Theme",
+    "language": "Language",
+    "currency": "Currency",
+    "active": "active"
+  },
+  "legal": {
+    "title": "Legal",
+    "privacy_terms": "Privacy Policy and Terms of Use",
+    "privacy_terms_subtitle": "Read privacy policy and terms of use again"
+  },
+  "language_subtitle": "Application language",
   "current": "current",
   "selected": "selected",
   "default": "default",

@@ -44,5 +44,23 @@
     "edit_profile_message": "La edición de perfil se añadirá pronto",
     "security": "Seguridad",
     "logout": "Cerrar sesión"
-  }
+  },
+  "app_info": {
+    "title": "Información de la aplicación",
+    "version": "Versión",
+    "theme": "Tema",
+    "language": "Idioma",
+    "currency": "Moneda",
+    "active": "activo"
+  },
+  "legal": {
+    "title": "Legal",
+    "privacy_terms": "Política de privacidad y términos de uso",
+    "privacy_terms_subtitle": "Leer nuevamente la política de privacidad y términos de uso"
+  },
+  "language_subtitle": "Idioma de la aplicación",
+  "current": "actual",
+  "selected": "seleccionado",
+  "default": "predeterminado",
+  "select_time": "Seleccionar hora"
 }

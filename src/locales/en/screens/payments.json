@@ -15,7 +15,7 @@
   "error": "An error occurred",
   "first_payment": "Add Your First Payment",
   "first_payment_message": "No payments yet. Start by adding your first payment.",
-  "pay_button": "Pay",
+  "pay_button": "Pay All",
   "paid_button": "Paid",
   "payment_success": "Success",
   "payment_marked_success": "Payment marked successfully!",

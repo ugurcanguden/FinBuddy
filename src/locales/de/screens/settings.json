@@ -44,5 +44,23 @@
     "edit_profile_message": "Profilbearbeitung wird bald hinzugefügt",
     "security": "Sicherheit",
     "logout": "Abmelden"
-  }
+  },
+  "app_info": {
+    "title": "App-Informationen",
+    "version": "Version",
+    "theme": "Design",
+    "language": "Sprache",
+    "currency": "Währung",
+    "active": "aktiv"
+  },
+  "legal": {
+    "title": "Rechtliches",
+    "privacy_terms": "Datenschutzrichtlinie und Nutzungsbedingungen",
+    "privacy_terms_subtitle": "Datenschutzrichtlinie und Nutzungsbedingungen erneut lesen"
+  },
+  "language_subtitle": "Anwendungssprache",
+  "current": "aktuell",
+  "selected": "ausgewählt",
+  "default": "Standard",
+  "select_time": "Zeit auswählen"
 }

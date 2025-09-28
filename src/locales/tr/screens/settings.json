@@ -56,6 +56,20 @@
     "security": "Güvenlik",
     "logout": "Çıkış Yap"
   },
+  "app_info": {
+    "title": "Uygulama Bilgileri",
+    "version": "Versiyon",
+    "theme": "Tema",
+    "language": "Dil",
+    "currency": "Para Birimi",
+    "active": "aktif"
+  },
+  "legal": {
+    "title": "Yasal",
+    "privacy_terms": "Gizlilik Politikası ve Kullanım Şartları",
+    "privacy_terms_subtitle": "Gizlilik politikasını ve kullanım şartlarını tekrar okuyun"
+  },
+  "language_subtitle": "Uygulama dili",
   "current": "güncel",
   "selected": "seçili",
   "default": "varsayılan",

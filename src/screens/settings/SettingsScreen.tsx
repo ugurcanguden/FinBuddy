@@ -191,12 +191,12 @@ const SettingsScreen: React.FC = () => {
         {/* Uygulama Bilgileri */}
         <View style={styles.section}>
           <Text variant="primary" size="large" weight="bold" style={styles.sectionTitle}>
-            Uygulama Bilgileri
+            {t('screens.settings.app_info.title')}
           </Text>
           
           <View style={styles.statsGrid}>
             <StatCard
-              title="Versiyon"
+              title={t('screens.settings.app_info.version')}
               value="1.0.0"
               subtitle={t('screens.settings.current') || 'güncel'}
               icon="📱"
@@ -206,9 +206,9 @@ const SettingsScreen: React.FC = () => {
             />
             
             <StatCard
-              title="Tema"
+              title={t('screens.settings.app_info.theme')}
               value={currentTheme}
-              subtitle="aktif"
+              subtitle={t('screens.settings.app_info.active')}
               icon="🎨"
               variant="primary"
               animated={true}
@@ -216,7 +216,7 @@ const SettingsScreen: React.FC = () => {
             />
             
             <StatCard
-              title="Dil"
+              title={t('screens.settings.app_info.language')}
               value={currentLanguage.toUpperCase()}
               subtitle={t('screens.settings.selected') || 'seçili'}
               icon="🌍"
@@ -226,7 +226,7 @@ const SettingsScreen: React.FC = () => {
             />
             
             <StatCard
-              title="Para Birimi"
+              title={t('screens.settings.app_info.currency')}
               value={currency}
               subtitle={t('screens.settings.default') || 'varsayılan'}
               icon="💰"
@@ -250,7 +250,7 @@ const SettingsScreen: React.FC = () => {
                   🌍 {t('screens.settings.general.language')}
                 </Text>
                 <Text variant="secondary" size="small">
-                  Uygulama dili
+                  {t('screens.settings.language_subtitle')}
                 </Text>
               </View>
               <View style={styles.dropdownContainer}>
@@ -564,7 +564,7 @@ const SettingsScreen: React.FC = () => {
         {/* Yasal Bölüm */}
         <View style={styles.section}>
           <Text variant="primary" size="large" weight="bold" style={styles.sectionTitle}>
-            📋 Yasal
+            📋 {t('screens.settings.legal.title')}
           </Text>
           
           <Card variant="default" padding="none" style={styles.card}>
@@ -575,10 +575,10 @@ const SettingsScreen: React.FC = () => {
             >
               <View variant="transparent" style={styles.settingInfo}>
                 <Text variant="primary" size="medium">
-                  Gizlilik Politikası ve Kullanım Şartları
+                  {t('screens.settings.legal.privacy_terms')}
                 </Text>
                 <Text variant="secondary" size="small">
-                  Gizlilik politikasını ve kullanım şartlarını tekrar okuyun
+                  {t('screens.settings.legal.privacy_terms_subtitle')}
                 </Text>
               </View>
               <View variant="transparent" style={styles.settingAction}>

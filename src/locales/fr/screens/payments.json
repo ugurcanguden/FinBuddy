@@ -15,7 +15,7 @@
   "error": "Une erreur s'est produite",
   "first_payment": "Ajoutez Votre Premier Paiement",
   "first_payment_message": "Aucun paiement pour le moment. Commencez par ajouter votre premier paiement.",
-  "pay_button": "Payer",
+  "pay_button": "Tout payer",
   "paid_button": "Payé",
   "payment_success": "Succès",
   "payment_marked_success": "Paiement marqué avec succès !",
