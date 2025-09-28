@@ -52,6 +52,31 @@ class StorageService {
     const keys = await this.getAllKeys();
     return keys.length > 0;
   }
+
+  // Favori raporlar için metodlar
+  async getFavoriteReports(): Promise<string[]> {
+    const favorites = await this.get<string[]>('favorite_reports');
+    return favorites || [];
+  }
+
+  async addFavoriteReport(reportId: string): Promise<void> {
+    const favorites = await this.getFavoriteReports();
+    if (!favorites.includes(reportId)) {
+      favorites.push(reportId);
+      await this.set('favorite_reports', favorites);
+    }
+  }
+
+  async removeFavoriteReport(reportId: string): Promise<void> {
+    const favorites = await this.getFavoriteReports();
+    const updatedFavorites = favorites.filter(id => id !== reportId);
+    await this.set('favorite_reports', updatedFavorites);
+  }
+
+  async isFavoriteReport(reportId: string): Promise<boolean> {
+    const favorites = await this.getFavoriteReports();
+    return favorites.includes(reportId);
+  }
 }
 
 // Singleton instance

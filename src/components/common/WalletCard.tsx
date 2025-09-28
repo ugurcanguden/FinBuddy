@@ -82,18 +82,30 @@ const WalletCard: React.FC<WalletCardProps> = ({
 
   // Animasyonlar
   useEffect(() => {
+    // Önceki animasyonları durdur
+    scaleAnim.stopAnimation();
+    balanceAnim.stopAnimation();
+    progressAnim.stopAnimation();
+    coinAnim.stopAnimation();
+    
     if (animated && !loading) {
+      // Animasyonları sıfırla
+      scaleAnim.setValue(0);
+      balanceAnim.setValue(0);
+      progressAnim.setValue(0);
+      coinAnim.setValue(0);
+      
       Animated.sequence([
         Animated.timing(scaleAnim, {
           toValue: 1,
           duration: 400,
-          useNativeDriver: true,
+          useNativeDriver: false,
         }),
         Animated.parallel([
           Animated.timing(balanceAnim, {
             toValue: 1,
             duration: 600,
-            useNativeDriver: true,
+            useNativeDriver: false,
           }),
           Animated.timing(progressAnim, {
             toValue: progressPercentage / 100,
@@ -108,13 +120,13 @@ const WalletCard: React.FC<WalletCardProps> = ({
         Animated.timing(coinAnim, {
           toValue: -10,
           duration: 200,
-          useNativeDriver: true,
+          useNativeDriver: false,
         }),
         Animated.spring(coinAnim, {
           toValue: 0,
           tension: 300,
           friction: 8,
-          useNativeDriver: true,
+          useNativeDriver: false,
         }),
       ]).start();
     } else if (!loading) {

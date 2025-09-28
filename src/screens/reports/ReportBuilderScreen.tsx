@@ -30,36 +30,98 @@ const ReportBuilderScreen: React.FC = () => {
   const [saving, setSaving] = useState(false);
   const [chartViewportWidth, setChartViewportWidth] = useState(0);
 
+  const preview = useCallback(async () => {
+    const data = await paymentService.aggregate({
+      fact,
+      dimension,
+      measure,
+      filters: {
+        ...(dateFrom && { date_from: dateFrom }),
+        ...(dateTo && { date_to: dateTo }),
+      },
+    });
+    setRows(data);
+  }, [fact, dimension, measure, dateFrom, dateTo]);
+
+  // Rapor yükleme - hem config hem de reportId ile
   useEffect(() => {
-    const config = currentParams?.config as ReportConfig | undefined;
-    if (!config) return;
+    const loadReport = async () => {
+      // Eğer reportId varsa, raporu veritabanından yükle
+      if (currentParams?.reportId) {
+        try {
+          const report = await reportsService.getReport(currentParams.reportId);
+          if (report) {
+            const config = report.config;
+            
+            const factValue: Fact = config.fact === 'payments_expense' || config.fact === 'payments_income' 
+              ? config.fact 
+              : 'payments_expense';
+            const dimensionValue: Dimension = ['month', 'category', 'status', 'type'].includes(config.dimension as string)
+              ? (config.dimension as Dimension)
+              : 'category';
+            const measureValue: Measure = ['sum', 'count', 'avg'].includes(config.measure as string)
+              ? (config.measure as Measure)
+              : 'sum';
+            const chartValue: Chart = ['table', 'bar', 'line'].includes((config.chart ?? 'table') as string)
+              ? ((config.chart ?? 'table') as Chart)
+              : 'table';
 
-    const factValue: Fact = config.fact === 'payments_expense' || config.fact === 'payments_income' 
-      ? config.fact 
-      : 'payments_expense';
-    const dimensionValue: Dimension = ['month', 'category', 'status', 'type'].includes(config.dimension as string)
-      ? (config.dimension as Dimension)
-      : 'category';
-    const measureValue: Measure = ['sum', 'count', 'avg'].includes(config.measure as string)
-      ? (config.measure as Measure)
-      : 'sum';
-    const chartValue: Chart = ['table', 'bar', 'line'].includes((config.chart ?? 'table') as string)
-      ? ((config.chart ?? 'table') as Chart)
-      : 'table';
+            setFact(factValue);
+            setDimension(dimensionValue);
+            setMeasure(measureValue);
+            setChart(chartValue);
 
-    setFact(factValue);
-    setDimension(dimensionValue);
-    setMeasure(measureValue);
-    setChart(chartValue);
+            const filters = (config.filters ?? {}) as Record<string, string | undefined>;
+            setDateFrom(filters['date_from'] ?? '');
+            setDateTo(filters['date_to'] ?? '');
+            setReportName(report.name);
 
-    const filters = (config.filters ?? {}) as Record<string, string | undefined>;
-    setDateFrom(filters['date_from'] ?? '');
-    setDateTo(filters['date_to'] ?? '');
+            // Rapor verilerini yükle
+            await preview();
+            return;
+          }
+        } catch (error) {
+          console.error('Failed to load report:', error);
+          Alert.alert('Hata', 'Rapor yüklenemedi');
+        }
+      }
 
-    if (typeof currentParams?.name === 'string') {
-      setReportName(currentParams.name);
-    }
-  }, [currentParams]);
+      // Eğer config varsa, direkt config'i kullan
+      const config = currentParams?.config as ReportConfig | undefined;
+      if (!config) return;
+
+      const factValue: Fact = config.fact === 'payments_expense' || config.fact === 'payments_income' 
+        ? config.fact 
+        : 'payments_expense';
+      const dimensionValue: Dimension = ['month', 'category', 'status', 'type'].includes(config.dimension as string)
+        ? (config.dimension as Dimension)
+        : 'category';
+      const measureValue: Measure = ['sum', 'count', 'avg'].includes(config.measure as string)
+        ? (config.measure as Measure)
+        : 'sum';
+      const chartValue: Chart = ['table', 'bar', 'line'].includes((config.chart ?? 'table') as string)
+        ? ((config.chart ?? 'table') as Chart)
+        : 'table';
+
+      setFact(factValue);
+      setDimension(dimensionValue);
+      setMeasure(measureValue);
+      setChart(chartValue);
+
+      const filters = (config.filters ?? {}) as Record<string, string | undefined>;
+      setDateFrom(filters['date_from'] ?? '');
+      setDateTo(filters['date_to'] ?? '');
+
+      if (typeof currentParams?.name === 'string') {
+        setReportName(currentParams.name);
+      }
+
+      // Rapor verilerini yükle
+      await preview();
+    };
+
+    loadReport();
+  }, [currentParams, preview]);
 
   const factOptions = useMemo(() => [
     { value: 'payments_expense', label: t('screens.report_builder.fact_payments_expense') || 'Gider Ödemeleri', nativeName: '', flag: '' },
@@ -86,19 +148,6 @@ const ReportBuilderScreen: React.FC = () => {
   const dateToPlaceholder = t('screens.report_builder.date_to_placeholder') || 'YYYY-MM-DD';
   const reportNameLabel = t('screens.report_builder.report_name_label') || 'Report Name';
   const reportNamePlaceholder = t('screens.report_builder.report_name_placeholder') || 'My Report';
-
-  const preview = async () => {
-    const data = await paymentService.aggregate({
-      fact,
-      dimension,
-      measure,
-      filters: {
-        ...(dateFrom && { date_from: dateFrom }),
-        ...(dateTo && { date_to: dateTo }),
-      },
-    });
-    setRows(data);
-  };
 
   const maxVal = useMemo(() => Math.max(0, ...rows.map(r => r.value)), [rows]);
   const scale = (v: number) => (maxVal ? Math.max(6, Math.round((v / maxVal) * 180)) : 6);

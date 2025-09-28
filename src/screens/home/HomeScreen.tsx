@@ -3,15 +3,16 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { StyleSheet, ScrollView as RNScrollView, RefreshControl, Animated, Alert } from 'react-native';
 import { useLocale } from '@/hooks';
 import { Layout, PageHeader } from '@/components';
-import { useTheme, useCurrency, useNavigation } from '@/contexts';
-import { paymentService, storageService } from '@/services';
+import { useTheme, useNavigation } from '@/contexts';
+import { paymentService, storageService, reportsService } from '@/services';
 import { useCurrencyFormatter } from '@/utils';
 import { 
   WalletSection, 
   StatsSection, 
   IncomeReportSection, 
   ExpenseReportSection, 
-  PaymentStatusSection 
+  PaymentStatusSection,
+  FavoriteReportsSection
 } from './components';
 
 // const BAR_WIDTH = 44;
@@ -22,7 +23,6 @@ const HomeScreen: React.FC = () => {
   const { navigateTo } = useNavigation();
 
   const { colors } = useTheme();
-  const { currency } = useCurrency();
   const { format } = useCurrencyFormatter();
   const [summary, setSummary] = useState<{ expense: { total: number; paid: number; pending: number }; income: { total: number; paid: number; pending: number } } | null>(null);
   const [incomeSeries, setIncomeSeries] = useState<Array<{ ym: string; total: number; paid: number }>>([]);
@@ -35,6 +35,7 @@ const HomeScreen: React.FC = () => {
   const [selectedYear, setSelectedYear] = useState<string>(() => new Date().getFullYear().toString());
   const [cashFlow, setCashFlow] = useState<{ incomePaid: number; expensePaid: number; netBalance: number }>({ incomePaid: 0, expensePaid: 0, netBalance: 0 });
   const [refreshing, setRefreshing] = useState(false);
+  const [favoriteReports, setFavoriteReports] = useState<Array<{ id: string; name: string; config: any }>>([]);
   const walletAnim = useRef(new Animated.Value(0)).current;
   const coinAnim = useRef(new Animated.Value(0)).current;
 
@@ -70,6 +71,38 @@ const HomeScreen: React.FC = () => {
     }
   }, []);
 
+  // Favori raporları yükle
+  const loadFavoriteReports = useCallback(async () => {
+    try {
+      const favoriteIds = await storageService.getFavoriteReports();
+      if (favoriteIds.length > 0) {
+        const reports = await Promise.all(
+          favoriteIds.map(id => reportsService.getReport(id))
+        );
+        const validReports = reports.filter(report => report !== null) as Array<{ id: string; name: string; config: any }>;
+        setFavoriteReports(validReports);
+      } else {
+        setFavoriteReports([]);
+      }
+    } catch (error) {
+      console.error('Failed to load favorite reports:', error);
+      setFavoriteReports([]);
+    }
+  }, []);
+
+  // Favori raporu kaldır
+  const removeFavoriteReport = useCallback(async (reportId: string) => {
+    try {
+      await storageService.removeFavoriteReport(reportId);
+      setFavoriteReports(prev => prev.filter(report => report.id !== reportId));
+    } catch (error) {
+      console.error('Failed to remove favorite report:', error);
+      Alert.alert('Hata', 'Favori rapor kaldırılamadı');
+    }
+  }, []);
+
+  // Rapor görüntüle
+
   const handlePaymentAction = useCallback(async (paymentId: string, type: 'expense' | 'income') => {
     try {
       const status = type === 'expense' ? 'paid' : 'received';
@@ -97,7 +130,8 @@ const HomeScreen: React.FC = () => {
   useEffect(() => {
     if (!selectedYear) return;
     loadDashboard(selectedYear);
-  }, [loadDashboard, selectedYear]);
+    loadFavoriteReports();
+  }, [loadDashboard, selectedYear, loadFavoriteReports]);
 
   // Tour kontrolü - ana sayfa açıldığında
   useEffect(() => {
@@ -149,6 +183,10 @@ const HomeScreen: React.FC = () => {
   // const isNetPositive = netCash >= 0; // WalletCard içinde hesaplanıyor
 
   useEffect(() => {
+    // Animasyonu durdur ve sıfırla
+    walletAnim.stopAnimation();
+    walletAnim.setValue(0);
+    
     Animated.timing(walletAnim, {
       toValue: netRatio,
       duration: 500,
@@ -157,13 +195,17 @@ const HomeScreen: React.FC = () => {
   }, [walletAnim, netRatio]);
 
   useEffect(() => {
+    // Animasyonu durdur ve sıfırla
+    coinAnim.stopAnimation();
+    coinAnim.setValue(0);
+    
     Animated.sequence([
-      Animated.timing(coinAnim, { toValue: -12, duration: 250, useNativeDriver: true }),
-      Animated.spring(coinAnim, { toValue: 0, damping: 6, useNativeDriver: true }),
+      Animated.timing(coinAnim, { toValue: -12, duration: 250, useNativeDriver: false }),
+      Animated.spring(coinAnim, { toValue: 0, damping: 6, useNativeDriver: false }),
     ]).start();
   }, [coinAnim, netCash]);
 
-  const formatCurrency = useCallback((value: number, fractionDigits = 2) => {
+  const formatCurrency = useCallback((value: number) => {
     return format(value);
   }, [format]);
 
@@ -347,8 +389,8 @@ const HomeScreen: React.FC = () => {
           <RefreshControl
             refreshing={refreshing}
             onRefresh={() => loadDashboard(selectedYear, true)}
-            tintColor={colors.primary}
-            colors={[colors.primary]}
+            colors={[colors.primary]} // Android için
+            tintColor={colors.primary} // iOS için
           />
         )}
       >
@@ -395,6 +437,12 @@ const HomeScreen: React.FC = () => {
           calculateOverdueDays={calculateOverdueDays}
           calculateDaysUntil={calculateDaysUntil}
         />
+
+        {/* Favori Raporlar */}
+          <FavoriteReportsSection
+            reports={favoriteReports}
+            onRemoveReport={removeFavoriteReport}
+          />
       </RNScrollView>
     </Layout>
   );

@@ -65,5 +65,6 @@
   "income_success": "Einnahme erfolgreich markiert!",
   "action_success": "Erfolgreich",
   "action_error": "Fehler",
-  "action_error_message": "Ein Fehler ist während der Operation aufgetreten."
+  "action_error_message": "Ein Fehler ist während der Operation aufgetreten.",
+  "favorite_reports_title": "Lieblingsberichte"
 }

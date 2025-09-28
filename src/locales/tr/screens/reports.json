@@ -15,5 +15,7 @@
   "saved_reports_empty": "Henüz kaydedilmiş rapor yok.",
   "saved_reports_view": "Aç",
   "saved_reports_preview": "Önizle",
-  "saved_reports_delete": "Sil"
+  "saved_reports_delete": "Sil",
+  "last_6_months": "Son 6 Ay",
+  "pull_to_refresh": "Yenilemek için aşağı çekin"
 }

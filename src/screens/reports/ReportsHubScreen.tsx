@@ -1,7 +1,7 @@
 // ReportsHubScreen - Modern rapor hub'ı
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { Alert, StyleSheet } from 'react-native';
-import { Layout, PageHeader, ScrollView, View, Text, Dropdown, ReportPreviewModal, Button } from '@/components';
+import React, { useCallback, useEffect, useState } from 'react';
+import { Alert, StyleSheet, RefreshControl, ScrollView } from 'react-native';
+import { Layout, PageHeader, View, Text, ReportPreviewModal, Button } from '@/components';
 import { useLocale } from '@/hooks';
 import { useNavigation } from '@/contexts';
 import { useCurrencyFormatter } from '@/utils';
@@ -16,12 +16,7 @@ const ReportsHubScreen: React.FC = () => {
   const { navigateTo } = useNavigation();
   const { format } = useCurrencyFormatter();
 
-  const [ym, setYm] = useState<string>(() => {
-    const now = new Date();
-    const year = now.getFullYear();
-    const month = String(now.getMonth() + 1).padStart(2, '0');
-    return `${year}-${month}`;
-  });
+  const [refreshing, setRefreshing] = useState<boolean>(false);
   const [summary, setSummary] = useState<{ expense: { total: number; paid: number; pending: number }; income: { total: number; paid: number; pending: number } } | null>(null);
   const [savedReports, setSavedReports] = useState<ReportDef[]>([]);
   const [savedLoading, setSavedLoading] = useState<boolean>(true);
@@ -45,51 +40,77 @@ const ReportsHubScreen: React.FC = () => {
     checkDbReady();
   }, []);
 
-      useEffect(() => {
-        if (!dbReady) return;
-        
-        (async () => {
-          try {
-            const year = ym.split('-')[0];
-            const [sum, incomeSeries, expenseSeries] = await Promise.all([
-              paymentService.getDashboardSummary(ym),
-              paymentService.getMonthlySeries('income', year ? { year } : {}),
-              paymentService.getMonthlySeries('expense', year ? { year } : {}),
-            ]);
-            
-            setSummary(sum);
-            
-            // Aylık verileri birleştir
-            const monthlyDataMap = new Map<string, { ym: string; income: number; expense: number }>();
-            
-            // Null check ekle
-            if (incomeSeries && Array.isArray(incomeSeries)) {
-              incomeSeries.forEach(item => {
-                if (!monthlyDataMap.has(item.ym)) {
-                  monthlyDataMap.set(item.ym, { ym: item.ym, income: 0, expense: 0 });
-                }
-                // Sadece ödemesi gerçekleşen (received) gelirleri kullan
-                monthlyDataMap.get(item.ym)!.income = item.paid;
-              });
+  // Veri yükleme fonksiyonu
+  const loadData = useCallback(async () => {
+    if (!dbReady) return;
+    
+    try {
+      const now = new Date();
+      const currentYear = now.getFullYear();
+      const currentMonth = now.getMonth() + 1;
+      
+      // Son 6 ayı hesapla
+      const last6Months: string[] = [];
+      for (let i = 0; i < 6; i++) {
+        const date = new Date(currentYear, currentMonth - 1 - i, 1);
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        last6Months.push(`${year}-${month}`);
+      }
+      
+      // En son ayı seç (ilk eleman)
+      const currentYm = last6Months[0];
+      
+      const [sum, incomeSeries, expenseSeries] = await Promise.all([
+        paymentService.getDashboardSummary(currentYm),
+        paymentService.getMonthlySeries('income', { year: currentYear.toString() }),
+        paymentService.getMonthlySeries('expense', { year: currentYear.toString() }),
+      ]);
+      
+      setSummary(sum);
+      
+      // Aylık verileri birleştir - sadece son 6 ay
+      const monthlyDataMap = new Map<string, { ym: string; income: number; expense: number }>();
+      
+      // Null check ekle
+      if (incomeSeries && Array.isArray(incomeSeries)) {
+        incomeSeries.forEach(item => {
+          if (last6Months.includes(item.ym)) {
+            if (!monthlyDataMap.has(item.ym)) {
+              monthlyDataMap.set(item.ym, { ym: item.ym, income: 0, expense: 0 });
             }
-            
-            if (expenseSeries && Array.isArray(expenseSeries)) {
-              expenseSeries.forEach(item => {
-                if (!monthlyDataMap.has(item.ym)) {
-                  monthlyDataMap.set(item.ym, { ym: item.ym, income: 0, expense: 0 });
-                }
-                // Sadece ödemesi gerçekleşen (paid) giderleri kullan
-                monthlyDataMap.get(item.ym)!.expense = item.paid;
-              });
-            }
-            
-            const monthlyDataArray = Array.from(monthlyDataMap.values());
-            setMonthlyData(monthlyDataArray);
-          } catch (error) {
-            console.error('Failed to load dashboard data:', error);
+            // Sadece ödemesi gerçekleşen (received) gelirleri kullan
+            monthlyDataMap.get(item.ym)!.income = item.paid;
           }
-        })();
-      }, [ym, dbReady]);
+        });
+      }
+      
+      if (expenseSeries && Array.isArray(expenseSeries)) {
+        expenseSeries.forEach(item => {
+          if (last6Months.includes(item.ym)) {
+            if (!monthlyDataMap.has(item.ym)) {
+              monthlyDataMap.set(item.ym, { ym: item.ym, income: 0, expense: 0 });
+            }
+            // Sadece ödemesi gerçekleşen (paid) giderleri kullan
+            monthlyDataMap.get(item.ym)!.expense = item.paid;
+          }
+        });
+      }
+      
+      // Son 6 ayı sıralı olarak düzenle (en yeni en başta)
+      const monthlyDataArray = last6Months
+        .map(ym => monthlyDataMap.get(ym) || { ym, income: 0, expense: 0 })
+        .reverse(); // En eski en başta olsun
+      
+      setMonthlyData(monthlyDataArray);
+    } catch (error) {
+      console.error('Failed to load dashboard data:', error);
+    }
+  }, [dbReady]);
+
+  useEffect(() => {
+    loadData();
+  }, [loadData]);
 
   const loadSavedReports = useCallback(async () => {
     if (!dbReady) return;
@@ -108,6 +129,21 @@ const ReportsHubScreen: React.FC = () => {
   useEffect(() => {
     loadSavedReports();
   }, [loadSavedReports]);
+
+  // Pull-to-refresh fonksiyonu
+  const onRefresh = useCallback(async () => {
+    setRefreshing(true);
+    try {
+      await Promise.all([
+        loadData(),
+        loadSavedReports()
+      ]);
+    } catch (error) {
+      console.error('Failed to refresh data:', error);
+    } finally {
+      setRefreshing(false);
+    }
+  }, [loadData, loadSavedReports]);
 
   const formatCurrencyValue = useCallback((value: number) => {
     return format(value);
@@ -159,18 +195,6 @@ const ReportsHubScreen: React.FC = () => {
     [closePreview, loadSavedReports, previewReport, t]
   );
 
-  // Month Picker options (last 12 months)
-  const monthOptions = useMemo(() => {
-    const arr: string[] = [];
-    const d = new Date();
-    for (let i = 0; i < 12; i++) {
-      const y = d.getFullYear();
-      const m = String(d.getMonth() + 1).padStart(2, '0');
-      arr.push(`${y}-${m}`);
-      d.setMonth(d.getMonth() - 1);
-    }
-    return arr.map(v => ({ value: v, label: v, nativeName: '', flag: '' }));
-  }, []);
 
   // Component'lere taşındı - artık burada yok
 
@@ -189,19 +213,30 @@ const ReportsHubScreen: React.FC = () => {
 
   return (
     <Layout headerComponent={<PageHeader title={t('navigation.tabs.reports')} /> }>
-      <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
+      
+      <ScrollView 
+        style={styles.container} 
+        showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing} // refreshing state'ini kullan
+            onRefresh={onRefresh}
+            colors={['#007AFF']} // iOS
+            tintColor="#007AFF" // iOS
+            title={t('common.messages.refreshing') || 'Yenileniyor...'} // iOS
+            titleColor="#666" // iOS
+          />
+        }
+      >
         {/* Header Actions */}
         <View style={styles.headerActions}>
-          <View style={styles.monthPicker}>
-            <Text variant="secondary" size="small" weight="medium" style={styles.monthLabel}>
-              {t('screens.reports.month')}
+          <View style={styles.titleSection}>
+            <Text variant="primary" size="large" weight="bold" style={styles.sectionTitle}>
+              {t('screens.reports.last_6_months') || 'Son 6 Ay'}
             </Text>
-            <Dropdown 
-              options={monthOptions} 
-              selectedValue={ym} 
-              onSelect={(v) => setYm(v)}
-              style={styles.dropdown}
-            />
+            <Text variant="secondary" size="small" style={styles.sectionSubtitle}>
+              {t('screens.reports.pull_to_refresh') || 'Yenilemek için aşağı çekin'}
+            </Text>
           </View>
           
           <Button
@@ -258,14 +293,14 @@ const styles = StyleSheet.create({
     marginBottom: 24,
     gap: 16,
   },
-  monthPicker: {
+  titleSection: {
     flex: 1,
   },
-  monthLabel: {
-    marginBottom: 8,
+  sectionTitle: {
+    marginBottom: 4,
   },
-  dropdown: {
-    minWidth: 120,
+  sectionSubtitle: {
+    opacity: 0.7,
   },
   createButton: {
     alignSelf: 'flex-end',

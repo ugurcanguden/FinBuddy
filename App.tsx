@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { useLocale } from '@/hooks';
 import { NavigationProvider, ThemeProvider, CurrencyProvider, LocaleProvider } from '@/contexts';
 import { databaseService, migrationService, categoryService, notificationService, loggerService } from '@/services';
 import * as Notifications from 'expo-notifications';
@@ -38,7 +37,6 @@ Sentry.init({
 });
 
 const App: React.FC = () => {
-  const { loading: localeLoading } = useLocale();
   const [dbInitialized, setDbInitialized] = useState(false);
   const [dbError, setDbError] = useState<string | null>(null);
   // Artık AppNavigator'da yönlendirme yapılıyor
@@ -124,13 +122,6 @@ const App: React.FC = () => {
     };
   }, []);
 
-  if (localeLoading) {
-    return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <Text>Dil yükleniyor...</Text>
-      </View>
-    );
-  }
 
   if (!dbInitialized) {
     return (

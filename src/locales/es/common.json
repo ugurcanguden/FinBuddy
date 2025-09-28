@@ -47,6 +47,7 @@
     "confirm_delete": "¿Estás seguro de que quieres eliminar este elemento?",
     "no_data": "No hay datos disponibles",
     "loading": "Por favor espera...",
+    "refreshing": "Actualizando...",
     "saved": "Guardado exitosamente",
     "updated": "Actualizado exitosamente",
     "deleted": "Eliminado exitosamente",

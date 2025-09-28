@@ -65,5 +65,6 @@
   "income_success": "Revenu marqué avec succès !",
   "action_success": "Succès",
   "action_error": "Erreur",
-  "action_error_message": "Une erreur s'est produite pendant l'opération."
+  "action_error_message": "Une erreur s'est produite pendant l'opération.",
+  "favorite_reports_title": "Rapports Favoris"
 }

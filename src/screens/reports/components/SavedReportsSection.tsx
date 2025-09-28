@@ -1,8 +1,9 @@
 // SavedReportsSection - Kayıtlı raporlar bölümü
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, Card, TouchableOpacity, Button } from '@/components';
 import { useLocale } from '@/hooks';
 import { useNavigation } from '@/contexts';
+import { storageService } from '@/services';
 import type { ReportDef, ReportConfig } from '@/services';
 
 interface SavedReportsSectionProps {
@@ -22,6 +23,36 @@ const SavedReportsSection: React.FC<SavedReportsSectionProps> = ({
 }) => {
   const { t } = useLocale();
   const { navigateTo } = useNavigation();
+  const [favoriteReports, setFavoriteReports] = useState<string[]>([]);
+
+  // Favori raporları yükle
+  useEffect(() => {
+    const loadFavorites = async () => {
+      try {
+        const favorites = await storageService.getFavoriteReports();
+        setFavoriteReports(favorites);
+      } catch (error) {
+        console.error('Failed to load favorite reports:', error);
+      }
+    };
+    loadFavorites();
+  }, []);
+
+  // Favori raporu ekle/kaldır
+  const toggleFavorite = async (reportId: string) => {
+    try {
+      const isFavorite = favoriteReports.includes(reportId);
+      if (isFavorite) {
+        await storageService.removeFavoriteReport(reportId);
+        setFavoriteReports(prev => prev.filter(id => id !== reportId));
+      } else {
+        await storageService.addFavoriteReport(reportId);
+        setFavoriteReports(prev => [...prev, reportId]);
+      }
+    } catch (error) {
+      console.error('Failed to toggle favorite:', error);
+    }
+  };
 
   const factText = (fact: ReportConfig['fact']) => {
     const map: Record<string, string> = {
@@ -77,6 +108,18 @@ const SavedReportsSection: React.FC<SavedReportsSectionProps> = ({
                   {report.name}
                 </Text>
                 <View style={{ flexDirection: 'row', gap: 8 }}>
+                  <TouchableOpacity 
+                    onPress={() => toggleFavorite(report.id)} 
+                    style={{ 
+                      padding: 8, 
+                      borderRadius: 8, 
+                      backgroundColor: favoriteReports.includes(report.id) ? 'rgba(255, 193, 7, 0.2)' : 'rgba(0, 0, 0, 0.05)' 
+                    }}
+                  >
+                    <Text variant="primary" size="medium">
+                      {favoriteReports.includes(report.id) ? '⭐' : '☆'}
+                    </Text>
+                  </TouchableOpacity>
                   <TouchableOpacity 
                     onPress={() => onOpenPreview(report)} 
                     style={{ padding: 8, borderRadius: 8, backgroundColor: 'rgba(0, 0, 0, 0.05)' }}

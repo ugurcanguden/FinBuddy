@@ -47,6 +47,7 @@
     "confirm_delete": "Are you sure you want to delete this item?",
     "no_data": "No data available",
     "loading": "Please wait...",
+    "refreshing": "Refreshing...",
     "saved": "Saved successfully",
     "updated": "Updated successfully",
     "deleted": "Deleted successfully",

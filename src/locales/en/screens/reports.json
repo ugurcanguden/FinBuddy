@@ -15,5 +15,7 @@
   "saved_reports_empty": "No saved reports yet.",
   "saved_reports_view": "Open",
   "saved_reports_preview": "Preview",
-  "saved_reports_delete": "Delete"
+  "saved_reports_delete": "Delete",
+  "last_6_months": "Last 6 Months",
+  "pull_to_refresh": "Pull down to refresh"
 }

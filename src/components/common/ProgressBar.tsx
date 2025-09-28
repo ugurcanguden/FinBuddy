@@ -81,7 +81,15 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
 
   // Animasyon efektleri
   useEffect(() => {
+    // Önceki animasyonları durdur
+    progressAnim.stopAnimation();
+    pulseAnim.stopAnimation();
+    
     if (animated) {
+      // Animasyonları sıfırla
+      progressAnim.setValue(0);
+      pulseAnim.setValue(1);
+      
       Animated.timing(progressAnim, {
         toValue: clampedProgress,
         duration: 800,
@@ -89,23 +97,30 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
       }).start();
     } else {
       progressAnim.setValue(clampedProgress);
+      pulseAnim.setValue(1);
     }
-  }, [clampedProgress, animated, progressAnim]);
+  }, [clampedProgress, animated, progressAnim, pulseAnim]);
 
   // Pulse animasyonu (progress %100 olduğunda)
   useEffect(() => {
+    // Önceki pulse animasyonunu durdur
+    pulseAnim.stopAnimation();
+    
     if (clampedProgress >= 100) {
+      // Pulse animasyonunu sıfırla
+      pulseAnim.setValue(1);
+      
       const pulse = Animated.loop(
         Animated.sequence([
           Animated.timing(pulseAnim, {
             toValue: 1.05,
             duration: 1000,
-            useNativeDriver: true,
+            useNativeDriver: false,
           }),
           Animated.timing(pulseAnim, {
             toValue: 1,
             duration: 1000,
-            useNativeDriver: true,
+            useNativeDriver: false,
           }),
         ])
       );

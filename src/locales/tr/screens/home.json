@@ -68,5 +68,6 @@
   "action_error_message": "İşlem sırasında bir hata oluştu.",
   "received": "Alınan",
   "pending": "Bekleyen",
-  "overdue": "Geciken"
+  "overdue": "Geciken",
+  "favorite_reports_title": "Favori Raporlar"
 }

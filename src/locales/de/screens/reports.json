@@ -1,19 +1,21 @@
 {
   "monthly_summary": "Monatliche Zusammenfassung",
-  "expense_total": "Ausgaben Gesamt",
+  "expense_total": "Gesamtausgaben",
   "expense_paid": "Bezahlt",
   "expense_pending": "Ausstehend",
-  "income_total": "Einnahmen Gesamt",
+  "income_total": "Gesamteinnahmen",
   "category_distribution": "Kategorieverteilung",
   "month": "Monat",
   "cash_flow": "Cashflow",
   "income": "Einnahmen",
   "expense": "Ausgaben",
-  "create_report": "Bericht Erstellen",
+  "create_report": "Bericht erstellen",
   "saved_reports": "Gespeicherte Berichte",
   "saved_reports_title": "Gespeicherte Berichte",
   "saved_reports_empty": "Noch keine gespeicherten Berichte.",
   "saved_reports_view": "Öffnen",
   "saved_reports_preview": "Vorschau",
-  "saved_reports_delete": "Löschen"
+  "saved_reports_delete": "Löschen",
+  "last_6_months": "Letzte 6 Monate",
+  "pull_to_refresh": "Zum Aktualisieren nach unten ziehen"
 }

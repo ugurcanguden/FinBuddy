@@ -19,9 +19,6 @@ const WalletSection: React.FC<WalletSectionProps> = ({
 }) => {
   const { currency } = useCurrency();
   const { t } = useLocale();
-  
-  // Debug için
-  console.log('WalletSection - t result:', t('screens.wallet.title'));
 
   return (
     <WalletCard

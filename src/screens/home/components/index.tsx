@@ -4,3 +4,4 @@ export { default as StatsSection } from './StatsSection';
 export { default as IncomeReportSection } from './IncomeReportSection';
 export { default as ExpenseReportSection } from './ExpenseReportSection';
 export { default as PaymentStatusSection } from './PaymentStatusSection';
+export { default as FavoriteReportsSection } from './FavoriteReportsSection';

@@ -68,5 +68,6 @@
   "action_error_message": "An error occurred during the operation.",
   "received": "Received",
   "pending": "Pending",
-  "overdue": "Overdue"
+  "overdue": "Overdue",
+  "favorite_reports_title": "Favorite Reports"
 }
