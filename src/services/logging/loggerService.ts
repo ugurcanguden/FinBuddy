@@ -17,7 +17,7 @@ export interface LogContext {
 
 class LoggerService {
   private isDevelopment = __DEV__;
-  private isLoggingEnabled = true; // Varsayılan olarak açık
+  private isLoggingEnabled = __DEV__; // Production'da logları kapat
   private isErrorLoggingEnabled = true; // Hata logları her zaman açık
 
   /**

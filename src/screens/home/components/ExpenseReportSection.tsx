@@ -19,7 +19,6 @@ const ExpenseReportSection: React.FC<ExpenseReportSectionProps> = ({
   const { t } = useLocale();
   const { colors } = useTheme();
 
-  const latestExpense = expenseSeries.length ? expenseSeries[expenseSeries.length - 1]!.total : 0;
 
   // GroupedColumnChart için gider verisi
   const expenseGroupedData: GroupedDatum[] = useMemo(() => {
@@ -54,9 +53,6 @@ const ExpenseReportSection: React.FC<ExpenseReportSectionProps> = ({
         <Text variant="primary" size="large" weight="bold" style={{ marginBottom: 16 }}>
           {t('screens.home.expenses_chart_title') || 'Giderler'}
         </Text>
-        <Text variant="secondary" size="small" style={{ marginBottom: 16 }}>
-          {`${t('screens.home.last_month') || 'Son ay'}: ${formatCurrency(latestExpense)}`}
-        </Text>
         <GroupedColumnChart
           data={expenseGroupedData}
           colors={expenseGroupedColors}
@@ -66,7 +62,7 @@ const ExpenseReportSection: React.FC<ExpenseReportSectionProps> = ({
           groupGap={28}
           yTicks={5}
           formatValue={(n) => formatCurrency(n)}
-          axisWidth={50}
+          axisWidth={80}
         />
       </Card>
     </View>

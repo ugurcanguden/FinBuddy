@@ -46,11 +46,12 @@ const WalletCard: React.FC<WalletCardProps> = ({
     try {
       return new Intl.NumberFormat('tr-TR', {
         style: 'currency',
-        currency: 'TRY',
-        maximumFractionDigits: 0,
+        currency: currency || 'TRY',
+        maximumFractionDigits: 2,
+        minimumFractionDigits: 0,
       }).format(value);
     } catch {
-      return `${value.toFixed(0)} ${currency}`;
+      return `${value.toFixed(2)} ${currency}`;
     }
   };
 

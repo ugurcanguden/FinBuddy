@@ -2,9 +2,10 @@
 import React, { useCallback, useEffect, useState, useMemo } from 'react';
 import { Alert, StyleSheet } from 'react-native';
 import { Layout, PageHeader, ScrollView } from '@/components';
-import { useNavigation } from '@/contexts';
+import { useNavigation, useCurrency } from '@/contexts';
 import { useLocale } from '@/hooks';
 import { paymentService } from '@/services';
+import { useCurrencyFormatter } from '@/utils';
 import type { Entry } from '@/models';
 import { 
   PaymentStatsSection, 
@@ -15,6 +16,8 @@ import {
 const PaymentsScreen: React.FC = () => {
   const { goBack } = useNavigation();
   const { t } = useLocale();
+  const { currency } = useCurrency();
+  const { format } = useCurrencyFormatter();
   const [entries, setEntries] = useState<Entry[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -120,13 +123,8 @@ const PaymentsScreen: React.FC = () => {
 
   // Para formatı
   const formatCurrency = useCallback((amount: number) => {
-    return new Intl.NumberFormat('tr-TR', {
-      style: 'currency',
-      currency: 'TRY',
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(amount);
-  }, []);
+    return format(amount);
+  }, [format]);
 
   // Tarih formatı
   const formatDate = useCallback((dateString: string) => {

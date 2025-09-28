@@ -136,7 +136,11 @@ const AppNavigator: React.FC<AppNavigatorProps> = () => {
       case 'uiDemo':
         return <UIDemoScreen />;
       case 'debug':
-        return <DebugScreen />;
+        // Production'da debug ekranı gösterilmez
+        if (__DEV__) {
+          return <DebugScreen />;
+        }
+        return <HomeScreen />;
       default:
         return <HomeScreen />;
     }

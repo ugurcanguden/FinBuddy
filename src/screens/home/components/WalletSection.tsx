@@ -2,6 +2,7 @@
 import React from 'react';
 import { WalletCard } from '@/components';
 import { useCurrency } from '@/contexts';
+import { useCurrencyFormatter } from '@/utils';
 
 interface WalletSectionProps {
   netCash: number;
@@ -17,6 +18,7 @@ const WalletSection: React.FC<WalletSectionProps> = ({
   loading
 }) => {
   const { currency } = useCurrency();
+  const { format } = useCurrencyFormatter();
 
   return (
     <WalletCard

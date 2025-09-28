@@ -2,29 +2,34 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Alert, StyleSheet } from 'react-native';
 import { Layout, PageHeader, ScrollView, View, Text, Dropdown, ReportPreviewModal, Button } from '@/components';
-import { useLocale, useCategories } from '@/hooks';
-import { useNavigation } from '@/contexts';
+import { useLocale } from '@/hooks';
+import { useNavigation, useCurrency } from '@/contexts';
+import { useCurrencyFormatter } from '@/utils';
 import { paymentService, reportsService, databaseService, type ReportDef } from '@/services';
 import { 
   MonthlySummarySection, 
-  CategoryDistributionSection, 
   SavedReportsSection 
 } from './components';
 
 const ReportsHubScreen: React.FC = () => {
   const { t } = useLocale();
   const { navigateTo } = useNavigation();
-  const { getCategoriesByType } = useCategories();
+  const { currency } = useCurrency();
+  const { format } = useCurrencyFormatter();
 
-  const [ym, setYm] = useState<string>(() => new Date().toISOString().slice(0, 7));
+  const [ym, setYm] = useState<string>(() => {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    return `${year}-${month}`;
+  });
   const [summary, setSummary] = useState<{ expense: { total: number; paid: number; pending: number }; income: { total: number; paid: number; pending: number } } | null>(null);
-  const [byCat, setByCat] = useState<Array<{ category_id: string; total: number }>>([]);
   const [savedReports, setSavedReports] = useState<ReportDef[]>([]);
   const [savedLoading, setSavedLoading] = useState<boolean>(true);
   const [previewReport, setPreviewReport] = useState<ReportDef | null>(null);
   const [previewVisible, setPreviewVisible] = useState(false);
   const [dbReady, setDbReady] = useState<boolean>(false);
-  const [expenseCategories, setExpenseCategories] = useState<Array<{ id: string; name: string; custom_name?: string; is_default: boolean }>>([]);
+  const [monthlyData, setMonthlyData] = useState<Array<{ ym: string; income: number; expense: number }>>([]);
 
   // Veritabanı hazır olana kadar bekle
   useEffect(() => {
@@ -41,29 +46,45 @@ const ReportsHubScreen: React.FC = () => {
     checkDbReady();
   }, []);
 
-  useEffect(() => {
-    if (!dbReady) return;
-    
-    (async () => {
-      try {
-        const [sum, cats, expenseCats] = await Promise.all([
-          paymentService.getDashboardSummary(ym),
-          paymentService.getTotalsByCategory({ ym, type: 'expense' }),
-          getCategoriesByType('expense'),
-        ]);
-        setSummary(sum);
-        setByCat(cats);
-        setExpenseCategories(expenseCats?.map((cat:any) => ({
-          id: cat.id,
-          name: cat.name || '',
-          custom_name: cat.custom_name || undefined,
-          is_default: cat.is_default
-        })));
-      } catch (error) {
-        console.error('Failed to load dashboard data:', error);
-      }
-    })();
-  }, [ym, dbReady, getCategoriesByType]);
+      useEffect(() => {
+        if (!dbReady) return;
+        
+        (async () => {
+          try {
+            const [sum, incomeSeries, expenseSeries] = await Promise.all([
+              paymentService.getDashboardSummary(ym),
+              paymentService.getMonthlySeries('income', { year: ym.split('-')[0] }),
+              paymentService.getMonthlySeries('expense', { year: ym.split('-')[0] }),
+            ]);
+            
+            setSummary(sum);
+            
+            // Aylık verileri birleştir
+            const monthlyDataMap = new Map<string, { ym: string; income: number; expense: number }>();
+            
+            incomeSeries.forEach(item => {
+              if (!monthlyDataMap.has(item.ym)) {
+                monthlyDataMap.set(item.ym, { ym: item.ym, income: 0, expense: 0 });
+              }
+              // Sadece ödemesi gerçekleşen (received) gelirleri kullan
+              monthlyDataMap.get(item.ym)!.income = item.paid;
+            });
+            
+            expenseSeries.forEach(item => {
+              if (!monthlyDataMap.has(item.ym)) {
+                monthlyDataMap.set(item.ym, { ym: item.ym, income: 0, expense: 0 });
+              }
+              // Sadece ödemesi gerçekleşen (paid) giderleri kullan
+              monthlyDataMap.get(item.ym)!.expense = item.paid;
+            });
+            
+            const monthlyDataArray = Array.from(monthlyDataMap.values());
+            setMonthlyData(monthlyDataArray);
+          } catch (error) {
+            console.error('Failed to load dashboard data:', error);
+          }
+        })();
+      }, [ym, dbReady]);
 
   const loadSavedReports = useCallback(async () => {
     if (!dbReady) return;
@@ -84,13 +105,8 @@ const ReportsHubScreen: React.FC = () => {
   }, [loadSavedReports]);
 
   const formatCurrencyValue = useCallback((value: number) => {
-    return new Intl.NumberFormat('tr-TR', {
-      style: 'currency',
-      currency: 'TRY',
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(value);
-  }, []);
+    return format(value);
+  }, [format]);
 
   // Component'lere taşındı - artık burada yok
 
@@ -197,13 +213,7 @@ const ReportsHubScreen: React.FC = () => {
         <MonthlySummarySection
           summary={summary}
           formatCurrencyValue={formatCurrencyValue}
-        />
-
-        {/* Kategori Dağılımı */}
-        <CategoryDistributionSection
-          byCat={byCat}
-          expenseCategories={expenseCategories}
-          formatCurrencyValue={formatCurrencyValue}
+          monthlyData={monthlyData}
         />
 
         {/* Kayıtlı Raporlar */}

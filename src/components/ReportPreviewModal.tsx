@@ -195,13 +195,14 @@ const ReportPreviewModal: React.FC<ReportPreviewModalProps> = ({ visible, report
     (value: number) => {
       if ((config?.measure ?? 'sum') === 'count') return value.toFixed(0);
       try {
-        return new Intl.NumberFormat(undefined, {
+        return new Intl.NumberFormat('tr-TR', {
           style: 'currency',
           currency,
-          maximumFractionDigits: config?.measure === 'avg' ? 2 : 0,
+          maximumFractionDigits: 2,
+          minimumFractionDigits: 0,
         }).format(value);
       } catch {
-        return `${value.toFixed(config?.measure === 'avg' ? 2 : 0)} ${currency}`;
+        return `${value.toFixed(2)} ${currency}`;
       }
     },
     [config, currency]
@@ -355,13 +356,13 @@ const ReportPreviewModal: React.FC<ReportPreviewModalProps> = ({ visible, report
             </View>
           ) : (
             <RNScrollView
-              style={{ maxHeight: 320 }}
+              style={{ maxHeight: 400 }}
               contentContainerStyle={{ paddingVertical: 4 }}
               showsVerticalScrollIndicator={false}
               nestedScrollEnabled
             >
               {chart === 'table' && (
-                <View variant="transparent" style={{ gap: 8 }}>
+                <View variant="transparent" style={[styles.chartContainer, { gap: 8 }]}>
                   {displayRows.map((row) => (
                     <View key={row.key} variant="transparent" style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                       <Text>{row.label}</Text>
@@ -372,7 +373,7 @@ const ReportPreviewModal: React.FC<ReportPreviewModalProps> = ({ visible, report
               )}
 
               {chart === 'bar' && (
-                <View variant="transparent" style={{ gap: 8 }}>
+                <View variant="transparent" style={[styles.chartContainer, { gap: 8 }]}>
                   {displayRows.map((row) => (
                     <View key={row.key} variant="transparent">
                       <Text variant="secondary" size="small">{row.label}</Text>
@@ -386,7 +387,7 @@ const ReportPreviewModal: React.FC<ReportPreviewModalProps> = ({ visible, report
               )}
 
               {chart === 'line' && (
-                <View variant="transparent" style={{ gap: 8 }}>
+                <View variant="transparent" style={[styles.chartContainer, { gap: 8 }]}>
                   <RNView onLayout={handleLineChartLayout}>
                     <RNScrollView
                       horizontal
@@ -495,15 +496,16 @@ const ReportPreviewModal: React.FC<ReportPreviewModalProps> = ({ visible, report
 };
 
 const styles = StyleSheet.create({
-  overlay: { flex: 1, justifyContent: 'center', alignItems: 'center', padding: 24 },
-  modalCard: { width: '100%', maxWidth: 400, borderWidth: 1, borderRadius: 16, gap: 16 },
+  overlay: { flex: 1, justifyContent: 'center', alignItems: 'center', padding: 16 },
+  modalCard: { width: '100%', maxWidth: 600, maxHeight: '90%', borderWidth: 1, borderRadius: 16, gap: 20 },
   header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
   closeButton: { borderWidth: 1, borderRadius: 999, paddingHorizontal: 12, paddingVertical: 4 },
   center: { alignItems: 'center', paddingVertical: 24 },
   tabRow: { flexDirection: 'row', gap: 8 },
   tabButton: { flex: 1, borderWidth: 1, borderRadius: 999, paddingVertical: 8, alignItems: 'center' },
-  lineChartSurface: { flex: 1, borderWidth: 1, borderRadius: 12, padding: 12, justifyContent: 'center', height: 220 },
+  lineChartSurface: { flex: 1, borderWidth: 1, borderRadius: 12, padding: 16, justifyContent: 'center', height: 280, margin: 8 },
   lineChartLabels: { position: 'relative', height: 28, marginTop: 8 },
+  chartContainer: { padding: 16, margin: 8 },
 });
 
 export default ReportPreviewModal;

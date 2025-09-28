@@ -2,9 +2,10 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Alert, StyleSheet } from 'react-native';
 import { Layout, PageHeader, ScrollView, View, Text, TouchableOpacity } from '@/components';
-import { useNavigation, useTheme } from '@/contexts';
+import { useNavigation, useTheme, useCurrency } from '@/contexts';
 import { useLocale } from '@/hooks';
 import { paymentService } from '@/services';
+import { useCurrencyFormatter } from '@/utils';
 import type { Payment, Entry } from '@/models';
 
 interface Props { entryId?: string }
@@ -15,6 +16,8 @@ const PaymentDetailsScreen: React.FC<Props> = ({ entryId }) => {
   const currentParams = navigation.getCurrentParams() as ({ entryId?: string } | null);
   const { colors } = useTheme();
   const { t } = useLocale();
+  const { currency } = useCurrency();
+  const { format } = useCurrencyFormatter();
   const id = entryId || currentParams?.entryId;
   const [payments, setPayments] = useState<Payment[]>([]);
   const [entry, setEntry] = useState<Entry | null>(null);
@@ -144,7 +147,7 @@ const PaymentDetailsScreen: React.FC<Props> = ({ entryId }) => {
                 <View key={p.id} variant="transparent" style={{ borderWidth: 1, borderColor: colors.border, padding: 12, borderRadius: 12, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
                 <View style={{ flex: 1 }}>
                   <Text weight="semibold">{p.due_date}</Text>
-                  <Text variant="secondary" size="small">{p.amount}</Text>
+                  <Text variant="secondary" size="small">{format(p.amount)}</Text>
                 </View>
                 <TouchableOpacity
                   variant={completed ? 'secondary' : 'primary'}

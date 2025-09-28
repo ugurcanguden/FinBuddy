@@ -11,11 +11,13 @@ interface MonthlySummarySectionProps {
     income: { total: number; paid: number; pending: number };
   } | null;
   formatCurrencyValue: (value: number) => string;
+  monthlyData?: Array<{ ym: string; income: number; expense: number }>;
 }
 
 const MonthlySummarySection: React.FC<MonthlySummarySectionProps> = ({
   summary,
-  formatCurrencyValue
+  formatCurrencyValue,
+  monthlyData = []
 }) => {
   const { t } = useLocale();
   const { colors } = useTheme();
@@ -25,7 +27,7 @@ const MonthlySummarySection: React.FC<MonthlySummarySectionProps> = ({
     if (!summary) return [];
     
     // Eğer hiç veri yoksa boş dizi döndür
-    if (summary.income.total === 0 && summary.expense.total === 0) {
+    if (summary.income.paid === 0 && summary.expense.paid === 0) {
       return [];
     }
     
@@ -56,20 +58,11 @@ const MonthlySummarySection: React.FC<MonthlySummarySectionProps> = ({
       ];
       
       const monthName = monthNames[date.getMonth()] || 'Unknown';
-      const isCurrentMonth = ym === new Date().toISOString().slice(0, 7);
       
-      // Mevcut ay için gerçek verileri kullan, diğerleri için tahmini veriler
-      let income, expense;
-      if (isCurrentMonth) {
-        income = summary.income.total;
-        expense = summary.expense.total;
-      } else {
-        // Geçmiş aylar için tahmini veriler (gerçek uygulamada veritabanından çekilecek)
-        const baseIncome = summary.income.total * (0.8 + Math.random() * 0.4);
-        const baseExpense = summary.expense.total * (0.8 + Math.random() * 0.4);
-        income = Math.max(0, baseIncome);
-        expense = Math.max(0, baseExpense);
-      }
+      // Gerçek veritabanı verilerini kullan
+      const monthData = monthlyData.find(data => data.ym === ym);
+      const income = monthData?.income || 0;
+      const expense = monthData?.expense || 0;
       
       months.push({
         label: monthName,
@@ -81,7 +74,7 @@ const MonthlySummarySection: React.FC<MonthlySummarySectionProps> = ({
     }
     
     return months;
-  }, [summary, t]);
+  }, [summary, monthlyData, t]);
 
   // GroupedColumnChart renkleri
   const monthlyGroupedColors = useMemo(() => ({
@@ -116,7 +109,7 @@ const MonthlySummarySection: React.FC<MonthlySummarySectionProps> = ({
         <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', gap: 12 }}>
           <StatCard
             title={t('screens.reports_hub.total_expense')}
-            value={formatCurrencyValue(summary.expense.total)}
+            value={formatCurrencyValue(summary.expense.paid)}
             subtitle={t('screens.reports_hub.this_month')}
             icon="💸"
             variant="danger"
@@ -146,7 +139,7 @@ const MonthlySummarySection: React.FC<MonthlySummarySectionProps> = ({
           
           <StatCard
             title={t('screens.reports_hub.total_income')}
-            value={formatCurrencyValue(summary.income.total)}
+            value={formatCurrencyValue(summary.income.paid)}
             subtitle={t('screens.reports_hub.this_month')}
             icon="💰"
             variant="success"
@@ -210,7 +203,7 @@ const MonthlySummarySection: React.FC<MonthlySummarySectionProps> = ({
                   groupGap={28}
                   yTicks={5}
                   formatValue={(n) => formatCurrencyValue(n)}
-                  axisWidth={50}
+                  axisWidth={120}
                 />
               </Card>
             </View>

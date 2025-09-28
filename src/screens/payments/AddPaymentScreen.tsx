@@ -8,6 +8,7 @@ import { useLocale } from '@/hooks';
 import { paymentService } from '@/services';
 import { useNavigation, useCurrency } from '@/contexts';
 import { useCategories } from '@/hooks';
+import { useCurrencyFormatter, formatCurrencyInput, parseCurrencyInput } from '@/utils';
 
 interface FormState {
   amount: string;
@@ -36,6 +37,7 @@ const AddPaymentScreen = forwardRef<AddPaymentScreenHandle, AddPaymentScreenProp
     const { categories, getDisplayName } = useCategories();
     const { t } = useLocale();
     const { currency } = useCurrency();
+    const { format, formatNumberOnly, getSymbol } = useCurrencyFormatter();
 
   // Currency symbol mapping
   const getCurrencySymbol = (currencyCode: string): string => {
@@ -89,7 +91,7 @@ const AddPaymentScreen = forwardRef<AddPaymentScreenHandle, AddPaymentScreenProp
   );
 
     const isValid = useMemo(() => {
-      const installmentAmount = Number(form.amount);
+      const installmentAmount = parseCurrencyInput(form.amount);
       const monthsNum = Number(form.months);
       return (
         !!form.title.trim() && !!form.categoryId && installmentAmount > 0 && Number.isFinite(installmentAmount) && (monthsNum === 0 || monthsNum >= 1)
@@ -98,7 +100,7 @@ const AddPaymentScreen = forwardRef<AddPaymentScreenHandle, AddPaymentScreenProp
 
     // Toplam tutarı hesapla (taksit tutarı × taksit sayısı)
     const totalAmount = useMemo(() => {
-      const installmentAmount = Number(form.amount);
+      const installmentAmount = parseCurrencyInput(form.amount);
       const monthsNum = Number(form.months || 0);
       if (installmentAmount > 0 && monthsNum > 0) {
         return installmentAmount * monthsNum;
@@ -183,12 +185,12 @@ const AddPaymentScreen = forwardRef<AddPaymentScreenHandle, AddPaymentScreenProp
             value={form.amount}
             onChangeText={(amount) => {
               // Sadece sayı ve nokta/virgül girişine izin ver
-              const numericValue = amount.replace(/[^0-9.,]/g, '');
-              // Virgülü noktaya çevir
-              const normalizedValue = numericValue.replace(',', '.');
+              const cleanValue = amount.replace(/[^\d,.]/g, '');
+              
               // Birden fazla nokta olmasını engelle
-              const parts = normalizedValue.split('.');
-              const finalValue = parts.length > 2 ? parts[0] + '.' + parts.slice(1).join('') : normalizedValue;
+              const parts = cleanValue.split('.');
+              const finalValue = parts.length > 2 ? parts[0] + '.' + parts.slice(1).join('') : cleanValue;
+              
               setForm((s) => ({ ...s, amount: finalValue }));
             }}
             variant="outlined"
@@ -198,7 +200,7 @@ const AddPaymentScreen = forwardRef<AddPaymentScreenHandle, AddPaymentScreenProp
           {form.amount && form.months && Number(form.months) > 0 && (
             <View style={styles.totalAmountInfo}>
               <Text variant="secondary" size="small" style={styles.totalAmountText}>
-                {t(`screens.${i18nKey}.total_amount`)}: {totalAmount.toLocaleString('tr-TR')} {getCurrencySymbol(currency)}
+                {t(`screens.${i18nKey}.total_amount`)}: {format(totalAmount)}
               </Text>
             </View>
           )}

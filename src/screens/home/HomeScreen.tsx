@@ -5,6 +5,7 @@ import { useLocale } from '@/hooks';
 import { Layout, PageHeader } from '@/components';
 import { useTheme, useCurrency, useNavigation } from '@/contexts';
 import { paymentService, storageService } from '@/services';
+import { useCurrencyFormatter } from '@/utils';
 import { 
   WalletSection, 
   StatsSection, 
@@ -22,6 +23,7 @@ const HomeScreen: React.FC = () => {
 
   const { colors } = useTheme();
   const { currency } = useCurrency();
+  const { format } = useCurrencyFormatter();
   const [summary, setSummary] = useState<{ expense: { total: number; paid: number; pending: number }; income: { total: number; paid: number; pending: number } } | null>(null);
   const [incomeSeries, setIncomeSeries] = useState<Array<{ ym: string; total: number; paid: number }>>([]);
   const [expenseSeries, setExpenseSeries] = useState<Array<{ ym: string; total: number; paid: number }>>([]);
@@ -31,7 +33,7 @@ const HomeScreen: React.FC = () => {
   const [listTab, setListTab] = useState<'upcoming_expense' | 'upcoming_income' | 'overdue_expense' | 'overdue_income'>('upcoming_expense');
   const [availableYears, setAvailableYears] = useState<string[]>([]);
   const [selectedYear, setSelectedYear] = useState<string>(() => new Date().getFullYear().toString());
-  const [cashFlow, setCashFlow] = useState<{ incomePaid: number; expensePaid: number }>({ incomePaid: 0, expensePaid: 0 });
+  const [cashFlow, setCashFlow] = useState<{ incomePaid: number; expensePaid: number; netBalance: number }>({ incomePaid: 0, expensePaid: 0, netBalance: 0 });
   const [refreshing, setRefreshing] = useState(false);
   const walletAnim = useRef(new Animated.Value(0)).current;
   const coinAnim = useRef(new Animated.Value(0)).current;
@@ -133,7 +135,10 @@ const HomeScreen: React.FC = () => {
   // );
   // const expenseYearOutstanding = Math.max(expenseYearTotal - expenseYearPaid, 0); // BarChart içinde hesaplanıyor
   const netCash = useMemo(
-    () => cashFlow.incomePaid - cashFlow.expensePaid,
+    () => {
+      // Artık netBalance direkt olarak hesaplanıyor
+      return cashFlow.netBalance || 0;
+    },
     [cashFlow]
   );
   const totalMagnitude = useMemo(
@@ -158,18 +163,9 @@ const HomeScreen: React.FC = () => {
     ]).start();
   }, [coinAnim, netCash]);
 
-  const formatCurrency = useCallback((value: number, fractionDigits = 0) => {
-    try {
-      return new Intl.NumberFormat(undefined, {
-        style: 'currency',
-        currency,
-        maximumFractionDigits: fractionDigits,
-        minimumFractionDigits: fractionDigits,
-      }).format(value);
-    } catch {
-      return `${value.toFixed(fractionDigits)} ${currency}`;
-    }
-  }, [currency]);
+  const formatCurrency = useCallback((value: number, fractionDigits = 2) => {
+    return format(value);
+  }, [format]);
 
   // const formatCurrencyShort = useCallback((value: number) => {
   //   try {

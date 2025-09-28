@@ -25,7 +25,6 @@ const IncomeReportSection: React.FC<IncomeReportSectionProps> = ({
   const { t } = useLocale();
   const { colors } = useTheme();
 
-  const latestIncome = incomeSeries.length ? incomeSeries[incomeSeries.length - 1]!.total : 0;
 
   // GroupedColumnChart için gelir verisi
   const incomeGroupedData: GroupedDatum[] = useMemo(() => {
@@ -77,9 +76,6 @@ const IncomeReportSection: React.FC<IncomeReportSectionProps> = ({
         <Text variant="primary" size="large" weight="bold" style={{ marginBottom: 16 }}>
           {t('screens.home.income_chart_title') || 'Gelir'}
         </Text>
-        <Text variant="secondary" size="small" style={{ marginBottom: 16 }}>
-          {`${t('screens.home.last_month') || 'Son ay'}: ${formatCurrency(latestIncome)}`}
-        </Text>
         <GroupedColumnChart
           data={incomeGroupedData}
           colors={incomeGroupedColors}
@@ -89,7 +85,7 @@ const IncomeReportSection: React.FC<IncomeReportSectionProps> = ({
           groupGap={28}
           yTicks={5}
           formatValue={(n) => formatCurrency(n)}
-          axisWidth={50}
+          axisWidth={80}
         />
       </Card>
     </View>

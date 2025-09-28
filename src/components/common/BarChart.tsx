@@ -25,6 +25,8 @@ export interface BarChartProps {
   showValues?: boolean;
   showLabels?: boolean;
   variant?: 'default' | 'gradient' | 'stacked';
+  currency?: string;
+  formatValue?: (value: number) => string;
   style?: ViewStyle;
   testID?: string;
 }
@@ -40,6 +42,8 @@ const BarChart: React.FC<BarChartProps> = ({
   showValues = true,
   showLabels = true,
   variant = 'default',
+  currency = 'USD',
+  formatValue,
   style,
   testID,
 }) => {
@@ -74,16 +78,21 @@ const BarChart: React.FC<BarChartProps> = ({
 
   // Format currency
   const formatCurrency = (value: number) => {
+    if (formatValue) {
+      return formatValue(value);
+    }
+    
     try {
       return new Intl.NumberFormat('tr-TR', {
         style: 'currency',
-        currency: 'TRY',
-        maximumFractionDigits: 0,
+        currency,
+        maximumFractionDigits: 2,
+        minimumFractionDigits: 0,
         notation: 'compact',
         compactDisplay: 'short',
       }).format(value);
     } catch {
-      return `${value.toFixed(0)}₺`;
+      return `${value.toFixed(2)} ${currency}`;
     }
   };
 

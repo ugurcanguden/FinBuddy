@@ -42,8 +42,15 @@ class PaymentService {
       }
     }
     if (ym) {
-      where += ` AND substr(p.due_date,1,7) = ?`;
-      params.push(ym);
+      if (ym.includes('%')) {
+        // Yıl için wildcard kullan (örn: "2025-%")
+        where += ` AND substr(p.due_date,1,4) = ?`;
+        params.push(ym.split('-')[0]);
+      } else {
+        // Ay için tam eşleşme (örn: "2025-09")
+        where += ` AND substr(p.due_date,1,7) = ?`;
+        params.push(ym);
+      }
     }
     const row = await databaseService.getFirst<{ total: number }>(
       `SELECT COALESCE(SUM(p.amount),0) AS total
@@ -59,13 +66,16 @@ class PaymentService {
     expense: { total: number; paid: number; pending: number };
     income: { total: number; paid: number; pending: number };
   }> {
+    // Eğer ym verilmişse, o yılın tüm verilerini getir
+    const year = ym ? ym.split('-')[0] : undefined;
+    
     const [eTotal, ePaid, ePending, iTotal, iPaid, iPending] = await Promise.all([
-      this.sumBy('expense', 'any', ym),
-      this.sumBy('expense', 'paid', ym),
-      this.sumBy('expense', 'pending', ym),
-      this.sumBy('income', 'any', ym),
-      this.sumBy('income', 'paid', ym),
-      this.sumBy('income', 'pending', ym),
+      this.sumBy('expense', 'any', year ? `${year}-%` : ym),
+      this.sumBy('expense', 'paid', year ? `${year}-%` : ym),
+      this.sumBy('expense', 'pending', year ? `${year}-%` : ym),
+      this.sumBy('income', 'any', year ? `${year}-%` : ym),
+      this.sumBy('income', 'paid', year ? `${year}-%` : ym),
+      this.sumBy('income', 'pending', year ? `${year}-%` : ym),
     ]);
     return {
       expense: { total: eTotal, paid: ePaid, pending: ePending },
@@ -245,12 +255,71 @@ class PaymentService {
       where.push('substr(p.due_date,1,7) = ?');
       bind.push(params.ym);
     }
-    const sql = `SELECT e.category_id AS category_id, COALESCE(SUM(p.amount),0) AS total
+    // Şimdilik tüm payments'ları topla (debug için)
+    // where.push("p.status IN ('paid', 'received')");
+    
+    // Gelir ve gider için ayrı ayrı ödenen/bekleyen tutarları hesapla
+    const sql = `SELECT 
+                   e.category_id AS category_id, 
+                   COALESCE(SUM(CASE WHEN e.type = 'income' AND p.status = 'received' THEN e.amount ELSE 0 END), 0) AS income_paid,
+                   COALESCE(SUM(CASE WHEN e.type = 'income' AND p.status = 'pending' THEN e.amount ELSE 0 END), 0) AS income_pending,
+                   COALESCE(SUM(CASE WHEN e.type = 'expense' AND p.status = 'paid' THEN e.amount ELSE 0 END), 0) AS expense_paid,
+                   COALESCE(SUM(CASE WHEN e.type = 'expense' AND p.status = 'pending' THEN e.amount ELSE 0 END), 0) AS expense_pending,
+                   COALESCE(SUM(e.amount), 0) AS total,
+                   COUNT(DISTINCT e.id) AS entry_count
                  FROM payments p JOIN entries e ON e.id = p.entry_id
                  WHERE ${where.join(' AND ')}
                  GROUP BY e.category_id
                  ORDER BY total DESC`;
-    return databaseService.getAll(sql, bind);
+    const result = await databaseService.getAll(sql, bind);
+    return result;
+  }
+
+  // Payment status'larını güncelleme fonksiyonu
+  async updateAllPaymentStatuses(): Promise<void> {
+    try {
+      console.log('🔄 updateAllPaymentStatuses - Starting...');
+      
+      // Doğrudan SQL ile güncelle - daha güvenilir
+      console.log('🔄 Updating income payments to received...');
+      const incomeResult = await databaseService.run(`
+        UPDATE payments 
+        SET status = 'received' 
+        WHERE id IN (
+          SELECT p.id 
+          FROM payments p 
+          JOIN entries e ON e.id = p.entry_id 
+          WHERE e.type = 'income' AND p.is_active = 1 AND e.is_active = 1
+        )
+      `);
+      console.log('Income update result:', incomeResult);
+
+      console.log('🔄 Updating expense payments to paid...');
+      const expenseResult = await databaseService.run(`
+        UPDATE payments 
+        SET status = 'paid' 
+        WHERE id IN (
+          SELECT p.id 
+          FROM payments p 
+          JOIN entries e ON e.id = p.entry_id 
+          WHERE e.type = 'expense' AND p.is_active = 1 AND e.is_active = 1
+        )
+      `);
+      console.log('Expense update result:', expenseResult);
+
+      // Güncellenmiş verileri kontrol et
+      const updatedPayments = await databaseService.getAll(`
+        SELECT p.id, p.entry_id, e.type, p.status
+        FROM payments p 
+        JOIN entries e ON e.id = p.entry_id 
+        WHERE p.is_active = 1 AND e.is_active = 1
+      `);
+      
+      console.log('✅ updateAllPaymentStatuses - Updated statuses:', updatedPayments.map(p => ({ id: p.id, type: p.type, status: p.status })));
+      
+    } catch (error) {
+      console.error('❌ updateAllPaymentStatuses - Error:', error);
+    }
   }
 
   async aggregate(params: {
@@ -394,7 +463,7 @@ class PaymentService {
     return { entryId };
   }
 
-  async getYearlyCashFlow(year: string): Promise<{ incomePaid: number; expensePaid: number }> {
+  async getYearlyCashFlow(year: string): Promise<{ incomePaid: number; expensePaid: number; netBalance: number }> {
     const row = await databaseService.getFirst<{ income_paid: number; expense_paid: number }>(
       `SELECT
          COALESCE(SUM(CASE WHEN e.type = 'income' AND p.status IN ('paid','received') THEN p.amount ELSE 0 END), 0) AS income_paid,
@@ -404,9 +473,15 @@ class PaymentService {
        WHERE substr(p.due_date,1,4) = ? AND e.is_active = 1 AND p.is_active = 1`,
       [year]
     );
+    
+    const incomePaid = Number(row?.income_paid || 0);
+    const expensePaid = Number(row?.expense_paid || 0);
+    const netBalance = incomePaid - expensePaid;
+    
     return {
-      incomePaid: Number(row?.income_paid || 0),
-      expensePaid: Number(row?.expense_paid || 0),
+      incomePaid,
+      expensePaid,
+      netBalance,
     };
   }
 }

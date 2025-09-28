@@ -1,6 +1,7 @@
 // Onboarding Tour Screen - Kullanıcıya uygulamayı tanıtır
 import React from 'react';
 import { StyleSheet, View, Text } from 'react-native';
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import Onboarding from 'react-native-onboarding-swiper';
 import { useTheme } from '@/contexts';
 import { useLocale } from '@/hooks';
@@ -124,8 +125,9 @@ const OnboardingTourScreen: React.FC<OnboardingTourScreenProps> = ({ onComplete 
   };
 
   return (
-    <View style={styles.container}>
-      <Onboarding
+    <SafeAreaProvider>
+      <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]} edges={['top', 'bottom']}>
+        <Onboarding
         pages={pages}
         onDone={handleDone}
         onSkip={handleSkip}
@@ -163,8 +165,9 @@ const OnboardingTourScreen: React.FC<OnboardingTourScreenProps> = ({ onComplete 
             style={styles.doneButton}
           />
         )}
-      />
-    </View>
+        />
+      </SafeAreaView>
+    </SafeAreaProvider>
   );
 };
 

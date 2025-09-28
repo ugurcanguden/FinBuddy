@@ -34,7 +34,7 @@ export default function GroupedColumnChart({
   yTicks = 4,
   maxValue,
   formatValue = (n) => String(n),
-  axisWidth = 48,
+  axisWidth = 80,
 }: GroupedColumnChartProps) {
   const { colors: themeColors } = useTheme();
 
@@ -49,12 +49,12 @@ export default function GroupedColumnChart({
     if (h) setPlotHeight(h);
   }, []);
 
-  // seriler
-  const seriesKeys = useMemo(
-    () => Array.from(new Set(data.flatMap(d => Object.keys(d.values || {})))),
-    [data]
-  );
-  const seriesCount = seriesKeys.length;
+      // seriler
+      const seriesKeys = useMemo(
+        () => Array.from(new Set(data.flatMap(d => Object.keys(d.values || {})))),
+        [data]
+      );
+      const seriesCount = seriesKeys.length;
 
   // dikey scroll eşiği (istersen kapatabilirsin)
   const [yScrollEnabled, setYScrollEnabled] = useState(false);
@@ -80,7 +80,7 @@ export default function GroupedColumnChart({
   // 0..max tickler
   const ticks = useMemo(() => {
     const t = Math.max(1, yTicks);
-    return Array.from({ length: t + 1 }, (_, i) => Math.round((globalMax * i) / t));
+    return Array.from({ length: t + 1 }, (_, i) => (globalMax * i) / t);
   }, [globalMax, yTicks]);
 
   // genişlikler
@@ -107,15 +107,21 @@ export default function GroupedColumnChart({
   const closeCenterTip = useCallback(() => setCenterTip(null), []);
 
   return (
-    <View style={[styles.container, { position: "relative" }]}>
-      <View style={{ flexDirection: "row", marginBottom: 8 }}>
+    <ScrollView 
+      horizontal 
+      showsHorizontalScrollIndicator={false}
+      contentContainerStyle={{ minWidth: '100%' }}
+      nestedScrollEnabled
+    >
+      <View style={[styles.container, { position: "relative", paddingTop: 10 }]}>
+        <View style={{ flexDirection: "row", marginBottom: 8 }}>
         {/* Sol Y ekseni */}
         <View style={{ width: axisWidth }}>
-          <View style={{ height: plotHeight, justifyContent: "flex-end" }}>
+          <View style={{ height: plotHeight, justifyContent: "flex-end", paddingTop: 10 }}>
             {ticks.map((t, i) => {
               const y = plotHeight - scaleY(t);
               return (
-                <View key={`yl-${i}`} style={[styles.yLabelWrap, { top: y - 7 }]}>
+                <View key={`yl-${i}`} style={[styles.yLabelWrap, { top: y - 10 }]}>
                   <Text
                     style={[styles.yLabel, { color: themeColors.textSecondary }]}
                     numberOfLines={1}
@@ -238,9 +244,15 @@ export default function GroupedColumnChart({
               {/* soldan sağa tek satır: Ay — Seri: Değer */}
               <Text
                 style={[styles.centerText, { color: themeColors.text }]}
+                numberOfLines={2}
+              >
+                {centerTip.label}
+              </Text>
+              <Text
+                style={[styles.centerText, { color: themeColors.text, marginTop: 2 }]}
                 numberOfLines={1}
               >
-                {centerTip.label} — {centerTip.seriesName}:{" "}
+                {centerTip.seriesName}:{" "}
                 <Text style={{ color: themeColors.primary, fontWeight: "700" }}>
                   {centerTip.value}
                 </Text>
@@ -262,7 +274,8 @@ export default function GroupedColumnChart({
           </View>
         ))}
       </View>
-    </View>
+      </View>
+    </ScrollView>
   );
 }
 
@@ -270,7 +283,7 @@ const styles = StyleSheet.create({
   container: { width: "100%" },
   chartSurface: { position: "relative" },
   gridLine: { position: "absolute", left: 0, right: 0, height: StyleSheet.hairlineWidth },
-  yLabelWrap: { position: "absolute", right: 6, alignItems: "flex-end" },
+  yLabelWrap: { position: "absolute", right: 6, alignItems: "flex-end", minHeight: 20, justifyContent: "center" },
   yLabel: { fontSize: 11, textAlign: "right", lineHeight: 14, writingDirection: "ltr" },
   groupWrap: { position: "absolute", bottom: 0 },
   bar: {
@@ -287,11 +300,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   centerCard: {
-    minWidth: 180,
-    maxWidth: 260,
-    paddingHorizontal: 12,
-    paddingVertical: 10,
-    borderRadius: 10,
+    minWidth: 220,
+    maxWidth: 320,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    borderRadius: 12,
     borderWidth: 1,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 6 },
@@ -300,9 +313,9 @@ const styles = StyleSheet.create({
     elevation: 6,
   },
   centerRow: { flexDirection: "row", alignItems: "center" },
-  dot: { width: 10, height: 10, borderRadius: 5, marginRight: 8 },
-  centerText: { fontSize: 14, fontWeight: "600" },
-  centerHint: { marginTop: 4, fontSize: 11, textAlign: "center" },
+  dot: { width: 12, height: 12, borderRadius: 6, marginRight: 10 },
+  centerText: { fontSize: 15, fontWeight: "600" },
+  centerHint: { marginTop: 6, fontSize: 12, textAlign: "center" },
 
   legendWrap: { flexDirection: "row", flexWrap: "wrap", gap: 12, marginTop: 8, alignItems: "center" },
   legendItem: { flexDirection: "row", alignItems: "center", marginRight: 12, marginTop: 4 },
