@@ -1,0 +1,8 @@
+{
+  "title": "Wallet",
+  "labels": {
+    "income": "Income",
+    "expense": "Expense"
+  },
+  "footer": "Remaining amount after deducting expenses from income"
+}

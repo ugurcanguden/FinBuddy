@@ -1,10 +1,10 @@
 // Debug Screen - Bildirim sistemini test etmek için
 import React from 'react';
 import { StyleSheet, Alert } from 'react-native';
-import { View, Text, Button, Card, Layout, PageHeader, ScrollView } from '@/components';
+import { Text, Button, Card, Layout, PageHeader, ScrollView } from '@/components';
 import { NotificationTest, paymentService } from '@/services';
 import { createTestPayments, clearTestPayments } from '@/utils/testData';
-import { useTheme } from '@/contexts';
+import { useLocale } from '@/hooks';
 
 const DebugScreen: React.FC = () => {
   // Production'da bu ekran gösterilmemeli
@@ -12,7 +12,7 @@ const DebugScreen: React.FC = () => {
     return null;
   }
 
-  const { colors } = useTheme();
+  const { t } = useLocale();
 
   const handleTestNotification = async () => {
     await NotificationTest.sendTestNotification();
@@ -113,18 +113,18 @@ const DebugScreen: React.FC = () => {
 
         <Card style={styles.card}>
           <Text variant="subtitle" style={styles.sectionTitle}>
-            📱 Temel Testler
+            {t('screens.debug.sections.notifications')}
           </Text>
           
           <Button
-            title="Test Bildirimi Gönder (5 saniye)"
+            title={t('screens.debug.buttons.send_test_notification')}
             onPress={handleTestNotification}
             style={styles.button}
             variant="primary"
           />
           
           <Button
-            title="Bildirim İzinlerini Kontrol Et"
+            title={t('screens.debug.buttons.check_permissions')}
             onPress={handleCheckPermissions}
             style={styles.button}
             variant="outline"
@@ -133,18 +133,18 @@ const DebugScreen: React.FC = () => {
 
         <Card style={styles.card}>
           <Text variant="subtitle" style={styles.sectionTitle}>
-            💰 Ödeme Kontrolleri
+            {t('screens.debug.sections.payments')}
           </Text>
           
           <Button
-            title="Bekleyen Ödemeleri Kontrol Et"
+            title={t('screens.debug.buttons.check_pending_payments')}
             onPress={handleCheckPayments}
             style={styles.button}
             variant="outline"
           />
           
           <Button
-            title="Bildirim Ayarlarını Test Et"
+            title={t('screens.debug.buttons.test_settings')}
             onPress={handleTestSettings}
             style={styles.button}
             variant="outline"
@@ -157,14 +157,14 @@ const DebugScreen: React.FC = () => {
           </Text>
           
           <Button
-            title="Test Ödemeleri Oluştur"
+            title={t('screens.debug.buttons.create_test_payments')}
             onPress={handleCreateTestData}
             style={styles.button}
             variant="outline"
           />
           
           <Button
-            title="Test Ödemelerini Temizle"
+            title={t('screens.debug.buttons.clear_test_payments')}
             onPress={handleClearTestData}
             style={styles.button}
             variant="outline"
@@ -177,21 +177,21 @@ const DebugScreen: React.FC = () => {
           </Text>
           
           <Button
-            title="Payment Status'ları Güncelle"
+            title={t('screens.debug.buttons.update_payment_statuses')}
             onPress={handleUpdatePaymentStatuses}
             style={styles.button}
             variant="primary"
           />
           
           <Button
-            title="Manuel SQL Güncelleme"
+            title={t('screens.debug.buttons.manual_sql_update')}
             onPress={handleManualSQLUpdate}
             style={styles.button}
             variant="outline"
           />
           
           <Button
-            title="Tüm Bildirimleri İptal Et"
+            title={t('screens.debug.buttons.cancel_all_notifications')}
             onPress={handleCancelNotifications}
             style={styles.button}
             variant="danger"

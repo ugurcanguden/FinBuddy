@@ -203,7 +203,7 @@ const MonthlySummarySection: React.FC<MonthlySummarySectionProps> = ({
                   groupGap={28}
                   yTicks={5}
                   formatValue={(n) => formatCurrencyValue(n)}
-                  axisWidth={120}
+                  axisWidth={100}
                 />
               </Card>
             </View>

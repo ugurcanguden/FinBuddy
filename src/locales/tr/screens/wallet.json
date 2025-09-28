@@ -1,0 +1,8 @@
+{
+  "title": "Cüzdan",
+  "labels": {
+    "income": "Gelen",
+    "expense": "Giden"
+  },
+  "footer": "Gelirlerden ödenenleri çıkarınca kalan tutar"
+}

@@ -107,16 +107,10 @@ export default function GroupedColumnChart({
   const closeCenterTip = useCallback(() => setCenterTip(null), []);
 
   return (
-    <ScrollView 
-      horizontal 
-      showsHorizontalScrollIndicator={false}
-      contentContainerStyle={{ minWidth: '100%' }}
-      nestedScrollEnabled
-    >
-      <View style={[styles.container, { position: "relative", paddingTop: 10 }]}>
-        <View style={{ flexDirection: "row", marginBottom: 8 }}>
-        {/* Sol Y ekseni */}
-        <View style={{ width: axisWidth }}>
+    <View style={[styles.container, { position: "relative", paddingTop: 10 }]}>
+      <View style={{ flexDirection: "row", marginBottom: 4 }}>
+        {/* Sol Y ekseni - SABİT */}
+        <View style={{ width: axisWidth, position: 'absolute', left: 0, top: 0, zIndex: 10 }}>
           <View style={{ height: plotHeight, justifyContent: "flex-end", paddingTop: 10 }}>
             {ticks.map((t, i) => {
               const y = plotHeight - scaleY(t);
@@ -138,7 +132,7 @@ export default function GroupedColumnChart({
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator
-          contentContainerStyle={{ paddingRight: 8 }}
+          contentContainerStyle={{ paddingRight: 8, paddingLeft: axisWidth }}
           nestedScrollEnabled
         >
           <View style={{ width: chartWidth }}>
@@ -274,8 +268,7 @@ export default function GroupedColumnChart({
           </View>
         ))}
       </View>
-      </View>
-    </ScrollView>
+    </View>
   );
 }
 

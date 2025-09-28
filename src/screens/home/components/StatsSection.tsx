@@ -32,8 +32,8 @@ const StatsSection: React.FC<StatsSectionProps> = ({
         icon: '💸',
         variant: 'danger' as const,
         trend: expenseTrend as 'up' | 'down' | 'neutral',
-        trendValue: summary.expense.total > 0 ? 'Aktif' : 'Yok',
-        subtitle: 'Bu ay toplam gider'
+        trendValue: summary.expense.total > 0 ? t('screens.stats.trend_values.active') : t('screens.stats.trend_values.none'),
+        subtitle: t('screens.stats.subtitles.expense_total')
       },
       { 
         title: t('screens.reports.expense_paid') || 'Ödenen', 
@@ -41,8 +41,8 @@ const StatsSection: React.FC<StatsSectionProps> = ({
         icon: '✅',
         variant: 'success' as const,
         trend: 'up',
-        trendValue: summary.expense.paid > 0 ? 'Ödendi' : 'Bekliyor',
-        subtitle: 'Tamamlanan ödemeler'
+        trendValue: summary.expense.paid > 0 ? t('screens.stats.trend_values.paid') : t('screens.stats.trend_values.waiting'),
+        subtitle: t('screens.stats.subtitles.expense_paid')
       },
       { 
         title: t('screens.reports.expense_pending') || 'Bekleyen', 
@@ -50,8 +50,8 @@ const StatsSection: React.FC<StatsSectionProps> = ({
         icon: '⏳',
         variant: 'warning' as const,
         trend: pendingTrend as 'up' | 'down' | 'neutral',
-        trendValue: summary.expense.pending > 0 ? 'Bekliyor' : 'Yok',
-        subtitle: 'Ödenmemiş tutarlar'
+        trendValue: summary.expense.pending > 0 ? t('screens.stats.trend_values.waiting') : t('screens.stats.trend_values.none'),
+        subtitle: t('screens.stats.subtitles.expense_pending')
       },
       { 
         title: t('screens.reports.income_total') || 'Gelir Toplam', 
@@ -59,8 +59,8 @@ const StatsSection: React.FC<StatsSectionProps> = ({
         icon: '💰',
         variant: 'primary' as const,
         trend: incomeTrend as 'up' | 'down' | 'neutral',
-        trendValue: summary.income.total > 0 ? 'Geldi' : 'Bekliyor',
-        subtitle: 'Bu ay toplam gelir'
+        trendValue: summary.income.total > 0 ? t('screens.stats.trend_values.received') : t('screens.stats.trend_values.waiting'),
+        subtitle: t('screens.stats.subtitles.income_total')
       },
     ];
   }, [formatCurrency, summary, t]);

@@ -40,7 +40,7 @@ const SafeArea: React.FC<SafeAreaProps> = ({
       style={[containerStyle, style]}
       testID={testID}
       nativeID={nativeID}
-      edges={edges ?? ['top', 'left', 'right']}
+      edges={edges ?? ['top', 'left', 'right', 'bottom']}
     >
       {children}
     </RNSafeAreaView>

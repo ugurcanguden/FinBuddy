@@ -2,6 +2,7 @@
 import React, { useMemo, useRef, useEffect } from 'react';
 import { ViewStyle, Animated, Dimensions } from 'react-native';
 import { useTheme } from '@/contexts';
+import { useLocale } from '@/hooks';
 import Card from './Card';
 import Text from './Text';
 import View from './View';
@@ -33,6 +34,7 @@ const WalletCard: React.FC<WalletCardProps> = ({
   testID,
 }) => {
   const { colors } = useTheme();
+  const { t } = useLocale();
   const scaleAnim = useRef(new Animated.Value(0)).current;
   const balanceAnim = useRef(new Animated.Value(0)).current;
   const progressAnim = useRef(new Animated.Value(0)).current;
@@ -214,7 +216,7 @@ const WalletCard: React.FC<WalletCardProps> = ({
             {/* Income */}
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
               <Text variant="secondary" size="small" weight="medium">
-                Gelen
+                {t('screens.wallet.labels.income')}
               </Text>
               <Text variant="primary" size="medium" weight="semibold">
                 {formatCurrency(income)}
@@ -224,7 +226,7 @@ const WalletCard: React.FC<WalletCardProps> = ({
             {/* Expense */}
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
               <Text variant="secondary" size="small" weight="medium">
-                Giden
+                {t('screens.wallet.labels.expense')}
               </Text>
               <Text variant="primary" size="medium" weight="semibold">
                 {formatCurrency(expense)}
@@ -277,7 +279,7 @@ const WalletCard: React.FC<WalletCardProps> = ({
 
         {/* Footer */}
         <Text variant="secondary" size="small" style={{ textAlign: 'center', marginTop: 8 }}>
-          Gelirlerden ödenenleri çıkarınca kalan tutar
+          {t('screens.wallet.footer')}
         </Text>
       </View>
     );

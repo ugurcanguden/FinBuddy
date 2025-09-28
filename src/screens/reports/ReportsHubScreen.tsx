@@ -3,7 +3,7 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Alert, StyleSheet } from 'react-native';
 import { Layout, PageHeader, ScrollView, View, Text, Dropdown, ReportPreviewModal, Button } from '@/components';
 import { useLocale } from '@/hooks';
-import { useNavigation, useCurrency } from '@/contexts';
+import { useNavigation } from '@/contexts';
 import { useCurrencyFormatter } from '@/utils';
 import { paymentService, reportsService, databaseService, type ReportDef } from '@/services';
 import { 
@@ -14,7 +14,6 @@ import {
 const ReportsHubScreen: React.FC = () => {
   const { t } = useLocale();
   const { navigateTo } = useNavigation();
-  const { currency } = useCurrency();
   const { format } = useCurrencyFormatter();
 
   const [ym, setYm] = useState<string>(() => {
@@ -51,10 +50,11 @@ const ReportsHubScreen: React.FC = () => {
         
         (async () => {
           try {
+            const year = ym.split('-')[0];
             const [sum, incomeSeries, expenseSeries] = await Promise.all([
               paymentService.getDashboardSummary(ym),
-              paymentService.getMonthlySeries('income', { year: ym.split('-')[0] }),
-              paymentService.getMonthlySeries('expense', { year: ym.split('-')[0] }),
+              paymentService.getMonthlySeries('income', year ? { year } : {}),
+              paymentService.getMonthlySeries('expense', year ? { year } : {}),
             ]);
             
             setSummary(sum);
@@ -62,21 +62,26 @@ const ReportsHubScreen: React.FC = () => {
             // Aylık verileri birleştir
             const monthlyDataMap = new Map<string, { ym: string; income: number; expense: number }>();
             
-            incomeSeries.forEach(item => {
-              if (!monthlyDataMap.has(item.ym)) {
-                monthlyDataMap.set(item.ym, { ym: item.ym, income: 0, expense: 0 });
-              }
-              // Sadece ödemesi gerçekleşen (received) gelirleri kullan
-              monthlyDataMap.get(item.ym)!.income = item.paid;
-            });
+            // Null check ekle
+            if (incomeSeries && Array.isArray(incomeSeries)) {
+              incomeSeries.forEach(item => {
+                if (!monthlyDataMap.has(item.ym)) {
+                  monthlyDataMap.set(item.ym, { ym: item.ym, income: 0, expense: 0 });
+                }
+                // Sadece ödemesi gerçekleşen (received) gelirleri kullan
+                monthlyDataMap.get(item.ym)!.income = item.paid;
+              });
+            }
             
-            expenseSeries.forEach(item => {
-              if (!monthlyDataMap.has(item.ym)) {
-                monthlyDataMap.set(item.ym, { ym: item.ym, income: 0, expense: 0 });
-              }
-              // Sadece ödemesi gerçekleşen (paid) giderleri kullan
-              monthlyDataMap.get(item.ym)!.expense = item.paid;
-            });
+            if (expenseSeries && Array.isArray(expenseSeries)) {
+              expenseSeries.forEach(item => {
+                if (!monthlyDataMap.has(item.ym)) {
+                  monthlyDataMap.set(item.ym, { ym: item.ym, income: 0, expense: 0 });
+                }
+                // Sadece ödemesi gerçekleşen (paid) giderleri kullan
+                monthlyDataMap.get(item.ym)!.expense = item.paid;
+              });
+            }
             
             const monthlyDataArray = Array.from(monthlyDataMap.values());
             setMonthlyData(monthlyDataArray);

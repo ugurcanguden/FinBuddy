@@ -1,0 +1,31 @@
+{
+  "title": "Debug Ekranı",
+  "sections": {
+    "notifications": "🔔 Bildirim Kontrolleri",
+    "payments": "💰 Ödeme Kontrolleri",
+    "database": "🗄️ Veritabanı Kontrolleri"
+  },
+  "buttons": {
+    "send_test_notification": "Test Bildirimi Gönder (5 saniye)",
+    "check_permissions": "Bildirim İzinlerini Kontrol Et",
+    "check_pending_payments": "Bekleyen Ödemeleri Kontrol Et",
+    "test_settings": "Bildirim Ayarlarını Test Et",
+    "create_test_payments": "Test Ödemeleri Oluştur",
+    "clear_test_payments": "Test Ödemelerini Temizle",
+    "update_payment_statuses": "Payment Status'ları Güncelle",
+    "manual_sql_update": "Manuel SQL Güncelleme",
+    "cancel_all_notifications": "Tüm Bildirimleri İptal Et"
+  },
+  "messages": {
+    "permissions_granted": "Bildirim izinleri verilmiş",
+    "permissions_denied": "Bildirim izinleri reddedilmiş",
+    "test_notification_sent": "Test bildirimi gönderildi",
+    "payments_checked": "Ödemeler kontrol edildi",
+    "settings_tested": "Ayarlar test edildi",
+    "test_payments_created": "Test ödemeleri oluşturuldu",
+    "test_payments_cleared": "Test ödemeleri temizlendi",
+    "payment_statuses_updated": "Payment status'ları güncellendi",
+    "sql_updated": "SQL güncellendi",
+    "notifications_cancelled": "Tüm bildirimler iptal edildi"
+  }
+}

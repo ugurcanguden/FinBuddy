@@ -1,0 +1,15 @@
+{
+  "subtitles": {
+    "expense_total": "Bu ay toplam gider",
+    "expense_paid": "Tamamlanan ödemeler",
+    "expense_pending": "Ödenmemiş tutarlar",
+    "income_total": "Bu ay toplam gelir"
+  },
+  "trend_values": {
+    "active": "Aktif",
+    "none": "Yok",
+    "paid": "Ödendi",
+    "waiting": "Bekliyor",
+    "received": "Geldi"
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "title": "Debug Screen",
+  "sections": {
+    "notifications": "🔔 Notification Controls",
+    "payments": "💰 Payment Controls",
+    "database": "🗄️ Database Controls"
+  },
+  "buttons": {
+    "send_test_notification": "Send Test Notification (5 seconds)",
+    "check_permissions": "Check Notification Permissions",
+    "check_pending_payments": "Check Pending Payments",
+    "test_settings": "Test Notification Settings",
+    "create_test_payments": "Create Test Payments",
+    "clear_test_payments": "Clear Test Payments",
+    "update_payment_statuses": "Update Payment Statuses",
+    "manual_sql_update": "Manual SQL Update",
+    "cancel_all_notifications": "Cancel All Notifications"
+  },
+  "messages": {
+    "permissions_granted": "Notification permissions granted",
+    "permissions_denied": "Notification permissions denied",
+    "test_notification_sent": "Test notification sent",
+    "payments_checked": "Payments checked",
+    "settings_tested": "Settings tested",
+    "test_payments_created": "Test payments created",
+    "test_payments_cleared": "Test payments cleared",
+    "payment_statuses_updated": "Payment statuses updated",
+    "sql_updated": "SQL updated",
+    "notifications_cancelled": "All notifications cancelled"
+  }
+}

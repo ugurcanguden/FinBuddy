@@ -2,7 +2,7 @@
 import React from 'react';
 import { WalletCard } from '@/components';
 import { useCurrency } from '@/contexts';
-import { useCurrencyFormatter } from '@/utils';
+import { useLocale } from '@/hooks';
 
 interface WalletSectionProps {
   netCash: number;
@@ -18,11 +18,14 @@ const WalletSection: React.FC<WalletSectionProps> = ({
   loading
 }) => {
   const { currency } = useCurrency();
-  const { format } = useCurrencyFormatter();
+  const { t } = useLocale();
+  
+  // Debug için
+  console.log('WalletSection - t result:', t('screens.wallet.title'));
 
   return (
     <WalletCard
-      title="Cüzdan"
+      title={t('screens.wallet.title')}
       balance={netCash}
       income={incomePaid}
       expense={expensePaid}

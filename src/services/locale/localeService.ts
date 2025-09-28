@@ -89,6 +89,9 @@ class LocaleService {
             ui_demo: await this.unwrapJsonModule(import('@/locales/en/screens/ui_demo.json')),
             privacy_terms: await this.unwrapJsonModule(import('@/locales/en/screens/privacy_terms.json')),
             onboarding: await this.unwrapJsonModule(import('@/locales/en/screens/onboarding.json')),
+            debug: await this.unwrapJsonModule(import('@/locales/en/screens/debug.json')),
+            stats: await this.unwrapJsonModule(import('@/locales/en/screens/stats.json')),
+            wallet: await this.unwrapJsonModule(import('@/locales/en/screens/wallet.json')),
           }
         };
       case 'tr':
@@ -112,6 +115,9 @@ class LocaleService {
             ui_demo: await this.unwrapJsonModule(import('@/locales/tr/screens/ui_demo.json')),
             privacy_terms: await this.unwrapJsonModule(import('@/locales/tr/screens/privacy_terms.json')),
             onboarding: await this.unwrapJsonModule(import('@/locales/tr/screens/onboarding.json')),
+            debug: await this.unwrapJsonModule(import('@/locales/tr/screens/debug.json')),
+            stats: await this.unwrapJsonModule(import('@/locales/tr/screens/stats.json')),
+            wallet: await this.unwrapJsonModule(import('@/locales/tr/screens/wallet.json')),
           }
         };
       case 'de':
