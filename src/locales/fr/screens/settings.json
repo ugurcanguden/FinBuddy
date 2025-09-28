@@ -9,8 +9,13 @@
     "theme": "Thème",
     "theme_dark": "Sombre",
     "theme_light": "Clair",
-    "theme_colorful": "Bleu Nuit",
+    "theme_colorful": "Coloré",
+    "theme_ocean": "Océan",
+    "theme_sunset": "Coucher de soleil",
+    "theme_forest": "Forêt",
     "currency": "Devise",
+    "currency_subtitle": "Devise",
+    "theme_subtitle": "Thème d'apparence",
     "date_format": "Format de date"
   },
   "notifications": {

@@ -6,11 +6,16 @@
     "language": "Sprache",
     "language_value": "Deutsch",
     "language_message": "Sprachwechsel wird bald hinzugefügt",
-    "theme": "Theme",
+    "theme": "Design",
     "theme_dark": "Dunkel",
     "theme_light": "Hell",
-    "theme_colorful": "Mitternachtsblau",
+    "theme_colorful": "Bunt",
+    "theme_ocean": "Ozean",
+    "theme_sunset": "Sonnenuntergang",
+    "theme_forest": "Wald",
     "currency": "Währung",
+    "currency_subtitle": "Währung",
+    "theme_subtitle": "Erscheinungsbild-Design",
     "date_format": "Datumsformat"
   },
   "notifications": {

@@ -72,6 +72,7 @@ class LocaleService {
         return {
           common: await this.unwrapJsonModule(import('@/locales/en/common.json')),
           navigation: await this.unwrapJsonModule(import('@/locales/en/navigation.json')),
+          charts: await this.unwrapJsonModule(import('@/locales/en/charts.json')),
           screens: {
             home: await this.unwrapJsonModule(import('@/locales/en/screens/home.json')),
             settings: await this.unwrapJsonModule(import('@/locales/en/screens/settings.json')),
@@ -98,6 +99,7 @@ class LocaleService {
         return {
           common: await this.unwrapJsonModule(import('@/locales/tr/common.json')),
           navigation: await this.unwrapJsonModule(import('@/locales/tr/navigation.json')),
+          charts: await this.unwrapJsonModule(import('@/locales/tr/charts.json')),
           screens: {
             home: await this.unwrapJsonModule(import('@/locales/tr/screens/home.json')),
             settings: await this.unwrapJsonModule(import('@/locales/tr/screens/settings.json')),
@@ -124,6 +126,7 @@ class LocaleService {
         return {
           common: await this.unwrapJsonModule(import('@/locales/de/common.json')),
           navigation: await this.unwrapJsonModule(import('@/locales/de/navigation.json')),
+          charts: await this.unwrapJsonModule(import('@/locales/de/charts.json')),
           screens: {
             home: await this.unwrapJsonModule(import('@/locales/de/screens/home.json')),
             settings: await this.unwrapJsonModule(import('@/locales/de/screens/settings.json')),
@@ -150,6 +153,7 @@ class LocaleService {
         return {
           common: await this.unwrapJsonModule(import('@/locales/fr/common.json')),
           navigation: await this.unwrapJsonModule(import('@/locales/fr/navigation.json')),
+          charts: await this.unwrapJsonModule(import('@/locales/fr/charts.json')),
           screens: {
             home: await this.unwrapJsonModule(import('@/locales/fr/screens/home.json')),
             settings: await this.unwrapJsonModule(import('@/locales/fr/screens/settings.json')),
@@ -176,6 +180,7 @@ class LocaleService {
         return {
           common: await this.unwrapJsonModule(import('@/locales/it/common.json')),
           navigation: await this.unwrapJsonModule(import('@/locales/it/navigation.json')),
+          charts: await this.unwrapJsonModule(import('@/locales/it/charts.json')),
           screens: {
             home: await this.unwrapJsonModule(import('@/locales/it/screens/home.json')),
             settings: await this.unwrapJsonModule(import('@/locales/it/screens/settings.json')),
@@ -202,6 +207,7 @@ class LocaleService {
         return {
           common: await this.unwrapJsonModule(import('@/locales/es/common.json')),
           navigation: await this.unwrapJsonModule(import('@/locales/es/navigation.json')),
+          charts: await this.unwrapJsonModule(import('@/locales/es/charts.json')),
           screens: {
             home: await this.unwrapJsonModule(import('@/locales/es/screens/home.json')),
             settings: await this.unwrapJsonModule(import('@/locales/es/screens/settings.json')),

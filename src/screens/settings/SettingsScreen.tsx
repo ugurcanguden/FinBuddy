@@ -270,7 +270,7 @@ const SettingsScreen: React.FC = () => {
                   💰 {t('screens.settings.general.currency') || t('common.currency')}
                 </Text>
                 <Text variant="secondary" size="small">
-                  Para birimi
+                  {t('screens.settings.general.currency_subtitle')}
                 </Text>
               </View>
               <View style={styles.dropdownContainer}>
@@ -290,7 +290,7 @@ const SettingsScreen: React.FC = () => {
                   🎨 {t('screens.settings.general.theme')}
                 </Text>
                 <Text variant="secondary" size="small">
-                  Görünüm teması
+                  {t('screens.settings.general.theme_subtitle')}
                 </Text>
               </View>
             </View>
@@ -299,12 +299,12 @@ const SettingsScreen: React.FC = () => {
             <View style={styles.themeSelector}>
               <View style={styles.themeGrid}>
                 {[
-                  { key: 'light', name: 'Açık', icon: '☀️', color: '#FFD700' },
-                  { key: 'dark', name: 'Koyu', icon: '🌙', color: '#2C3E50' },
-                  { key: 'colorful', name: 'Renkli', icon: '🌈', color: '#E74C3C' },
-                  { key: 'ocean', name: 'Okyanus', icon: '🌊', color: '#3498DB' },
-                  { key: 'sunset', name: 'Gün Batımı', icon: '🌅', color: '#E67E22' },
-                  { key: 'forest', name: 'Orman', icon: '🌲', color: '#27AE60' },
+                  { key: 'light', nameKey: 'theme_light', icon: '☀️', color: '#FFD700' },
+                  { key: 'dark', nameKey: 'theme_dark', icon: '🌙', color: '#2C3E50' },
+                  { key: 'colorful', nameKey: 'theme_colorful', icon: '🌈', color: '#E74C3C' },
+                  { key: 'ocean', nameKey: 'theme_ocean', icon: '🌊', color: '#3498DB' },
+                  { key: 'sunset', nameKey: 'theme_sunset', icon: '🌅', color: '#E67E22' },
+                  { key: 'forest', nameKey: 'theme_forest', icon: '🌲', color: '#27AE60' },
                 ].map((theme) => (
                   <TouchableOpacity
                     key={theme.key}
@@ -326,7 +326,7 @@ const SettingsScreen: React.FC = () => {
                       size="small" 
                       style={styles.themeLabel}
                     >
-                      {theme.name}
+                      {t(`screens.settings.general.${theme.nameKey}`)}
                     </Text>
                     {currentTheme === theme.key && (
                       <Badge variant="success" size="small" style={styles.themeBadge}>

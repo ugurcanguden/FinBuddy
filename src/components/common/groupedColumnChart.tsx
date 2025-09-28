@@ -3,6 +3,7 @@ import {
   View, Text, ScrollView, StyleSheet, LayoutChangeEvent, TouchableOpacity, Pressable,
 } from "react-native";
 import { useTheme } from "@/contexts";
+import { useLocale } from "@/hooks";
 
 type SeriesValues = Record<string, number>;
 export type GroupedDatum = { label: string; values: SeriesValues };
@@ -36,6 +37,7 @@ export default function GroupedColumnChart({
   formatValue = (n) => String(n),
   axisWidth = 80,
 }: GroupedColumnChartProps) {
+  const { t } = useLocale();
   const { colors: themeColors } = useTheme();
 
   const [plotHeight, setPlotHeight] = useState<number>(height);
@@ -246,14 +248,17 @@ export default function GroupedColumnChart({
                 style={[styles.centerText, { color: themeColors.text, marginTop: 2 }]}
                 numberOfLines={1}
               >
-                {centerTip.seriesName}:{" "}
-                <Text style={{ color: themeColors.primary, fontWeight: "700" }}>
-                  {centerTip.value}
-                </Text>
+                {centerTip.seriesName}
+              </Text>
+              <Text
+                style={[styles.centerText, { color: themeColors.primary, fontWeight: "700", marginTop: 2 }]}
+                numberOfLines={1}
+              >
+                {centerTip.value}
               </Text>
             </View>
             <Text style={[styles.centerHint, { color: themeColors.textSecondary }]}>
-              Kapatmak için dokun
+              {t('charts.tooltip.close_hint') || 'Kapatmak için dokun'}
             </Text>
           </View>
         </Pressable>

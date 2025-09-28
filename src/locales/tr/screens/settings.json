@@ -9,8 +9,13 @@
     "theme": "Tema",
     "theme_dark": "Koyu",
     "theme_light": "Açık",
-    "theme_colorful": "Gece Mavisi",
+    "theme_colorful": "Renkli",
+    "theme_ocean": "Okyanus",
+    "theme_sunset": "Gün Batımı",
+    "theme_forest": "Orman",
     "currency": "Para Birimi",
+    "currency_subtitle": "Para birimi",
+    "theme_subtitle": "Görünüm teması",
     "date_format": "Tarih Formatı"
   },
   "notifications": {
