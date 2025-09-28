@@ -1,0 +1,16 @@
+{
+  "title": "Ajouter un nouveau revenu",
+  "amount": "Montant du revenu",
+  "amount_placeholder": "Entrez le montant",
+  "installment_amount": "Montant de l'acompte",
+  "installment_amount_description": "Montant à recevoir à chaque acompte",
+  "installment_amount_placeholder": "Entrez le montant de l'acompte",
+  "total_amount": "Montant total",
+  "months": "Mois totaux (acomptes)",
+  "months_placeholder": "ex. 10",
+  "start_date": "Date de début",
+  "payment_title": "Titre du revenu",
+  "payment_title_placeholder": "ex. Salaire",
+  "category": "Catégorie",
+  "category_placeholder": "Sélectionner une catégorie"
+}

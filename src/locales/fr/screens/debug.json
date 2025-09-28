@@ -1,0 +1,31 @@
+{
+  "title": "Écran de débogage",
+  "sections": {
+    "notifications": "🔔 Contrôles de notification",
+    "payments": "💰 Contrôles de paiement",
+    "database": "🗄️ Contrôles de base de données"
+  },
+  "buttons": {
+    "send_test_notification": "Envoyer une notification de test (5 secondes)",
+    "check_permissions": "Vérifier les permissions de notification",
+    "check_pending_payments": "Vérifier les paiements en attente",
+    "test_settings": "Tester les paramètres de notification",
+    "create_test_payments": "Créer des paiements de test",
+    "clear_test_payments": "Effacer les paiements de test",
+    "update_payment_statuses": "Mettre à jour les statuts de paiement",
+    "manual_sql_update": "Mise à jour SQL manuelle",
+    "cancel_all_notifications": "Annuler toutes les notifications"
+  },
+  "messages": {
+    "permissions_granted": "Permissions de notification accordées",
+    "permissions_denied": "Permissions de notification refusées",
+    "test_notification_sent": "Notification de test envoyée",
+    "payments_checked": "Paiements vérifiés",
+    "settings_tested": "Paramètres testés",
+    "test_payments_created": "Paiements de test créés",
+    "test_payments_cleared": "Paiements de test effacés",
+    "payment_statuses_updated": "Statuts de paiement mis à jour",
+    "sql_updated": "SQL mis à jour",
+    "notifications_cancelled": "Toutes les notifications annulées"
+  }
+}

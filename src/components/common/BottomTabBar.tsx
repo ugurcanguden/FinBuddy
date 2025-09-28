@@ -121,7 +121,7 @@ const BottomTabBar: React.FC<BottomTabBarProps> = ({ activeTab: propActiveTab })
         >
           <Text style={getIconTextStyle('payments')}>💸</Text>
           <Text style={getLabelTextStyle('payments')}>
-            Ödemeler
+            {t('navigation.tabs.payments')}
           </Text>
         </TouchableOpacity>
 
@@ -131,7 +131,7 @@ const BottomTabBar: React.FC<BottomTabBarProps> = ({ activeTab: propActiveTab })
         >
           <Text style={getIconTextStyle('incomes')}>💰</Text>
           <Text style={getLabelTextStyle('incomes')}>
-            Gelirler
+            {t('navigation.tabs.incomes')}
           </Text>
         </TouchableOpacity>
 

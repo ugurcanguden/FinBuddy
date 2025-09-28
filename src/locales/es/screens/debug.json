@@ -1,0 +1,31 @@
+{
+  "title": "Pantalla de depuración",
+  "sections": {
+    "notifications": "🔔 Controles de notificación",
+    "payments": "💰 Controles de pago",
+    "database": "🗄️ Controles de base de datos"
+  },
+  "buttons": {
+    "send_test_notification": "Enviar notificación de prueba (5 segundos)",
+    "check_permissions": "Verificar permisos de notificación",
+    "check_pending_payments": "Verificar pagos pendientes",
+    "test_settings": "Probar configuración de notificaciones",
+    "create_test_payments": "Crear pagos de prueba",
+    "clear_test_payments": "Limpiar pagos de prueba",
+    "update_payment_statuses": "Actualizar estados de pago",
+    "manual_sql_update": "Actualización SQL manual",
+    "cancel_all_notifications": "Cancelar todas las notificaciones"
+  },
+  "messages": {
+    "permissions_granted": "Permisos de notificación concedidos",
+    "permissions_denied": "Permisos de notificación denegados",
+    "test_notification_sent": "Notificación de prueba enviada",
+    "payments_checked": "Pagos verificados",
+    "settings_tested": "Configuración probada",
+    "test_payments_created": "Pagos de prueba creados",
+    "test_payments_cleared": "Pagos de prueba limpiados",
+    "payment_statuses_updated": "Estados de pago actualizados",
+    "sql_updated": "SQL actualizado",
+    "notifications_cancelled": "Todas las notificaciones canceladas"
+  }
+}

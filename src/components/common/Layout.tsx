@@ -84,12 +84,7 @@ const Layout: React.FC<LayoutProps> = ({
     </>
   );
 
-  return (
-    {/*
-      AppNavigator zaten üst kenar için SafeArea sağlıyor. Burada sadece sol/sağ kenarlar
-      için güvenli alan kullanıyoruz; alt kenar boşlukları footerContainerStyle üzerinden
-      hesaplanıyor. Böylece BottomTabBar iki kez güvenli alan boşluğu alıp yukarı kaymaz.
-    */}
+  return ( 
     <SafeArea edges={['left', 'right']} style={[{ flex: 1, backgroundColor: colors.background }, style]}>
       <StatusBar />
       

@@ -1,0 +1,8 @@
+{
+  "title": "Geldbörse",
+  "labels": {
+    "income": "Einkommen",
+    "expense": "Ausgabe"
+  },
+  "footer": "Verbleibender Betrag nach Abzug der Ausgaben vom Einkommen"
+}

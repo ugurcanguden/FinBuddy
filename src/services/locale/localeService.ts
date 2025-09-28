@@ -128,14 +128,22 @@ class LocaleService {
             home: await this.unwrapJsonModule(import('@/locales/de/screens/home.json')),
             settings: await this.unwrapJsonModule(import('@/locales/de/screens/settings.json')),
             categories: await this.unwrapJsonModule(import('@/locales/de/screens/categories.json')),
+            add_income: await this.unwrapJsonModule(import('@/locales/de/screens/add_income.json')),
             add_payment: await this.unwrapJsonModule(import('@/locales/de/screens/add_payment.json')),
+            add_entry: await this.unwrapJsonModule(import('@/locales/de/screens/add_entry.json')),
+            payments_hub: await this.unwrapJsonModule(import('@/locales/de/screens/payments_hub.json')),
+            reports: await this.unwrapJsonModule(import('@/locales/de/screens/reports.json')),
+            report_builder: await this.unwrapJsonModule(import('@/locales/de/screens/report_builder.json')),
             payments: await this.unwrapJsonModule(import('@/locales/de/screens/payments.json')),
             incomes: await this.unwrapJsonModule(import('@/locales/de/screens/incomes.json')),
             reports_hub: await this.unwrapJsonModule(import('@/locales/de/screens/reports_hub.json')),
             profile: await this.unwrapJsonModule(import('@/locales/de/screens/profile.json')),
             ui_demo: await this.unwrapJsonModule(import('@/locales/de/screens/ui_demo.json')),
             privacy_terms: await this.unwrapJsonModule(import('@/locales/de/screens/privacy_terms.json')),
-            onboarding: await this.unwrapJsonModule(import('@/locales/en/screens/onboarding.json')), // Fallback to EN
+            onboarding: await this.unwrapJsonModule(import('@/locales/de/screens/onboarding.json')),
+            debug: await this.unwrapJsonModule(import('@/locales/de/screens/debug.json')),
+            stats: await this.unwrapJsonModule(import('@/locales/de/screens/stats.json')),
+            wallet: await this.unwrapJsonModule(import('@/locales/de/screens/wallet.json')),
           }
         };
       case 'fr':
@@ -146,14 +154,22 @@ class LocaleService {
             home: await this.unwrapJsonModule(import('@/locales/fr/screens/home.json')),
             settings: await this.unwrapJsonModule(import('@/locales/fr/screens/settings.json')),
             categories: await this.unwrapJsonModule(import('@/locales/fr/screens/categories.json')),
+            add_income: await this.unwrapJsonModule(import('@/locales/fr/screens/add_income.json')),
             add_payment: await this.unwrapJsonModule(import('@/locales/fr/screens/add_payment.json')),
+            add_entry: await this.unwrapJsonModule(import('@/locales/fr/screens/add_entry.json')),
+            payments_hub: await this.unwrapJsonModule(import('@/locales/fr/screens/payments_hub.json')),
+            reports: await this.unwrapJsonModule(import('@/locales/fr/screens/reports.json')),
+            report_builder: await this.unwrapJsonModule(import('@/locales/fr/screens/report_builder.json')),
             payments: await this.unwrapJsonModule(import('@/locales/fr/screens/payments.json')),
             incomes: await this.unwrapJsonModule(import('@/locales/fr/screens/incomes.json')),
             reports_hub: await this.unwrapJsonModule(import('@/locales/fr/screens/reports_hub.json')),
             profile: await this.unwrapJsonModule(import('@/locales/fr/screens/profile.json')),
             ui_demo: await this.unwrapJsonModule(import('@/locales/fr/screens/ui_demo.json')),
             privacy_terms: await this.unwrapJsonModule(import('@/locales/fr/screens/privacy_terms.json')),
-            onboarding: await this.unwrapJsonModule(import('@/locales/en/screens/onboarding.json')), // Fallback to EN
+            onboarding: await this.unwrapJsonModule(import('@/locales/fr/screens/onboarding.json')),
+            debug: await this.unwrapJsonModule(import('@/locales/fr/screens/debug.json')),
+            stats: await this.unwrapJsonModule(import('@/locales/fr/screens/stats.json')),
+            wallet: await this.unwrapJsonModule(import('@/locales/fr/screens/wallet.json')),
           }
         };
       case 'it':
@@ -164,14 +180,22 @@ class LocaleService {
             home: await this.unwrapJsonModule(import('@/locales/it/screens/home.json')),
             settings: await this.unwrapJsonModule(import('@/locales/it/screens/settings.json')),
             categories: await this.unwrapJsonModule(import('@/locales/it/screens/categories.json')),
+            add_income: await this.unwrapJsonModule(import('@/locales/it/screens/add_income.json')),
             add_payment: await this.unwrapJsonModule(import('@/locales/it/screens/add_payment.json')),
+            add_entry: await this.unwrapJsonModule(import('@/locales/it/screens/add_entry.json')),
+            payments_hub: await this.unwrapJsonModule(import('@/locales/it/screens/payments_hub.json')),
+            reports: await this.unwrapJsonModule(import('@/locales/it/screens/reports.json')),
+            report_builder: await this.unwrapJsonModule(import('@/locales/it/screens/report_builder.json')),
             payments: await this.unwrapJsonModule(import('@/locales/it/screens/payments.json')),
             incomes: await this.unwrapJsonModule(import('@/locales/it/screens/incomes.json')),
             reports_hub: await this.unwrapJsonModule(import('@/locales/it/screens/reports_hub.json')),
             profile: await this.unwrapJsonModule(import('@/locales/it/screens/profile.json')),
             ui_demo: await this.unwrapJsonModule(import('@/locales/it/screens/ui_demo.json')),
             privacy_terms: await this.unwrapJsonModule(import('@/locales/it/screens/privacy_terms.json')),
-            onboarding: await this.unwrapJsonModule(import('@/locales/en/screens/onboarding.json')), // Fallback to EN
+            onboarding: await this.unwrapJsonModule(import('@/locales/it/screens/onboarding.json')),
+            debug: await this.unwrapJsonModule(import('@/locales/it/screens/debug.json')),
+            stats: await this.unwrapJsonModule(import('@/locales/it/screens/stats.json')),
+            wallet: await this.unwrapJsonModule(import('@/locales/it/screens/wallet.json')),
           }
         };
       case 'es':
@@ -182,14 +206,22 @@ class LocaleService {
             home: await this.unwrapJsonModule(import('@/locales/es/screens/home.json')),
             settings: await this.unwrapJsonModule(import('@/locales/es/screens/settings.json')),
             categories: await this.unwrapJsonModule(import('@/locales/es/screens/categories.json')),
+            add_income: await this.unwrapJsonModule(import('@/locales/es/screens/add_income.json')),
             add_payment: await this.unwrapJsonModule(import('@/locales/es/screens/add_payment.json')),
+            add_entry: await this.unwrapJsonModule(import('@/locales/es/screens/add_entry.json')),
+            payments_hub: await this.unwrapJsonModule(import('@/locales/es/screens/payments_hub.json')),
+            reports: await this.unwrapJsonModule(import('@/locales/es/screens/reports.json')),
+            report_builder: await this.unwrapJsonModule(import('@/locales/es/screens/report_builder.json')),
             payments: await this.unwrapJsonModule(import('@/locales/es/screens/payments.json')),
             incomes: await this.unwrapJsonModule(import('@/locales/es/screens/incomes.json')),
             reports_hub: await this.unwrapJsonModule(import('@/locales/es/screens/reports_hub.json')),
             profile: await this.unwrapJsonModule(import('@/locales/es/screens/profile.json')),
             ui_demo: await this.unwrapJsonModule(import('@/locales/es/screens/ui_demo.json')),
             privacy_terms: await this.unwrapJsonModule(import('@/locales/es/screens/privacy_terms.json')),
-            onboarding: await this.unwrapJsonModule(import('@/locales/en/screens/onboarding.json')), // Fallback to EN
+            onboarding: await this.unwrapJsonModule(import('@/locales/es/screens/onboarding.json')),
+            debug: await this.unwrapJsonModule(import('@/locales/es/screens/debug.json')),
+            stats: await this.unwrapJsonModule(import('@/locales/es/screens/stats.json')),
+            wallet: await this.unwrapJsonModule(import('@/locales/es/screens/wallet.json')),
           }
         };
       default:

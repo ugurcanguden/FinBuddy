@@ -1,0 +1,16 @@
+{
+  "title": "Agregar nuevo ingreso",
+  "amount": "Cantidad de ingreso",
+  "amount_placeholder": "Ingrese la cantidad",
+  "installment_amount": "Cantidad de cuota",
+  "installment_amount_description": "Cantidad a recibir en cada cuota",
+  "installment_amount_placeholder": "Ingrese la cantidad de cuota",
+  "total_amount": "Cantidad total",
+  "months": "Meses totales (cuotas)",
+  "months_placeholder": "ej. 10",
+  "start_date": "Fecha de inicio",
+  "payment_title": "Título del ingreso",
+  "payment_title_placeholder": "ej. Salario",
+  "category": "Categoría",
+  "category_placeholder": "Seleccionar categoría"
+}

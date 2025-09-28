@@ -1,0 +1,8 @@
+{
+  "title": "Portefeuille",
+  "labels": {
+    "income": "Revenu",
+    "expense": "Dépense"
+  },
+  "footer": "Montant restant après déduction des dépenses des revenus"
+}

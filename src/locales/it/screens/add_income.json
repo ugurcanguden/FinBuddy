@@ -1,0 +1,16 @@
+{
+  "title": "Aggiungi nuovo reddito",
+  "amount": "Importo del reddito",
+  "amount_placeholder": "Inserisci l'importo",
+  "installment_amount": "Importo della rata",
+  "installment_amount_description": "Importo da ricevere ad ogni rata",
+  "installment_amount_placeholder": "Inserisci l'importo della rata",
+  "total_amount": "Importo totale",
+  "months": "Mesi totali (rate)",
+  "months_placeholder": "es. 10",
+  "start_date": "Data di inizio",
+  "payment_title": "Titolo del reddito",
+  "payment_title_placeholder": "es. Stipendio",
+  "category": "Categoria",
+  "category_placeholder": "Seleziona categoria"
+}

@@ -1,0 +1,18 @@
+{
+  "title": "Pagos / Ingresos",
+  "tab_payments": "Pagos",
+  "tab_incomes": "Ingresos",
+  "payments_empty": "Aún no hay pagos",
+  "incomes_empty": "Aún no hay ingresos",
+  "payment": "Pago",
+  "income": "Ingreso",
+  "installments": "cuotas",
+  "once": "Una sola vez",
+  "pay": "Pagar",
+  "paid": "Pagado",
+  "no_records": "Sin registros",
+  "tab_pending": "Pendientes",
+  "tab_completed": "Completados",
+  "empty_pending": "No hay pagos pendientes",
+  "empty_completed": "No hay pagos completados"
+}

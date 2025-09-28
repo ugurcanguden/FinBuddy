@@ -15,7 +15,7 @@
     "update:preview": "eas update --branch preview",
     "update:development": "eas update --branch development",
     "push:production": "eas update --branch production --message 'Grafik iyileştirmeleri ve temizlik'",
-    "push:preview": "eas update --branch preview --message 'Grafik iyileştirmeleri ve temizlik'",
+    "push:preview": "eas update --branch preview --message 'Grafik iyileştirmeleri ve temizlik1'",
     "build:android": "eas build --platform android",
     "build:ios": "eas build --platform ios",
     "build:all": "eas build --platform all"

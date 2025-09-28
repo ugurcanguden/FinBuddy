@@ -1,0 +1,8 @@
+{
+  "title": "Portafoglio",
+  "labels": {
+    "income": "Reddito",
+    "expense": "Spesa"
+  },
+  "footer": "Importo rimanente dopo aver dedotto le spese dai redditi"
+}

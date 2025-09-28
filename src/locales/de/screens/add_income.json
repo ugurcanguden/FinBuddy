@@ -1,0 +1,16 @@
+{
+  "title": "Neues Einkommen hinzufügen",
+  "amount": "Einkommensbetrag",
+  "amount_placeholder": "Betrag eingeben",
+  "installment_amount": "Ratenbetrag",
+  "installment_amount_description": "Betrag, der bei jeder Rate erhalten wird",
+  "installment_amount_placeholder": "Ratenbetrag eingeben",
+  "total_amount": "Gesamtbetrag",
+  "months": "Gesamtmonate (Raten)",
+  "months_placeholder": "z.B. 10",
+  "start_date": "Startdatum",
+  "payment_title": "Einkommenstitel",
+  "payment_title_placeholder": "z.B. Gehalt",
+  "category": "Kategorie",
+  "category_placeholder": "Kategorie auswählen"
+}

@@ -1,0 +1,15 @@
+{
+  "subtitles": {
+    "expense_total": "Dépenses totales ce mois",
+    "expense_paid": "Paiements terminés",
+    "expense_pending": "Montants impayés",
+    "income_total": "Revenus totaux ce mois"
+  },
+  "trend_values": {
+    "active": "Actif",
+    "none": "Aucun",
+    "paid": "Payé",
+    "waiting": "En attente",
+    "received": "Reçu"
+  }
+}

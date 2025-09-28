@@ -1,0 +1,39 @@
+{
+  "welcome": {
+    "title": "Willkommen bei FinBuddy!",
+    "subtitle": "Entdecken Sie Ihre persönliche Finanzverwaltungs-App, die alles einfacher macht."
+  },
+  "home": {
+    "title": "Startseite - Übersicht",
+    "subtitle": "Verfolgen Sie Ihr Wallet-Guthaben, Statistiken und anstehende Zahlungen von hier aus."
+  },
+  "payments": {
+    "title": "Zahlungen - Ausgabenverfolgung",
+    "subtitle": "Fügen Sie hier Ihre Ausgaben hinzu, bearbeiten und verfolgen Sie sie. Ratenzahlungen werden ebenfalls unterstützt."
+  },
+  "incomes": {
+    "title": "Einkommen - Einkommensverfolgung",
+    "subtitle": "Verwalten Sie Ihr Gehalt, freiberufliches Einkommen und andere Einnahmen von hier aus."
+  },
+  "reports": {
+    "title": "Berichte - Analyse",
+    "subtitle": "Erstellen Sie monatliche Zusammenfassungen, Kategorieverteilungen und benutzerdefinierte Berichte."
+  },
+  "categories": {
+    "title": "Kategorien - Verwaltung",
+    "subtitle": "Erstellen Sie benutzerdefinierte Kategorien und bearbeiten Sie bestehende."
+  },
+  "notifications": {
+    "title": "Benachrichtigungen - Erinnerungen",
+    "subtitle": "Aktivieren Sie Zahlungserinnerungen und stellen Sie Zeitpräferenzen von hier aus ein."
+  },
+  "settings": {
+    "title": "Einstellungen - Personalisierung",
+    "subtitle": "Verwalten Sie Währung, Sprache, Thema und andere Einstellungen von hier aus."
+  },
+  "buttons": {
+    "skip": "Überspringen",
+    "next": "Weiter",
+    "done": "Starten"
+  }
+}

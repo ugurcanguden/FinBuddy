@@ -1,0 +1,18 @@
+{
+  "title": "Paiements / Revenus",
+  "tab_payments": "Paiements",
+  "tab_incomes": "Revenus",
+  "payments_empty": "Aucun paiement pour le moment",
+  "incomes_empty": "Aucun revenu pour le moment",
+  "payment": "Paiement",
+  "income": "Revenu",
+  "installments": "acomptes",
+  "once": "Unique",
+  "pay": "Payer",
+  "paid": "Payé",
+  "no_records": "Aucun enregistrement",
+  "tab_pending": "En attente",
+  "tab_completed": "Terminé",
+  "empty_pending": "Aucun paiement en attente",
+  "empty_completed": "Aucun paiement terminé"
+}

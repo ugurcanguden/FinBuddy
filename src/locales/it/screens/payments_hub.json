@@ -1,0 +1,18 @@
+{
+  "title": "Pagamenti / Redditi",
+  "tab_payments": "Pagamenti",
+  "tab_incomes": "Redditi",
+  "payments_empty": "Nessun pagamento ancora",
+  "incomes_empty": "Nessun reddito ancora",
+  "payment": "Pagamento",
+  "income": "Reddito",
+  "installments": "rate",
+  "once": "Una tantum",
+  "pay": "Paga",
+  "paid": "Pagato",
+  "no_records": "Nessun record",
+  "tab_pending": "In sospeso",
+  "tab_completed": "Completati",
+  "empty_pending": "Nessun pagamento in sospeso",
+  "empty_completed": "Nessun pagamento completato"
+}

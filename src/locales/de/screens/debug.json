@@ -1,0 +1,31 @@
+{
+  "title": "Debug-Bildschirm",
+  "sections": {
+    "notifications": "🔔 Benachrichtigungssteuerung",
+    "payments": "💰 Zahlungssteuerung",
+    "database": "🗄️ Datenbanksteuerung"
+  },
+  "buttons": {
+    "send_test_notification": "Test-Benachrichtigung senden (5 Sekunden)",
+    "check_permissions": "Benachrichtigungsberechtigungen prüfen",
+    "check_pending_payments": "Ausstehende Zahlungen prüfen",
+    "test_settings": "Benachrichtigungseinstellungen testen",
+    "create_test_payments": "Test-Zahlungen erstellen",
+    "clear_test_payments": "Test-Zahlungen löschen",
+    "update_payment_statuses": "Zahlungsstatus aktualisieren",
+    "manual_sql_update": "Manuelles SQL-Update",
+    "cancel_all_notifications": "Alle Benachrichtigungen stornieren"
+  },
+  "messages": {
+    "permissions_granted": "Benachrichtigungsberechtigungen erteilt",
+    "permissions_denied": "Benachrichtigungsberechtigungen verweigert",
+    "test_notification_sent": "Test-Benachrichtigung gesendet",
+    "payments_checked": "Zahlungen geprüft",
+    "settings_tested": "Einstellungen getestet",
+    "test_payments_created": "Test-Zahlungen erstellt",
+    "test_payments_cleared": "Test-Zahlungen gelöscht",
+    "payment_statuses_updated": "Zahlungsstatus aktualisiert",
+    "sql_updated": "SQL aktualisiert",
+    "notifications_cancelled": "Alle Benachrichtigungen storniert"
+  }
+}

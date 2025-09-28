@@ -1,0 +1,39 @@
+{
+  "welcome": {
+    "title": "¡Bienvenido a FinBuddy!",
+    "subtitle": "Descubre tu aplicación de gestión financiera personal que hace todo más fácil."
+  },
+  "home": {
+    "title": "Inicio - Resumen",
+    "subtitle": "Rastrea el saldo de tu billetera, estadísticas y pagos próximos desde aquí."
+  },
+  "payments": {
+    "title": "Pagos - Seguimiento de gastos",
+    "subtitle": "Agrega, edita y rastrea tus gastos desde aquí. También se admiten pagos a plazos."
+  },
+  "incomes": {
+    "title": "Ingresos - Seguimiento de ingresos",
+    "subtitle": "Gestiona tu salario, ingresos freelance y otras ganancias desde aquí."
+  },
+  "reports": {
+    "title": "Reportes - Análisis",
+    "subtitle": "Crea resúmenes mensuales, distribuciones por categorías y reportes personalizados."
+  },
+  "categories": {
+    "title": "Categorías - Gestión",
+    "subtitle": "Crea categorías personalizadas y edita las existentes."
+  },
+  "notifications": {
+    "title": "Notificaciones - Recordatorios",
+    "subtitle": "Habilita recordatorios de pago y configura preferencias de tiempo desde aquí."
+  },
+  "settings": {
+    "title": "Configuración - Personalización",
+    "subtitle": "Gestiona moneda, idioma, tema y otras configuraciones desde aquí."
+  },
+  "buttons": {
+    "skip": "Omitir",
+    "next": "Siguiente",
+    "done": "Comenzar"
+  }
+}

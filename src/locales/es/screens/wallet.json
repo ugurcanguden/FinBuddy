@@ -1,0 +1,8 @@
+{
+  "title": "Billetera",
+  "labels": {
+    "income": "Ingreso",
+    "expense": "Gasto"
+  },
+  "footer": "Cantidad restante después de deducir gastos de los ingresos"
+}

@@ -1,0 +1,18 @@
+{
+  "title": "Zahlungen / Einkommen",
+  "tab_payments": "Zahlungen",
+  "tab_incomes": "Einkommen",
+  "payments_empty": "Noch keine Zahlungen",
+  "incomes_empty": "Noch kein Einkommen",
+  "payment": "Zahlung",
+  "income": "Einkommen",
+  "installments": "Raten",
+  "once": "Einmalig",
+  "pay": "Bezahlen",
+  "paid": "Bezahlt",
+  "no_records": "Keine Aufzeichnungen",
+  "tab_pending": "Ausstehend",
+  "tab_completed": "Abgeschlossen",
+  "empty_pending": "Keine ausstehenden Zahlungen",
+  "empty_completed": "Keine abgeschlossenen Zahlungen"
+}

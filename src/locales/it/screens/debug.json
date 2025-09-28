@@ -1,0 +1,31 @@
+{
+  "title": "Schermata di debug",
+  "sections": {
+    "notifications": "🔔 Controlli notifiche",
+    "payments": "💰 Controlli pagamenti",
+    "database": "🗄️ Controlli database"
+  },
+  "buttons": {
+    "send_test_notification": "Invia notifica di test (5 secondi)",
+    "check_permissions": "Verifica permessi notifiche",
+    "check_pending_payments": "Verifica pagamenti in sospeso",
+    "test_settings": "Testa impostazioni notifiche",
+    "create_test_payments": "Crea pagamenti di test",
+    "clear_test_payments": "Cancella pagamenti di test",
+    "update_payment_statuses": "Aggiorna stati pagamento",
+    "manual_sql_update": "Aggiornamento SQL manuale",
+    "cancel_all_notifications": "Annulla tutte le notifiche"
+  },
+  "messages": {
+    "permissions_granted": "Permessi notifiche concessi",
+    "permissions_denied": "Permessi notifiche negati",
+    "test_notification_sent": "Notifica di test inviata",
+    "payments_checked": "Pagamenti verificati",
+    "settings_tested": "Impostazioni testate",
+    "test_payments_created": "Pagamenti di test creati",
+    "test_payments_cleared": "Pagamenti di test cancellati",
+    "payment_statuses_updated": "Stati pagamento aggiornati",
+    "sql_updated": "SQL aggiornato",
+    "notifications_cancelled": "Tutte le notifiche annullate"
+  }
+}
