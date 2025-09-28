@@ -21,6 +21,7 @@ import {
   InitialSetupScreen,
   PrivacyTermsScreen,
   UIDemoScreen,
+  DebugScreen,
 } from '@/screens';
 import { SafeArea } from './common';
 
@@ -118,6 +119,8 @@ const AppNavigator: React.FC<AppNavigatorProps> = () => {
         return <IncomesScreen/>;
       case 'uiDemo':
         return <UIDemoScreen />;
+      case 'debug':
+        return <DebugScreen />;
       default:
         return <HomeScreen />;
     }

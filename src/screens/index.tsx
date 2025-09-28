@@ -24,3 +24,4 @@ export { default as PrivacyTermsScreen } from './PrivacyTermsScreen';
 
 // Demo Screens
 export { default as UIDemoScreen } from './UIDemoScreen';
+export { default as DebugScreen } from './DebugScreen';

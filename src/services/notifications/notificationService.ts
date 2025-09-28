@@ -137,10 +137,14 @@ export class NotificationService {
       // Android için bildirim kanalı oluştur
       if (Platform.OS === 'android') {
         await Notifications.setNotificationChannelAsync('default', {
-          name: 'FinBuddy Reminders',
-          importance: Notifications.AndroidImportance.MAX,
+          name: 'FinBuddy Hatırlatmaları',
+          importance: Notifications.AndroidImportance.HIGH,
           vibrationPattern: [0, 250, 250, 250],
-          lightColor: '#FF231F7C'
+          lightColor: '#001f3f',
+          sound: 'default',
+          enableVibrate: true,
+          enableLights: true,
+          showBadge: true
         });
       }
 
@@ -299,6 +303,8 @@ export class NotificationService {
               dueDate: payment.due_date,
               timing: 'dayBefore',
             },
+            sound: 'default',
+            badge: 1,
           },
           dayBefore,
         );
@@ -321,6 +327,8 @@ export class NotificationService {
               dueDate: payment.due_date,
               timing: 'dayOf',
             },
+            sound: 'default',
+            badge: 1,
           },
           dueDate,
         );
@@ -542,6 +550,35 @@ export class NotificationService {
     }
   }
 
+
+  // Test bildirimi için basit metod
+  static async scheduleNotification(params: {
+    title: string;
+    body: string;
+    trigger: { seconds: number };
+  }): Promise<string | null> {
+    try {
+      return await Notifications.scheduleNotificationAsync({
+        content: {
+          title: params.title,
+          body: params.body,
+          data: {
+            type: 'test_notification',
+            app: 'FinBuddy'
+          },
+          sound: 'default',
+          badge: 1,
+        },
+        trigger: {
+          type: SchedulableTriggerInputTypes.TIME_INTERVAL,
+          seconds: params.trigger.seconds,
+        },
+      });
+    } catch (error) {
+      console.error('Error scheduling notification:', error);
+      return null;
+    }
+  }
 
   // Eski API uyumluluğu için
   static async scheduleDailyReminder(reminderSettings: any, language: string = 'tr'): Promise<void> {

@@ -74,6 +74,7 @@ const App: React.FC = () => {
           action: 'notifications_init' 
         });
         
+        
         // Artık AppNavigator'da yönlendirme yapılıyor
         loggerService.info('App ready - AppNavigator will handle navigation', { 
           screen: 'App', 

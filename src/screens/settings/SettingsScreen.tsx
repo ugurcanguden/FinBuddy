@@ -512,6 +512,35 @@ const SettingsScreen: React.FC = () => {
           </Card>
         </View>
 
+        {/* Debug bölümü - Production'da gizli */}
+        {__DEV__ && (
+          <View style={styles.section}>
+            <Text variant="primary" size="large" weight="bold" style={styles.sectionTitle}>
+              🔧 Debug
+            </Text>
+            
+            <Card variant="default" padding="none" style={styles.card}>
+              <TouchableOpacity 
+                variant="transparent"
+                style={[styles.settingItem, { borderBottomWidth: 1, borderBottomColor: colors.border }]}
+                onPress={() => navigateTo('debug')}
+              >
+                <View variant="transparent" style={styles.settingInfo}>
+                  <Text variant="primary" size="medium">
+                    Bildirim Sistemi Testi
+                  </Text>
+                  <Text variant="secondary" size="small">
+                    Bildirim sistemini test et ve kontrol et
+                  </Text>
+                </View>
+                <View variant="transparent" style={styles.settingAction}>
+                  <Text variant="secondary" size="medium">🔔</Text>
+                </View>
+              </TouchableOpacity>
+            </Card>
+          </View>
+        )}
+
         {/* Geliştirici bölümleri production'da gizlendi */}
       </ScrollView>
 

@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "FinBuddy",
-    "slug": "FinBuddy",
+    "slug": "finbuddy",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -11,6 +11,12 @@
       "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
       "backgroundColor": "#001f3f"
+    },
+    "notification": {
+      "icon": "./assets/notifications/ic_stat_finbuddy_24.png",
+      "color": "#001f3f",
+      "androidMode": "default",
+      "androidCollapsedTitle": "FinBuddy"
     },
     "ios": {
       "bundleIdentifier": "com.finbuddy.app",
@@ -23,7 +29,11 @@
         "backgroundColor": "#ffffff"
       },
       "edgeToEdgeEnabled": true,
-      "windowSoftInputMode": "adjustResize"
+      "windowSoftInputMode": "adjustResize",
+      "notification": {
+        "icon": "./assets/notifications/ic_stat_finbuddy_24.png",
+        "color": "#001f3f"
+      }
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -37,13 +47,14 @@
           "project": "react-native",
           "organization": "guden"
         }
-      ]
+      ],
+      "expo-dev-client"
     ],
     "extra": {
+      "environment": "production",
       "eas": {
-        "projectId": "0087995b-1520-4e81-aa5a-d2fe8f1c05d5"
-      },
-      "environment": "production"
+        "projectId": "42af4bfb-b4f0-40b1-ad1c-7560a23a1a89"
+      }
     },
     "owner": "ugurcanguden",
     "runtimeVersion": {

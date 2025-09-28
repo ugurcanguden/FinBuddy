@@ -53,11 +53,11 @@ const SplashScreen: React.FC<SplashScreenProps> = ({ onAnimationComplete }) => {
     );
     pulseAnimation.start();
 
-    // 2 saniye sonra ana uygulamaya geç
-    const timer = setTimeout(() => {
-      pulseAnimation.stop();
-      onAnimationComplete();
-    }, 2000);
+      // 2 saniye sonra ana uygulamaya geç
+      const timer = setTimeout(() => {
+        pulseAnimation.stop();
+        onAnimationComplete();
+      }, 2000);
 
     return () => {
       clearTimeout(timer);
