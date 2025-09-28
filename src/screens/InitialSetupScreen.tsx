@@ -36,8 +36,13 @@ const InitialSetupScreen: React.FC = () => {
       // İlk kurulumun tamamlandığını işaretle
       await storageService.set(STORAGE_KEYS.INITIAL_SETUP_COMPLETED, true);
       
-      // Onboarding ekranına yönlendir
-      navigateTo('onboarding');
+      // Onboarding flag'ini sıfırla (yeni kullanıcı için)
+      await storageService.set('onboarding_completed', false);
+      
+      console.log('✅ Initial setup completed, onboarding flag reset');
+      
+      // Ana sayfaya yönlendir (tour kontrolü orada yapılacak)
+      navigateTo('home');
     } catch (error) {
       // Initial setup failed
       Alert.alert(

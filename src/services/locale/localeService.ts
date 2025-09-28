@@ -88,6 +88,7 @@ class LocaleService {
             profile: await this.unwrapJsonModule(import('@/locales/en/screens/profile.json')),
             ui_demo: await this.unwrapJsonModule(import('@/locales/en/screens/ui_demo.json')),
             privacy_terms: await this.unwrapJsonModule(import('@/locales/en/screens/privacy_terms.json')),
+            onboarding: await this.unwrapJsonModule(import('@/locales/en/screens/onboarding.json')),
           }
         };
       case 'tr':
@@ -110,6 +111,7 @@ class LocaleService {
             profile: await this.unwrapJsonModule(import('@/locales/tr/screens/profile.json')),
             ui_demo: await this.unwrapJsonModule(import('@/locales/tr/screens/ui_demo.json')),
             privacy_terms: await this.unwrapJsonModule(import('@/locales/tr/screens/privacy_terms.json')),
+            onboarding: await this.unwrapJsonModule(import('@/locales/tr/screens/onboarding.json')),
           }
         };
       case 'de':
@@ -127,6 +129,7 @@ class LocaleService {
             profile: await this.unwrapJsonModule(import('@/locales/de/screens/profile.json')),
             ui_demo: await this.unwrapJsonModule(import('@/locales/de/screens/ui_demo.json')),
             privacy_terms: await this.unwrapJsonModule(import('@/locales/de/screens/privacy_terms.json')),
+            onboarding: await this.unwrapJsonModule(import('@/locales/en/screens/onboarding.json')), // Fallback to EN
           }
         };
       case 'fr':
@@ -144,6 +147,7 @@ class LocaleService {
             profile: await this.unwrapJsonModule(import('@/locales/fr/screens/profile.json')),
             ui_demo: await this.unwrapJsonModule(import('@/locales/fr/screens/ui_demo.json')),
             privacy_terms: await this.unwrapJsonModule(import('@/locales/fr/screens/privacy_terms.json')),
+            onboarding: await this.unwrapJsonModule(import('@/locales/en/screens/onboarding.json')), // Fallback to EN
           }
         };
       case 'it':
@@ -161,6 +165,7 @@ class LocaleService {
             profile: await this.unwrapJsonModule(import('@/locales/it/screens/profile.json')),
             ui_demo: await this.unwrapJsonModule(import('@/locales/it/screens/ui_demo.json')),
             privacy_terms: await this.unwrapJsonModule(import('@/locales/it/screens/privacy_terms.json')),
+            onboarding: await this.unwrapJsonModule(import('@/locales/en/screens/onboarding.json')), // Fallback to EN
           }
         };
       case 'es':
@@ -178,6 +183,7 @@ class LocaleService {
             profile: await this.unwrapJsonModule(import('@/locales/es/screens/profile.json')),
             ui_demo: await this.unwrapJsonModule(import('@/locales/es/screens/ui_demo.json')),
             privacy_terms: await this.unwrapJsonModule(import('@/locales/es/screens/privacy_terms.json')),
+            onboarding: await this.unwrapJsonModule(import('@/locales/en/screens/onboarding.json')), // Fallback to EN
           }
         };
       default:
@@ -185,22 +191,6 @@ class LocaleService {
     }
   }
 
-  // Dil değiştir
-  async setLanguage(language: SupportedLanguage): Promise<void> {
-    if (!this.isValidLanguage(language)) {
-      throw new Error(`Unsupported language: ${language}`);
-    }
-
-    try {
-      this.currentLanguage = language;
-      await this.loadTranslations(language);
-      await storageService.set('selected_language', language);
-      console.log(`✅ Language changed to ${language}`);
-    } catch (error) {
-      console.error('❌ Failed to change language:', error);
-      throw error;
-    }
-  }
 
   // Çeviri al
   t(key: string, params?: Record<string, string | number>): string {
@@ -255,6 +245,19 @@ class LocaleService {
   // Geçerli dili al
   getCurrentLanguage(): SupportedLanguage {
     return this.currentLanguage;
+  }
+
+  // Dili değiştir
+  async changeLanguage(language: SupportedLanguage): Promise<void> {
+    try {
+      this.currentLanguage = language;
+      await this.loadTranslations(language);
+      await storageService.set('selected_language', language);
+      console.log(`Language changed to ${language}`);
+    } catch (error) {
+      console.error(`Failed to change language to ${language}`, error);
+      throw error;
+    }
   }
 
   // Desteklenen dilleri al

@@ -3,8 +3,8 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { StyleSheet, ScrollView as RNScrollView, RefreshControl, Animated, Alert } from 'react-native';
 import { useLocale } from '@/hooks';
 import { Layout, PageHeader } from '@/components';
-import { useTheme, useCurrency } from '@/contexts';
-import { paymentService } from '@/services';
+import { useTheme, useCurrency, useNavigation } from '@/contexts';
+import { paymentService, storageService } from '@/services';
 import { 
   WalletSection, 
   StatsSection, 
@@ -18,6 +18,7 @@ import {
 
 const HomeScreen: React.FC = () => {
   const { t } = useLocale();
+  const { navigateTo } = useNavigation();
 
   const { colors } = useTheme();
   const { currency } = useCurrency();
@@ -95,6 +96,23 @@ const HomeScreen: React.FC = () => {
     if (!selectedYear) return;
     loadDashboard(selectedYear);
   }, [loadDashboard, selectedYear]);
+
+  // Tour kontrolü - ana sayfa açıldığında
+  useEffect(() => {
+    const checkTourStatus = async () => {
+      try {
+        const onboardingCompleted = await storageService.get<boolean>('onboarding_completed');
+        if (!onboardingCompleted) {
+          console.log('🎯 Tour not completed, showing tour from home screen');
+          navigateTo('onboarding');
+        }
+      } catch (error) {
+        console.error('Failed to check tour status:', error);
+      }
+    };
+
+    checkTourStatus();
+  }, [navigateTo]);
 
 
   // Chart yüksekliği

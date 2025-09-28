@@ -1,7 +1,7 @@
 // Add Entry Screen - Modern ödeme/gelir ekleme için iki sekmeli ekran
 import React, { useCallback, useMemo, useRef, useState, useEffect } from 'react';
-import { StyleSheet } from 'react-native';
-import { Layout, PageHeader, View, Text, TouchableOpacity, KeyboardAwareScrollView, Button, Card } from '@/components';
+import { StyleSheet, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
+import { Layout, PageHeader, View, Text, TouchableOpacity, Button, Card } from '@/components';
 import { Badge } from '@/components/common';
 import { useNavigation, useTheme } from '@/contexts';
 import AddPaymentScreen, { AddPaymentScreenHandle } from './AddPaymentScreen';
@@ -54,9 +54,19 @@ const AddEntryScreen: React.FC<AddEntryScreenProps> = ({ type = 'expense' }) => 
     <Layout 
       headerComponent={<PageHeader title={t('screens.add_entry.title')} showBackButton onBackPress={goBack} />} 
       showFooter={false}
-      keyboardAvoidingView={false}
+      keyboardAvoidingView={true}
     >
-      <View style={styles.page}>
+      <KeyboardAvoidingView
+        style={styles.container}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}
+      >
+        <ScrollView
+          style={styles.scrollView}
+          contentContainerStyle={styles.content}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
+        >
         {/* Modern Header */}
         <Card variant="elevated" style={styles.headerCard}>
           <View style={styles.headerContent}>
@@ -108,49 +118,45 @@ const AddEntryScreen: React.FC<AddEntryScreenProps> = ({ type = 'expense' }) => 
           </View>
         </Card>
 
-        <KeyboardAwareScrollView
-          style={styles.container}
-          contentContainerStyle={styles.content}
-        >
-          <View style={styles.formSwitcher}>
-            <View style={[styles.formPane, tab === 'expense' ? styles.formActive : styles.formHidden]}>
-              <AddPaymentScreen
-                ref={expenseRef}
-                entryType="expense"
-                i18nKey="add_payment"
-                embedded
-                onValidityChange={setExpenseValid}
-              />
-            </View>
-            <View style={[styles.formPane, tab === 'income' ? styles.formActive : styles.formHidden]}>
-              <AddPaymentScreen
-                ref={incomeRef}
-                entryType="income"
-                i18nKey="add_income"
-                embedded
-                onValidityChange={setIncomeValid}
-              />
-            </View>
+        <View style={styles.formSwitcher}>
+          <View style={[styles.formPane, tab === 'expense' ? styles.formActive : styles.formHidden]}>
+            <AddPaymentScreen
+              ref={expenseRef}
+              entryType="expense"
+              i18nKey="add_payment"
+              embedded
+              onValidityChange={setExpenseValid}
+            />
           </View>
-        </KeyboardAwareScrollView>
-
-        <View
-          style={[
-            styles.footer,
-            {
-              paddingBottom: insets.bottom + 16,
-              backgroundColor: colors.background,
-              borderColor: colors.border,
-            },
-          ]}
-        >
-          <Button
-            title={t('common.buttons.save')}
-            onPress={handleSubmit}
-            disabled={!currentValid}
-            style={styles.footerButton}
-          />
+          <View style={[styles.formPane, tab === 'income' ? styles.formActive : styles.formHidden]}>
+            <AddPaymentScreen
+              ref={incomeRef}
+              entryType="income"
+              i18nKey="add_income"
+              embedded
+              onValidityChange={setIncomeValid}
+            />
+          </View>
         </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
+
+      <View
+        style={[
+          styles.footer,
+          {
+            paddingBottom: insets.bottom + 16,
+            backgroundColor: colors.background,
+            borderColor: colors.border,
+          },
+        ]}
+      >
+        <Button
+          title={t('common.buttons.save')}
+          onPress={handleSubmit}
+          disabled={!currentValid}
+          style={styles.footerButton}
+        />
       </View>
     </Layout>
   );
@@ -159,9 +165,9 @@ const AddEntryScreen: React.FC<AddEntryScreenProps> = ({ type = 'expense' }) => 
 const styles = StyleSheet.create({
   page: { flex: 1 },
   container: { flex: 1 },
-  content: { padding: 20, paddingBottom: 120 },
+  scrollView: { flex: 1 },
+  content: { padding: 20, paddingBottom: 120, flexGrow: 1 },
   headerCard: {
-    margin: 20,
     marginBottom: 16,
     padding: 20,
   },
@@ -183,7 +189,6 @@ const styles = StyleSheet.create({
     opacity: 0.8,
   },
   tabsCard: {
-    marginHorizontal: 20,
     marginBottom: 16,
     padding: 16,
   },

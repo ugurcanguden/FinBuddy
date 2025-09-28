@@ -1,0 +1,39 @@
+{
+  "welcome": {
+    "title": "Welcome to FinBuddy!",
+    "subtitle": "Discover your personal finance management app that makes everything easier."
+  },
+  "home": {
+    "title": "Home - Overview",
+    "subtitle": "Track your wallet balance, statistics, and upcoming payments from here."
+  },
+  "payments": {
+    "title": "Payments - Expense Tracking",
+    "subtitle": "Add, edit, and track your expenses from here. Installment payments are also supported."
+  },
+  "incomes": {
+    "title": "Incomes - Income Tracking",
+    "subtitle": "Manage your salary, freelance income, and other earnings from here."
+  },
+  "reports": {
+    "title": "Reports - Analysis",
+    "subtitle": "Create monthly summaries, category distributions, and custom reports."
+  },
+  "categories": {
+    "title": "Categories - Management",
+    "subtitle": "Create custom categories and edit existing ones."
+  },
+  "notifications": {
+    "title": "Notifications - Reminders",
+    "subtitle": "Enable payment reminders and set time preferences from here."
+  },
+  "settings": {
+    "title": "Settings - Personalization",
+    "subtitle": "Manage currency, language, theme, and other settings from here."
+  },
+  "buttons": {
+    "skip": "Skip",
+    "next": "Next",
+    "done": "Start"
+  }
+}

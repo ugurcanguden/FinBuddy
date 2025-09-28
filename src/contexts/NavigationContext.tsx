@@ -18,6 +18,7 @@ export type ScreenType =
   | 'paymentDetails'
   | 'incomes'
   | 'addEntry'
+  | 'debug'
   | 'paymentsHub'
   | 'reportBuilder'
   | 'transactions'

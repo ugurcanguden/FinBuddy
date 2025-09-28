@@ -33,25 +33,24 @@ const PaymentsHubScreen: React.FC = () => {
 
   return (
     <Layout headerComponent={<PageHeader title={t('screens.payments_hub.title')} showBackButton={false} onBackPress={goBack} /> }>
-      {/* Tabs */}
-      <View variant="transparent" style={styles.tabs}>
-        <TouchableOpacity
-          variant="transparent"
-          style={[styles.tabBtn, { borderColor: colors.border, backgroundColor: tab === 'payments' ? colors.primary : 'transparent' }] as any}
-          onPress={() => setTab('payments')}
-        >
-          <Text style={{ color: tab === 'payments' ? colors.onPrimary : colors.text }}>{t('screens.payments_hub.tab_payments')}</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          variant="transparent"
-          style={[styles.tabBtn, { borderColor: colors.border, backgroundColor: tab === 'incomes' ? colors.primary : 'transparent' }] as any}
-          onPress={() => setTab('incomes')}
-        >
-          <Text style={{ color: tab === 'incomes' ? colors.onPrimary : colors.text }}>{t('screens.payments_hub.tab_incomes')}</Text>
-        </TouchableOpacity>
-      </View>
-
       <ScrollView style={styles.container}>
+        {/* Tabs */}
+        <View variant="transparent" style={styles.tabs}>
+          <TouchableOpacity
+            variant="transparent"
+            style={[styles.tabBtn, { borderColor: colors.border, backgroundColor: tab === 'payments' ? colors.primary : 'transparent' }] as any}
+            onPress={() => setTab('payments')}
+          >
+            <Text style={{ color: tab === 'payments' ? colors.onPrimary : colors.text }}>{t('screens.payments_hub.tab_payments')}</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            variant="transparent"
+            style={[styles.tabBtn, { borderColor: colors.border, backgroundColor: tab === 'incomes' ? colors.primary : 'transparent' }] as any}
+            onPress={() => setTab('incomes')}
+          >
+            <Text style={{ color: tab === 'incomes' ? colors.onPrimary : colors.text }}>{t('screens.payments_hub.tab_incomes')}</Text>
+          </TouchableOpacity>
+        </View>
         {loading ? (
           <View style={styles.center}><Text variant="secondary">{t('common.messages.loading')}</Text></View>
         ) : error ? (
@@ -82,7 +81,7 @@ const PaymentsHubScreen: React.FC = () => {
 const styles = StyleSheet.create({
   container: { flex: 1, padding: 16 },
   center: { alignItems: 'center', padding: 24 },
-  tabs: { flexDirection: 'row', gap: 8, paddingHorizontal: 16, paddingTop: 12, paddingBottom: 8 },
+  tabs: { flexDirection: 'row', gap: 8, marginBottom: 16 },
   tabBtn: { flex: 1, borderWidth: 1, borderRadius: 999, alignItems: 'center', paddingVertical: 10 },
 });
 

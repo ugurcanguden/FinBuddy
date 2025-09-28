@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, Alert } from 'react-native';
 import { useLocale } from '@/hooks';
+import { SupportedLanguage } from '@/services';
 import { useNavigation } from '@/contexts';
 import { storageService } from '@/services';
 import { PRIVACY_TERMS, PRIVACY_TERMS_ACCEPTED_KEY, PRIVACY_TERMS_VERSION_KEY, PRIVACY_TERMS_VERSION } from '@/constants/legal/privacy-terms';
@@ -20,15 +21,20 @@ interface PrivacyTermsScreenProps {
 }
 
 const PrivacyTermsScreen: React.FC<PrivacyTermsScreenProps> = ({ fromSettings = false }) => {
-  const { t, changeLanguage } = useLocale();
+  const { t, changeLanguage, currentLanguage } = useLocale();
   const navigation = useNavigation();
   const [isLoading, setIsLoading] = useState(false);
-  const [selectedLanguage, setSelectedLanguage] = useState(t('common.language_code') || 'tr');
+  const [selectedLanguage, setSelectedLanguage] = useState(currentLanguage);
+
+  // Dil değiştiğinde selectedLanguage'i güncelle
+  useEffect(() => {
+    setSelectedLanguage(currentLanguage);
+  }, [currentLanguage]);
 
   const handleLanguageChange = async (languageCode: string) => {
     try {
-      setSelectedLanguage(languageCode);
-      await changeLanguage(languageCode as any);
+      setSelectedLanguage(languageCode as SupportedLanguage);
+      await changeLanguage(languageCode as SupportedLanguage);
     } catch (error) {
       Alert.alert('Hata', 'Dil değiştirilemedi. Lütfen tekrar deneyin.');
     }
@@ -42,10 +48,16 @@ const PrivacyTermsScreen: React.FC<PrivacyTermsScreenProps> = ({ fromSettings = 
       await storageService.set(PRIVACY_TERMS_ACCEPTED_KEY, true);
       await storageService.set(PRIVACY_TERMS_VERSION_KEY, PRIVACY_TERMS_VERSION);
       
-      // Ayarlardan geliyorsa geri dön, değilse ana uygulamaya yönlendir
+      // Onboarding flag'ini sıfırla (yeni kullanıcı için)
+      await storageService.set('onboarding_completed', false);
+      
+      console.log('✅ Privacy terms accepted, onboarding flag reset');
+      
+      // Ayarlardan geliyorsa geri dön, değilse ana sayfaya yönlendir
       if (fromSettings) {
         navigation.goBack();
       } else {
+        // Ana sayfaya yönlendir (tour kontrolü orada yapılacak)
         navigation.navigateTo('home');
       }
     } catch (error) {
@@ -86,7 +98,6 @@ const PrivacyTermsScreen: React.FC<PrivacyTermsScreenProps> = ({ fromSettings = 
     }
   };
 
-  const currentLanguage = t('common.language_code') || 'tr';
   const terms = PRIVACY_TERMS[currentLanguage as keyof typeof PRIVACY_TERMS] || PRIVACY_TERMS.tr;
 
   return (

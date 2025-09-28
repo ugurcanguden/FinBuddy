@@ -1,0 +1,39 @@
+{
+  "welcome": {
+    "title": "FinBuddy'ye Hoş Geldiniz!",
+    "subtitle": "Kişisel finans yönetiminizi kolaylaştıran uygulamanızı keşfedin."
+  },
+  "home": {
+    "title": "Ana Sayfa - Genel Bakış",
+    "subtitle": "Cüzdan bakiyenizi, istatistiklerinizi ve yaklaşan ödemelerinizi buradan takip edebilirsiniz."
+  },
+  "payments": {
+    "title": "Ödemeler - Gider Takibi",
+    "subtitle": "Giderlerinizi buradan ekleyebilir, düzenleyebilir ve takip edebilirsiniz. Taksitli ödemeler de desteklenir."
+  },
+  "incomes": {
+    "title": "Gelirler - Gelir Takibi",
+    "subtitle": "Maaş, freelance gelirler ve diğer gelirlerinizi buradan yönetebilirsiniz."
+  },
+  "reports": {
+    "title": "Raporlar - Analiz",
+    "subtitle": "Aylık özetler, kategori dağılımları ve özel raporlar oluşturabilirsiniz."
+  },
+  "categories": {
+    "title": "Kategoriler - Düzenleme",
+    "subtitle": "Özel kategoriler oluşturabilir, mevcut kategorileri düzenleyebilirsiniz."
+  },
+  "notifications": {
+    "title": "Bildirimler - Hatırlatmalar",
+    "subtitle": "Ödeme hatırlatmalarını buradan aktif edebilir, saat ayarlarını yapabilirsiniz."
+  },
+  "settings": {
+    "title": "Ayarlar - Kişiselleştirme",
+    "subtitle": "Para birimi, dil, tema ve diğer ayarlarınızı buradan yönetebilirsiniz."
+  },
+  "buttons": {
+    "skip": "Atla",
+    "next": "İleri",
+    "done": "Başla"
+  }
+}

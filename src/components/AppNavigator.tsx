@@ -20,6 +20,7 @@ import {
   ReportBuilderScreen,
   InitialSetupScreen,
   PrivacyTermsScreen,
+  OnboardingTourScreen,
   UIDemoScreen,
   DebugScreen,
 } from '@/screens';
@@ -52,28 +53,41 @@ const AppNavigator: React.FC<AppNavigatorProps> = () => {
           const onboardingCompleted = await storageService.get<boolean>('onboarding_completed');
           const privacyTermsAccepted = await storageService.get<boolean>(PRIVACY_TERMS_ACCEPTED_KEY);
           const privacyTermsVersion = await storageService.get<string>(PRIVACY_TERMS_VERSION_KEY);
+          const lastAppVersion = await storageService.get<string>('last_app_version');
+          const currentAppVersion = '1.0.0'; // app.json'dan alınabilir
           
-          loggerService.info('Setup status check', {
-            screen: 'AppNavigator',
-            action: 'setup_check',
+          console.log('🔍 Setup status check:', {
             initialSetupCompleted,
             onboardingCompleted,
             privacyTermsAccepted,
-            privacyTermsVersion
+            privacyTermsVersion,
+            lastAppVersion,
+            currentAppVersion,
+            isNewVersion: lastAppVersion !== currentAppVersion
           });
+          
+          // Yeni versiyon kontrolü - tour göster
+          const isNewVersion = lastAppVersion !== currentAppVersion;
+          if (isNewVersion) {
+            await storageService.set('last_app_version', currentAppVersion);
+            // Yeni versiyon için flag'leri sıfırla
+            await storageService.set('onboarding_completed', false);
+            await storageService.set(STORAGE_KEYS.INITIAL_SETUP_COMPLETED, false);
+            console.log('New app version detected, flags reset', {
+              lastAppVersion,
+              currentAppVersion
+            });
+          }
           
           // Gizlilik politikası kontrolü
           if (!privacyTermsAccepted || privacyTermsVersion !== PRIVACY_TERMS_VERSION) {
-            loggerService.navigation('splash', 'privacyTermsInitial');
+            console.log('🔍 Navigating to privacy terms');
             navigation.navigateTo('privacyTermsInitial');
           } else if (!initialSetupCompleted) {
-            loggerService.navigation('splash', 'initialSetup');
+            console.log('🔍 Navigating to initial setup');
             navigation.navigateTo('initialSetup');
-          } else if (!onboardingCompleted) {
-            loggerService.navigation('splash', 'onboarding');
-            navigation.navigateTo('onboarding');
           } else {
-            loggerService.navigation('splash', 'home');
+            console.log('🔍 Navigating to home (tour check will happen there)');
             navigation.navigateTo('home');
           }
         }} />;
@@ -84,7 +98,9 @@ const AppNavigator: React.FC<AppNavigatorProps> = () => {
       case 'privacyTermsInitial':
         return <PrivacyTermsScreen fromSettings={false} />;
       case 'onboarding':
-        return <HomeScreen />; // OnboardingScreen henüz yok, geçici olarak HomeScreen
+        return <OnboardingTourScreen onComplete={() => {
+          navigation.navigateTo('home');
+        }} />;
       case 'home':
         return <HomeScreen />;
       case 'settings':

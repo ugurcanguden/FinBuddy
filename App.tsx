@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View, Text } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { useLocale } from '@/hooks';
-import { NavigationProvider, ThemeProvider, CurrencyProvider } from '@/contexts';
+import { NavigationProvider, ThemeProvider, CurrencyProvider, LocaleProvider } from '@/contexts';
 import { databaseService, migrationService, categoryService, notificationService, loggerService } from '@/services';
 import * as Notifications from 'expo-notifications';
 import AppNavigator from '@/components/AppNavigator';
@@ -149,13 +149,15 @@ const App: React.FC = () => {
 
   return (
     <SafeAreaProvider>
-      <ThemeProvider>
-        <CurrencyProvider>
-          <NavigationProvider>
-            <AppNavigator />
-          </NavigationProvider>
-        </CurrencyProvider>
-      </ThemeProvider>
+      <LocaleProvider>
+        <ThemeProvider>
+          <CurrencyProvider>
+            <NavigationProvider>
+              <AppNavigator />
+            </NavigationProvider>
+          </CurrencyProvider>
+        </ThemeProvider>
+      </LocaleProvider>
     </SafeAreaProvider>
   );
 };

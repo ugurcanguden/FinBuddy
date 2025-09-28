@@ -72,6 +72,14 @@ const AddPaymentScreen = forwardRef<AddPaymentScreenHandle, AddPaymentScreenProp
     return iconMap[iconName] || '📁';
   };
 
+    const [form, setForm] = useState<FormState>({ 
+      amount: '', 
+      months: '', 
+      startDate: new Date().toISOString().slice(0, 10), 
+      title: '', 
+      categoryId: '' 
+    });
+
   const categoryOptions = useMemo(
     () =>
       categories
@@ -79,8 +87,6 @@ const AddPaymentScreen = forwardRef<AddPaymentScreenHandle, AddPaymentScreenProp
         .map((c) => ({ value: c.id, label: getDisplayName(c, t), nativeName: '', flag: getIconEmoji(c.icon) })),
     [categories, getDisplayName, t, entryType]
   );
-
-    const [form, setForm] = useState<FormState>({ amount: '', months: '', startDate: '', title: '', categoryId: '' });
 
     const isValid = useMemo(() => {
       const installmentAmount = Number(form.amount);
@@ -143,31 +149,16 @@ const AddPaymentScreen = forwardRef<AddPaymentScreenHandle, AddPaymentScreenProp
     );
 
   const isIncome = entryType === 'income';
-  const typeText = isIncome ? 'Gelir' : 'Ödeme';
-  const typeIcon = isIncome ? '💰' : '💸';
+
 
   const formContent = (
     <View variant="transparent" style={[styles.formStack, embedded && styles.embeddedStack]}>
       {/* Modern Header Card */}
-      <Card variant="elevated" style={styles.headerCard}>
-        <View style={styles.headerContent}>
-          <Text style={styles.headerIcon}>{typeIcon}</Text>
-          <View style={styles.headerText}>
-            <Text variant="primary" size="large" weight="bold" style={styles.headerTitle}>
-              {isIncome ? 'Yeni Gelir Ekle' : 'Yeni Ödeme Ekle'}
-            </Text>
-            <Text variant="secondary" size="medium" style={styles.headerSubtitle}>
-              {isIncome ? 'Gelir bilgilerinizi girin' : 'Ödeme bilgilerinizi girin'}
-            </Text>
-          </View>
-          <Badge variant={isIncome ? 'success' : 'danger'} size="small">
-            {typeText}
-          </Badge>
-        </View>
-      </Card>
+     
 
       {/* Form Fields */}
       <Card variant="outlined" style={styles.formCard}>
+
         <FormSection
           spacing="none"
           title={t(`screens.${i18nKey}.payment_title`)}
@@ -286,7 +277,7 @@ const AddPaymentScreen = forwardRef<AddPaymentScreenHandle, AddPaymentScreenProp
     return (
       <Layout 
         headerComponent={<PageHeader title={t(`screens.${i18nKey}.title`)} showBackButton onBackPress={goBack} />}
-        keyboardAvoidingView={false}
+        keyboardAvoidingView={true}
       >
         <KeyboardAwareScrollView
           style={styles.container}

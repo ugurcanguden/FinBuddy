@@ -462,6 +462,79 @@ const SettingsScreen: React.FC = () => {
           </Card>
         </View>
 
+        {/* Uygulama Rehberi */}
+        <View style={styles.section}>
+          <Text variant="secondary" size="medium" weight="semibold" style={styles.sectionTitle}>
+            Uygulama Rehberi
+          </Text>
+          <Card variant="default" padding="none" style={styles.card}>
+            <TouchableOpacity 
+              variant="transparent"
+              style={[styles.settingItem, { borderBottomWidth: 1, borderBottomColor: colors.border }]}
+              onPress={async () => {
+                // Tour'u tekrar göstermek için flag'ı sıfırla
+                try {
+                  const { storageService } = await import('@/services');
+                  await storageService.set('onboarding_completed', false);
+                  console.log('✅ Tour flag reset for manual tour');
+                  Alert.alert('Başarılı', 'Tour flag sıfırlandı. Uygulamayı yeniden başlatın.');
+                } catch (error) {
+                  console.error('Failed to reset tour flag', error);
+                  Alert.alert('Hata', 'Tour flag sıfırlanamadı.');
+                }
+              }}
+            >
+              <View variant="transparent" style={styles.settingInfo}>
+                <Text variant="primary" size="medium">
+                  Uygulama Turu
+                </Text>
+                <Text variant="secondary" size="small">
+                  Uygulamayı nasıl kullanacağınızı öğrenin
+                </Text>
+              </View>
+              <View variant="transparent" style={styles.settingAction}>
+                <Text variant="secondary" size="medium">🎯</Text>
+              </View>
+            </TouchableOpacity>
+            
+            {/* Debug butonu - sadece development'ta */}
+            {__DEV__ && (
+              <TouchableOpacity 
+                variant="transparent"
+                style={[styles.settingItem, { borderBottomWidth: 0 }]}
+                onPress={async () => {
+                  try {
+                    const { storageService } = await import('@/services');
+                    const onboardingCompleted = await storageService.get<boolean>('onboarding_completed');
+                    const initialSetupCompleted = await storageService.get<boolean>('INITIAL_SETUP_COMPLETED');
+                    const privacyTermsAccepted = await storageService.get<boolean>('PRIVACY_TERMS_ACCEPTED');
+                    
+                    Alert.alert('Debug Info', 
+                      `Onboarding: ${onboardingCompleted}\n` +
+                      `Initial Setup: ${initialSetupCompleted}\n` +
+                      `Privacy Terms: ${privacyTermsAccepted}`
+                    );
+                  } catch (error) {
+                    Alert.alert('Debug Error', error.message);
+                  }
+                }}
+              >
+                <View variant="transparent" style={styles.settingInfo}>
+                  <Text variant="primary" size="medium">
+                    Debug Flags
+                  </Text>
+                  <Text variant="secondary" size="small">
+                    Flag durumlarını kontrol et
+                  </Text>
+                </View>
+                <View variant="transparent" style={styles.settingAction}>
+                  <Text variant="secondary" size="medium">🔍</Text>
+                </View>
+              </TouchableOpacity>
+            )}
+          </Card>
+        </View>
+
         {/* Logging Ayarları production'da gizlendi */}
 
         {/* Veri temizliği - En altta */}
